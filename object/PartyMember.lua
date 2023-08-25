@@ -51,20 +51,7 @@ function PartyMember:construct(scene, data)
 	self.actions = data.battle or {}
 	self.options = {}
 	for _,v in pairs(self.actions) do
-		local option = v.name
-		local target = v.target
-		local action = v.action
-		local fun
-		if target == TargetType.None then
-			fun = function(menu)
-				self.scene:run(action(self, menu))
-			end
-		else
-			fun = function(menu)
-				self:chooseTarget(menu, target, v.unusable or function(_target) return false end, action)
-			end
-		end
-		table.insert(self.options, {Layout.Text(option), choose = fun})
+		self:addBattleOption(v)
 	end
 	
 	self.origOptions = table.clone(self.options)
@@ -101,6 +88,23 @@ function PartyMember:construct(scene, data)
 	end)
 	
 	self.side = TargetType.Party
+end
+
+function PartyMember:addBattleOption(battleSkill)
+	local option = battleSkill.name
+	local target = battleSkill.target
+	local action = battleSkill.action
+	local fun
+	if target == TargetType.None then
+		fun = function(menu)
+			self.scene:run(action(self, menu))
+		end
+	else
+		fun = function(menu)
+			self:chooseTarget(menu, target, battleSkill.unusable or function(_target) return false end, action)
+		end
+	end
+	table.insert(self.options, {Layout.Text(option), choose = fun})
 end
 
 function PartyMember:setShadow()
@@ -300,7 +304,7 @@ function PartyMember:chooseTarget(menu, targetType, unusable, callback, ...)
 				"ui"
 			)
 			-- Can't target for some reason
-			if unusable and unusable(target) then
+			if (unusable and unusable(target)) or target.untargetable then
 				arrow.color = {150,150,150, 255}
 			else
 				arrow.color = {255, 255, 255, 255}
@@ -326,7 +330,7 @@ function PartyMember:chooseTarget(menu, targetType, unusable, callback, ...)
 				"ui"
 			)
 			-- Can't target for some reason
-			if unusable and unusable(target) then
+			if (unusable and unusable(target)) or target.untargetable then
 				arrow.color = {150,150,150, 255}
 			else
 				arrow.color = {255, 255, 255, 255}
@@ -356,7 +360,7 @@ function PartyMember:chooseTarget(menu, targetType, unusable, callback, ...)
 		)
 		
 		-- Can't target for some reason
-		if unusable and unusable(target) then
+		if (unusable and unusable(target)) or target.untargetable then
 			self.arrow.color = {150,150,150, 255}
 		else
 			self.arrow.color = {255, 255, 255, 255}
@@ -375,14 +379,14 @@ function PartyMember:chooseTargetKey(key, _, unusable)
 			if self.targetType == TargetType.AllParty then
 				targets = table.clone(self.scene.party)
 				for index, target in pairs(targets) do
-					if unusable and unusable(target) then
+					if (unusable and unusable(target)) or target.untargetable then
 						targets[index] = nil
 					end
 				end
 			else
 				targets = table.clone(self.scene.opponents)
 				for index, target in pairs(targets) do
-					if not unusable or not unusable(target) then
+					if (not unusable or not unusable(target)) and not target.untargetable then
 						table.insert(onAttackActions, (target.onAttack and target.state ~= BattleActor.STATE_IMMOBILIZED) and target:onAttack(self) or Action())
 						table.insert(onBeforeAttackActions, target.onBeforeAttack and target:onBeforeAttack(self) or Action())
 					else
@@ -447,7 +451,7 @@ function PartyMember:chooseTargetKey(key, _, unusable)
 		
 		elseif key == "x" then
 			-- Can't attack flying if we can't target flying
-			if unusable and unusable(target) then
+			if (unusable and unusable(target)) or target.untargetable then
 				self.scene.audio:playSfx("error", nil, true)
 			else
 				self.scene.audio:playSfx("choose", nil, true)
@@ -497,15 +501,10 @@ function PartyMember:chooseTargetKey(key, _, unusable)
 		
 		if invalidateArrowPos and self.arrow then
 			self.arrow.transform.x = target.sprite.transform.x + target.sprite.w / 2
-			
-			if self.id == "rotor" then
-				self.arrow.transform.y = target.sprite.transform.y - target.sprite.h * 2
-			else
-				self.arrow.transform.y = target.sprite.transform.y - target.sprite.h * 1.5
-			end
+			self.arrow.transform.y = target.sprite.transform.y - target.sprite.h * 1.5
 			
 			-- Can't target
-			if unusable and unusable(target) then
+			if (unusable and unusable(target)) or target.untargetable then
 				self.arrow.color = {150,150,150, 255}
 			else
 				self.arrow.color = {255, 255, 255, 255}

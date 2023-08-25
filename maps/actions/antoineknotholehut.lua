@@ -13,25 +13,10 @@ return function(scene, hint)
 	local Serial = require "actions/Serial"
 	local Executor = require "actions/Executor"
 	local Wait = require "actions/Wait"
+	local Spawn = require "actions/Spawn"
 	local Do = require "actions/Do"
 	local BlockPlayer = require "actions/BlockPlayer"
 	local SpriteNode = require "object/SpriteNode"
-
-	local text = TypeText(
-		Transform(50, 500),
-		{255, 255, 255, 0},
-		FontCache.Techno,
-		scene.map.properties.regionName,
-		100
-	)
-
-	Executor(scene):act(Serial {
-		Wait(0.5),
-		text,
-		Ease(text.color, 4, 255, 1),
-		Wait(2),
-		Ease(text.color, 4, 0, 1)
-	})
 
 	if not scene.updateHookAdded then
 		scene.updateHookAdded = true
@@ -73,7 +58,7 @@ return function(scene, hint)
 			end
 		)
 	end
-	
+
 	if GameState:isFlagSet("got_chilidog") then
 		for _,layer in pairs(scene.map.layers) do
 			if layer.name == "mess" then
@@ -82,14 +67,73 @@ return function(scene, hint)
 			end
 		end
 	end
-	
-	if scene.nighttime then
+
+	if hint == "snowday" then
+		scene.objectLookup.Door.object.properties.scene = "knotholesnowday.lua"
+		scene.objectLookup.Antoine:remove()
+		local prefix = "nighthide"
+		for _,layer in pairs(scene.map.layers) do
+			if string.sub(layer.name, 1, #prefix) == prefix then
+				layer.opacity = 0.0
+			end
+		end
+	elseif scene.nighttime then
 		scene.objectLookup.Door.object.properties.scene = "knotholeatnight.lua"
 		local prefix = "nighthide"
 		for _,layer in pairs(scene.map.layers) do
 			if string.sub(layer.name, 1, #prefix) == prefix then
 				layer.opacity = 1.0
 			end
+		end
+		
+		if hint == "sleep" then
+			scene.player.sprite.visible = false
+			scene.player.dropShadow.hidden = true
+
+			scene.camPos.x = 0
+			scene.camPos.y = 0
+
+			-- Undo ignore night
+			local shine = require "lib/shine"
+
+			scene.map.properties.ignorenight = false
+			scene.originalMapDraw = scene.map.drawTileLayer
+			scene.map.drawTileLayer = function(map, layer)
+				if not scene.night then
+					scene.night = shine.nightcolor()
+				end
+				scene.night:draw(function()
+					scene.night.shader:send("opacity", layer.opacity or 1)
+					scene.night.shader:send("lightness", 1 - (layer.properties.darkness or 0))
+					scene.originalMapDraw(map, layer)
+				end)
+			end
+			
+			scene.objectLookup.Antoine.sprite:setAnimation("bedscared")
+
+			return BlockPlayer {
+				Do(function()
+					scene.player.sprite.visible = false
+					scene.player.dropShadow.hidden = true
+					scene.camPos.x = 0
+					scene.camPos.y = 0
+				end),
+				Wait(1),
+				-- Flash twice
+				scene:lightningFlash(),
+				Wait(0.1),
+				scene:lightningFlash(),
+				Do(function() scene.audio:stopSfx("thunder2") end),
+				Spawn(scene:screenShake(35, 20, 10)),
+				PlayAudio("sfx", "thunder2",0.8, true),
+				Wait(1.5),
+				MessageBox{message="Antoine: Sacre bleu!!", closeAction=Wait(1)},
+				Do(function()
+					scene.audio:stopSfx("rain")
+					scene.audio:stopSfx("thunder2")
+					scene:changeScene{map="rotorsworkshop", fadeOutSpeed=0.2, fadeInSpeed=0.08, enterDelay=3.5, hint="intro"}
+				end)
+			}
 		end
 	elseif GameState:isFlagSet("ep3_ffmeeting") then
 		scene.objectLookup.Door.object.properties.scene = "knothole.lua"
@@ -101,7 +145,23 @@ return function(scene, hint)
 		end
 		scene.audio:playMusic("knotholehut", 0.8)
 	end
-	
+
+	local text = TypeText(
+		Transform(50, 500),
+		{255, 255, 255, 0},
+		FontCache.Techno,
+		scene.map.properties.regionName,
+		100
+	)
+
+	Executor(scene):act(Serial {
+		Wait(0.5),
+		text,
+		Ease(text.color, 4, 255, 1),
+		Wait(2),
+		Ease(text.color, 4, 0, 1)
+	})
+
 	if hint == "sleep" then
 		return BlockPlayer {
 			Do(function()

@@ -11,7 +11,10 @@ return {
 		shock = {
 			frames = {{7,4}}
 		},
-		
+		frozen = {
+			frames = {{9,4}}
+		},
+
 		sitright = {
 			frames = {{1,5}}
 		},
@@ -42,11 +45,55 @@ return {
 		},
 		walkdown = {
 			frames = {{1,2}, {2,2}, {3,2}, {4,2},{5,2}, {6,2}, {7,2}, {8,2}},
-			speed = 0.1
+			speed = 0.09
 		},
 		walkup = {
 			frames = {{1,3}, {2,3}, {3,3}, {4,3},{5,3}, {6,3}, {7,3}, {8,3}},
+			speed = 0.09
+		},
+		dead = {
+			frames = {{9,3}}
+		},
+
+		crouchright = {
+            frames = {{0,0}}
+        },
+		crouchleft = {
+			frames = {{0,1}}
+		},
+		crouchdown = {
+			frames = {{0,2}}
+		},
+		crouchup = {
+			frames = {{0,3}}
+		},
+
+		jumpright = {
+            frames = {{3,0}}
+        },
+		jumpleft = {
+			frames = {{3,1}}
+		},
+		jumpdown = {
+			frames = {{3,2}}
+		},
+		jumpup = {
+			frames = {{3,3}}
+		},
+
+		
+		sleeping = {
+			frames = {{9,2}}
+		},
+		waking = {
+			frames = {{10,2}, {9,2},{10,2}, {9,2},{10,2}, {9,2},{10,2}, {9,2}},
 			speed = 0.1
+		},
+		awake = {
+			frames = {{10,2}}
+		},
+		laylookleft = {
+			frames = {{11,2}}
 		},
 		
 		aimright = {
@@ -110,7 +157,16 @@ return {
 		sad = {
 			frames = {{0,5}}
 		},
-		
+		hug = {
+			frames = {{3,5}}
+		},
+		climb_1 = {
+			frames = {{1,3}}
+		},
+		climb_2 = {
+			frames = {{5,3}}
+		},
+
 		meeting_idledown = {
 			frames = {{0,2}},
 			clip = {0,0,47,42}

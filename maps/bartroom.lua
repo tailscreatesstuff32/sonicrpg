@@ -1,0 +1,562 @@
+return {
+  version = "1.1",
+  luaversion = "5.1",
+  tiledversion = "1.1.5",
+  orientation = "orthogonal",
+  renderorder = "right-down",
+  width = 29,
+  height = 27,
+  tilewidth = 32,
+  tileheight = 32,
+  nextobjectid = 31,
+  properties = {
+    ["onload"] = "actions/bartroom.lua",
+    ["regionName"] = "Northern Mountains",
+    ["sectorName"] = "Bart's Lab "
+  },
+  tilesets = {
+    {
+      name = "knotholehut",
+      firstgid = 1,
+      tilewidth = 32,
+      tileheight = 32,
+      spacing = 0,
+      margin = 0,
+      image = "../art/tiles/knotholehutinterior.png",
+      imagewidth = 950,
+      imageheight = 1170,
+      transparentcolor = "#000000",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 32,
+        height = 32
+      },
+      properties = {},
+      terrains = {},
+      tilecount = 1044,
+      tiles = {}
+    },
+    {
+      name = "forest",
+      firstgid = 1045,
+      filename = "knothole.tsx",
+      tilewidth = 32,
+      tileheight = 32,
+      spacing = 0,
+      margin = 0,
+      image = "../art/tiles/knotholeexterior.png",
+      imagewidth = 1664,
+      imageheight = 2144,
+      transparentcolor = "#b326c3",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 32,
+        height = 32
+      },
+      properties = {},
+      terrains = {},
+      tilecount = 3484,
+      tiles = {}
+    },
+    {
+      name = "robotropolis",
+      firstgid = 4529,
+      filename = "robotropolis.tsx",
+      tilewidth = 32,
+      tileheight = 32,
+      spacing = 0,
+      margin = 0,
+      image = "../art/tiles/robotropolis2.png",
+      imagewidth = 1120,
+      imageheight = 3200,
+      transparentcolor = "#000000",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 32,
+        height = 32
+      },
+      properties = {},
+      terrains = {},
+      tilecount = 3500,
+      tiles = {}
+    },
+    {
+      name = "cave",
+      firstgid = 8029,
+      filename = "cave.tsx",
+      tilewidth = 32,
+      tileheight = 32,
+      spacing = 0,
+      margin = 0,
+      image = "../art/tiles/caves.png",
+      imagewidth = 1120,
+      imageheight = 2144,
+      transparentcolor = "#b326bd",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 32,
+        height = 32
+      },
+      properties = {},
+      terrains = {},
+      tilecount = 2345,
+      tiles = {}
+    },
+    {
+      name = "forest2",
+      firstgid = 10374,
+      filename = "forest2.tsx",
+      tilewidth = 32,
+      tileheight = 32,
+      spacing = 0,
+      margin = 0,
+      image = "../art/tiles/greatforesttileset.png",
+      imagewidth = 2208,
+      imageheight = 2400,
+      transparentcolor = "#b326c3",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 32,
+        height = 32
+      },
+      properties = {},
+      terrains = {},
+      tilecount = 5175,
+      tiles = {}
+    },
+    {
+      name = "knotholeindoors",
+      firstgid = 15549,
+      filename = "knotholeindoors.tsx",
+      tilewidth = 32,
+      tileheight = 32,
+      spacing = 0,
+      margin = 0,
+      image = "../art/tiles/knotholeinterior.png",
+      imagewidth = 1696,
+      imageheight = 1088,
+      transparentcolor = "#b326bd",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 32,
+        height = 32
+      },
+      properties = {},
+      terrains = {},
+      tilecount = 1802,
+      tiles = {}
+    },
+    {
+      name = "bartroom",
+      firstgid = 17351,
+      filename = "bartroom.tsx",
+      tilewidth = 32,
+      tileheight = 32,
+      spacing = 0,
+      margin = 0,
+      image = "../art/tiles/bartroom.png",
+      imagewidth = 800,
+      imageheight = 766,
+      transparentcolor = "#000000",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 32,
+        height = 32
+      },
+      properties = {},
+      terrains = {},
+      tilecount = 575,
+      tiles = {}
+    }
+  },
+  layers = {
+    {
+      type = "tilelayer",
+      name = "floor",
+      x = 0,
+      y = 0,
+      width = 29,
+      height = 27,
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      properties = {},
+      encoding = "lua",
+      data = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    },
+    {
+      type = "tilelayer",
+      name = "above",
+      x = 0,
+      y = 0,
+      width = 29,
+      height = 27,
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      properties = {},
+      encoding = "lua",
+      data = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17361, 17362, 17363, 17364, 17365, 17366, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 17377, 17378, 17379, 17380, 17381, 17382, 17383, 17384, 17385, 17386, 17387, 17388, 17389, 17390, 17391, 17392, 17393, 17394, 17395, 17396, 17397, 17398, 17399, 0, 0, 0,
+        0, 0, 0, 17402, 17403, 17404, 17405, 17406, 17407, 17408, 17409, 17410, 17411, 17412, 17413, 17414, 17415, 17416, 17417, 17418, 17419, 17420, 17421, 17422, 17423, 17424, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 17432, 17433, 17434, 17435, 17436, 17437, 17438, 17439, 17440, 17441, 17442, 17443, 17444, 17445, 17446, 17447, 17448, 17449, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 17457, 17458, 17459, 17460, 17461, 17462, 17463, 17464, 17465, 17466, 17467, 17468, 17469, 17470, 17471, 17472, 17473, 17474, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 17482, 17483, 17484, 17485, 17486, 17487, 17488, 17489, 17490, 17491, 17492, 17493, 17494, 17495, 17496, 17497, 17498, 17499, 0, 0, 0,
+        0, 0, 0, 17502, 17503, 17504, 17505, 17506, 17507, 17508, 17509, 17510, 17511, 17512, 17513, 17514, 17515, 17516, 17517, 17518, 17519, 17520, 17521, 17522, 17523, 17524, 0, 0, 0,
+        0, 0, 0, 17527, 17528, 17529, 17530, 17531, 17532, 17533, 17534, 17535, 17536, 17537, 17538, 17539, 17540, 17541, 17542, 17543, 17544, 17545, 17546, 17547, 17548, 17549, 0, 0, 0,
+        0, 0, 0, 17552, 17553, 17554, 17555, 17556, 17557, 17558, 17559, 17560, 17561, 17562, 17563, 17564, 17565, 17566, 17567, 17568, 17569, 17570, 17571, 17572, 17573, 17574, 0, 0, 0,
+        0, 0, 0, 17577, 17578, 17579, 17580, 17581, 17582, 17583, 17584, 17585, 17586, 17587, 17588, 17589, 17590, 17591, 17592, 17593, 17594, 17595, 17596, 17597, 17598, 17599, 0, 0, 0,
+        0, 0, 0, 17602, 17603, 17604, 17605, 17606, 17607, 17608, 17609, 17610, 17611, 17612, 17613, 17614, 17615, 17616, 17617, 17618, 17619, 17620, 17621, 17622, 17623, 17624, 0, 0, 0,
+        0, 0, 0, 17627, 17628, 17629, 17630, 17631, 17632, 17633, 17634, 17635, 17636, 17637, 17638, 17639, 17640, 17641, 17642, 17643, 17644, 17645, 17646, 17647, 17648, 17649, 0, 0, 0,
+        0, 0, 0, 17652, 17653, 17654, 17655, 17656, 17657, 17658, 17659, 17660, 17661, 17662, 17663, 17664, 17665, 17666, 17667, 17668, 17669, 17670, 17671, 17672, 17673, 17674, 0, 0, 0,
+        0, 0, 0, 17677, 17678, 17679, 17680, 17681, 17682, 17683, 17684, 17685, 17686, 17687, 17688, 17689, 17690, 17691, 17692, 17693, 17694, 17695, 17696, 17697, 17698, 17699, 0, 0, 0,
+        0, 0, 0, 17702, 17703, 17704, 17705, 17706, 17707, 17708, 17709, 17710, 17711, 17712, 17713, 17714, 17715, 17716, 17717, 17718, 17719, 17720, 17721, 17722, 17723, 17724, 0, 0, 0,
+        0, 0, 0, 17727, 17728, 17729, 17730, 17731, 17732, 17733, 17734, 17735, 17736, 17737, 17738, 17739, 17740, 17741, 17742, 17743, 17744, 17745, 17746, 17747, 17748, 17749, 0, 0, 0,
+        0, 0, 0, 17752, 17753, 17754, 17755, 17756, 17757, 17758, 17759, 17760, 17761, 17762, 17763, 17764, 17765, 17766, 17767, 17768, 17769, 17770, 17771, 17772, 17773, 17774, 0, 0, 0,
+        0, 0, 0, 17777, 17778, 17779, 17780, 17781, 17782, 17783, 17784, 17785, 17786, 17787, 17788, 17789, 17790, 17791, 17792, 17793, 17794, 17795, 17796, 17797, 17798, 17799, 0, 0, 0,
+        0, 0, 0, 17802, 17803, 17804, 17805, 17806, 17807, 17808, 17809, 17810, 17811, 17812, 17813, 17814, 17815, 17816, 17817, 17818, 17819, 17820, 17821, 17822, 17823, 17824, 0, 0, 0,
+        0, 0, 0, 17827, 17828, 17829, 17830, 17831, 17832, 17833, 17834, 17835, 17836, 17837, 17838, 17839, 17840, 17841, 17842, 17843, 17844, 17845, 17846, 17847, 17848, 17849, 0, 0, 0,
+        0, 0, 0, 17852, 17853, 17854, 17855, 17856, 17857, 17858, 17859, 17860, 17861, 17862, 17863, 17864, 17865, 17866, 17867, 17868, 17869, 17870, 17871, 17872, 17873, 17874, 0, 0, 0,
+        0, 0, 0, 17877, 17878, 17879, 17880, 17881, 17882, 17883, 17884, 17885, 17886, 17887, 17888, 17889, 17890, 17891, 17892, 17893, 17894, 17895, 17896, 17897, 17898, 17899, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    },
+    {
+      type = "objectgroup",
+      name = "objects",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      draworder = "topdown",
+      properties = {},
+      objects = {
+        {
+          id = 13,
+          name = "DownPath",
+          type = "SceneEdge",
+          shape = "rectangle",
+          x = 384,
+          y = 768,
+          width = 160,
+          height = 32,
+          rotation = 0,
+          gid = 6839,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["key"] = "down",
+            ["orientation"] = "up",
+            ["scene"] = "northmountains_3.lua",
+            ["spawn_point"] = "CavePath"
+          }
+        },
+        {
+          id = 19,
+          name = "Spawn 1",
+          type = "Player",
+          shape = "rectangle",
+          x = 448,
+          y = 736,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 4565,
+          visible = true,
+          properties = {
+            ["orientation"] = "up"
+          }
+        },
+        {
+          id = 20,
+          name = "Bart",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 416,
+          y = 704,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 6839,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["alignOffsetY"] = -32,
+            ["defaultAnim"] = "idleup",
+            ["ghost"] = true,
+            ["hidden"] = true,
+            ["onInteract"] = "local BlockPlayer = require \"actions/BlockPlayer\"\nlocal Ease = require \"actions/Ease\"\nlocal MessageBox = require \"actions/MessageBox\"\nlocal Parallel = require \"actions/Parallel\"\nlocal Do = require \"actions/Do\"\nlocal Animate = require \"actions/Animate\"\nlocal Wait = require \"actions/Wait\"\nlocal AudioFade = require \"actions/AudioFade\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal Move = require \"actions/Move\"\n\nreturn function(self)\n    if GameState:isFlagSet(\"ep4_bart_intro4\") then\n        GameState:setFlag(\"ep4_bart_intro5\")\n        self.scene.player.x = self.x + 16\n        self.scene.player.y = self.y - 64\n        local walkout, walkin, sprites = self.scene.player:split()\n        self.scene.player.x = self.x + 96\n        self.scene.player.y = self.y + 96\n        sprites.rotor.object.properties.ignoreMapCollision = true\n        return BlockPlayer {\n            walkout,\n            Animate(sprites.logan.sprite, \"idledown\"),\n            Animate(sprites.rotor.sprite, \"idledown\"),\n            MessageBox{message=\"Bart: Finally, we have my excavation analyzer! {p100}This helps me investigate the molecular composition of my samples...\"},\n            Animate(sprites.logan.sprite, \"pose\"),\n            MessageBox{message=\"Logan: --Enlightening?\"},\n            self:hop(),\n            Animate(self.sprite, \"pose\"),\n            MessageBox{message=\"Bart: Precisley!\"},\n            Animate(sprites.logan.sprite, \"idledown\"),\n            self.scene.player:hop(),\n            MessageBox{message=\"Rotor: Pop-Pop! {p60}Would you listen to me for a second!\"},\n            Animate(self.sprite, \"idledown\"),\n            AudioFade(\"music\", 1.0, 0.0, 0.2),\n            MessageBox{message=\"Bart: Let me guess... {p100}you want to tell me that we need to get out of here right away because Robotnik has built a devastatingly terrible machine below our very feet?...\"},\n            sprites.rotor:hop(),\n            Animate(sprites.rotor.sprite, \"shock\"),\n            MessageBox{message=\"Rotor: !! {p60}How did you know?!\"},\n            Animate(sprites.rotor.sprite, \"idledown\"),\n            PlayAudio(\"music\", \"bartsomber\", 1.0, true, true),\n            MessageBox{message=\"Bart: I may be old, but I'm not deaf! {p60}I of course could hear Julian{p60}-- err--{p60} \\\"Robotnik's\\\"{p60} coup happening over radio ten years ago...\"},\n            MessageBox{message=\"Bart: I knew I was stranded here the minute I heard the announcement.\", textSpeed=3},\n            MessageBox{message=\"Bart: \\\"Mobotropolis will henceforth be known as \\nRobotropolis\\\"...\", textSpeed=3},\n            MessageBox{message=\"Bart: I have also spied on numerous communications to and from the test site below. {p60}{h Project Firebird}\\nis it?\"},\n            Animate(sprites.logan.sprite, \"pose\"),\n            MessageBox{message=\"Logan: I guess we didn't give you enough credit, old timer.\"},\n            MessageBox{message=\"Bart: ...{p60}You have no idea how happy I am to see you, my dear boy. {p60}Though your arrival was not part of the plan{p60}, I am so glad I've gotten the chance to see you one last time...\", textSpeed=3},\n            Animate(sprites.logan.sprite, \"idledown\"),\n            Animate(sprites.rotor.sprite, \"thinking\"),\n            MessageBox{message=\"Rotor: What do you mean \\\"one last time\\\"?\"},\n            MessageBox{message=\"Bart: ...\"},\n            MessageBox{message=\"Bart: I know you want me to leave with you, Rotor, but I can not...\"},\n            Animate(sprites.rotor.sprite, \"idledown\"),\n            self.scene.player:hop(),\n            MessageBox{message=\"Rotor: But why Pop-Pop!?\"},\n            MessageBox{message=\"Bart: ...\"},\n            Do(function()\n                self.sprite:setAnimation(\"walkup\")\n            end),\n            Parallel {\n                Ease(self, \"x\", 416, 1, \"linear\"),\n                Ease(self, \"y\", 220, 1, \"linear\")\n            },\n            Animate(self.sprite, \"idleup\"),\n            Animate(sprites.rotor.sprite, \"idleup\"),\n            Animate(sprites.logan.sprite, \"idleup\"),\n            MessageBox{message=\"Bart: When you get to be my age you have a great deal of regrets...\"},\n            self:hop(),\n            Animate(self.sprite, \"idledown\"),\n            MessageBox{message=\"Bart: My greatest regret was not doing more to stop Julian from taking power!!\"},\n            MessageBox{message=\"Bart: I could tell the man was trouble the minute he stepped foot in Mobotropolis!!\"},\n            MessageBox{message=\"Bart: And yet, I said nothing...\"},\n            self:hop(),\n            Animate(self.sprite, \"idledown\"),\n            MessageBox{message=\"Bart: Well, not this time dammit!\"},\n            MessageBox{message=\"Bart: I'm going to collapse my entire research station and these ancient ruins ontop Julian's little science experiment!!\"},\n            AudioFade(\"music\", 1.0, 0.0, 1),\n            sprites.rotor:hop(),\n            PlayAudio(\"music\", \"rotorangry\", 1.0, true),\n            Animate(sprites.rotor.sprite, \"thinking\"),\n            MessageBox{message=\"Rotor: ... {p60}So that's it? {p100}I come all this way to save you and you're just gonna end it anyways!?\"},\n            Animate(sprites.logan.sprite, \"idleleft\"),\n            MessageBox{message=\"Logan: Rotor...\"},\n            Animate(sprites.rotor.sprite, \"idledown\"),\n            MessageBox{message=\"Rotor: I gotta get some air...\"},\n            Move(sprites.rotor, self.scene.objectLookup.Waypoint1),\n            Animate(sprites.logan.sprite, \"idledown\"),\n            Move(sprites.rotor, self.scene.objectLookup.Waypoint2),\n            Move(sprites.rotor, self.scene.objectLookup.Waypoint3),\n            Do(function()\n                sprites.rotor:remove()\n                self.scene:changeScene{map=\"bartcave\", fadeOutMusic=true, fadeOutSpeed=0.2, fadeInSpeed=0.2, enterDelay=2, hint=\"from_bart_room\"}\n            end),\n            MessageBox{message=\"Bart: ...\"},\n        }\n    elseif GameState:isFlagSet(\"ep4_bart_intro3\") then\n        GameState:setFlag(\"ep4_bart_intro4\")\n        return BlockPlayer {\n            MessageBox{message=\"Bart: This pod is uh... {p60}technically just a washing machine and dryer...{p100} but it functions satisfactorily!\"},\n            MessageBox{message=\"Rotor: *sigh*\"},\n            Do(function()\n                self.sprite:setAnimation(\"walkup\")\n            end),\n            Parallel {\n                Ease(self, \"x\", 456, 1, \"linear\"),\n                Ease(self, \"y\", 280, 1, \"linear\")\n            },\n            Do(function()\n                self.sprite:setAnimation(\"walkdown\")\n            end),\n            Parallel {\n                Ease(self, \"x\", 386, 1, \"linear\"),\n                Ease(self, \"y\", 356, 1, \"linear\")\n            },\n            Do(function()\n                self.sprite:setAnimation(\"idledown\")\n                self:removeCollision()\n                self.object.x = self.x\n                self.object.y = self.y + 64\n                self:updateCollision()\n            end)\n        }\n    elseif GameState:isFlagSet(\"ep4_bart_intro2\") then\n        GameState:setFlag(\"ep4_bart_intro3\")\n        return BlockPlayer {\n            MessageBox{message=\"Bart: Here is my workstation... {p60}on the right you can see an excavated skull from one of our ancient Mobian ancestors...\"},\n            MessageBox{message=\"Bart: They worshipped a mythical race of giants called the 'Mandara'. {p60}The tomb you were standing in was a sacred place meant for self-reflection... {p100} fascinating!\"},\n            MessageBox{message=\"Rotor: Yeah, that's super interesting... {p60}listen, uh--\"},\n            Do(function()\n                self.sprite:setAnimation(\"walkdown\")\n            end),\n            Parallel {\n                Ease(self, \"x\", 642, 0.5, \"linear\"),\n                Ease(self, \"y\", 386, 0.5, \"linear\")\n            },\n            Do(function()\n                self.sprite:setAnimation(\"idledown\")\n                self:removeCollision()\n                self.object.x = self.x\n                self.object.y = self.y + 96\n                self:updateCollision()\n            end)\n        }\n    else\n        GameState:setFlag(\"ep4_bart_intro2\")\n        return BlockPlayer {\n            MessageBox{message=\"Bart: In the ancient ruins there are plants which can only be seen under florescent light{p60}, the ancient Mobians referred to them as {h Angel's Hair}!\"},\n            MessageBox{message=\"Bart: They would sometimes build entire cities beneath a brush of Angel's Hair to avoid detection! {p100}Truly remakable{p30}, isn't it?\"},\n            MessageBox{message=\"Rotor: Uhh{p60}, yeah that's incredible Pop-Pop... {p60}I, uh--\"},\n            Do(function()\n                self.sprite:setAnimation(\"walkup\")\n            end),\n            Parallel {\n                Ease(self, \"x\", 416, 0.5, \"linear\"),\n                Ease(self, \"y\", 220, 0.5, \"linear\")\n            },\n            Do(function()\n                self.sprite:setAnimation(\"idledown\")\n                self:removeCollision()\n                self.object.x = self.x\n                self.object.y = self.y + 96\n                self:updateCollision()\n            end)\n        }\n    end\nend",
+            ["sprite"] = "../art/sprites/bart.png"
+          }
+        },
+        {
+          id = 23,
+          name = "Waypoint1",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 640,
+          y = 480,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 4565,
+          visible = true,
+          properties = {
+            ["ghost"] = true
+          }
+        },
+        {
+          id = 24,
+          name = "Waypoint2",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 640,
+          y = 608,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 4565,
+          visible = true,
+          properties = {
+            ["ghost"] = true
+          }
+        },
+        {
+          id = 25,
+          name = "Waypoint3",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 416,
+          y = 928,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 4565,
+          visible = true,
+          properties = {
+            ["ghost"] = true
+          }
+        },
+        {
+          id = 26,
+          name = "Console",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 369,
+          y = 608,
+          width = 192,
+          height = 128,
+          rotation = 0,
+          gid = 4565,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["alignOffsetX"] = 0,
+            ["sprite"] = "../art/sprites/bartexcavator.png"
+          }
+        },
+        {
+          id = 27,
+          name = "Chair",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 320,
+          y = 544,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 4565,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["sprite"] = "../art/sprites/bartchair.png"
+          }
+        },
+        {
+          id = 28,
+          name = "Plant",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 160,
+          y = 416,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 4565,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["alignOffsetY"] = -8,
+            ["sprite"] = "../art/sprites/invisoplant.png"
+          }
+        },
+        {
+          id = 30,
+          name = "Save",
+          type = "SavePoint",
+          shape = "rectangle",
+          x = 288,
+          y = 640,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 6242,
+          visible = true,
+          properties = {
+            ["nonight"] = true,
+            ["sprite"] = "../art/sprites/save.png"
+          }
+        }
+      }
+    },
+    {
+      type = "tilelayer",
+      name = "top",
+      x = 0,
+      y = 0,
+      width = 29,
+      height = 27,
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      properties = {},
+      encoding = "lua",
+      data = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 17453, 17454, 17455, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    },
+    {
+      type = "tilelayer",
+      name = "Collision",
+      x = 0,
+      y = 0,
+      width = 29,
+      height = 27,
+      visible = false,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      properties = {},
+      encoding = "lua",
+      data = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 2202, 2202, 2202, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 0, 0, 0, 0, 0, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 2202, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 0, 0, 0, 0, 0, 0, 2202, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 0, 0, 0, 0, 0, 2202, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 0, 0, 2202, 2202, 2202, 0, 0,
+        0, 0, 0, 2202, 0, 0, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 2202, 2202, 0, 2202, 0, 0,
+        0, 0, 0, 2202, 0, 0, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 0, 0, 2202, 0, 0,
+        0, 0, 0, 2202, 2202, 2202, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 0, 0,
+        0, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 0, 0,
+        0, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 2202, 0, 0,
+        0, 0, 0, 2202, 2202, 2202, 2202, 0, 0, 0, 0, 0, 2202, 2202, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 2202, 2202, 0, 0, 0, 0,
+        0, 0, 0, 2202, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 2202, 2202, 0, 0, 0, 0, 0,
+        0, 0, 0, 2202, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 0, 0, 0, 0, 0,
+        0, 0, 0, 2202, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0,
+        0, 0, 2202, 2202, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 2202, 2202, 2202, 2202, 2202, 2202, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 0, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2202, 2202, 2202, 2202, 2202, 2202, 2202, 2202, 2202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    }
+  }
+}

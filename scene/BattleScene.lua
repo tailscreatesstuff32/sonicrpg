@@ -68,6 +68,7 @@ function BattleScene:onEnter(args)
 	self.practice = args.practice
 	self.camPos = Transform()
 	self.noBattleMusic = args.noBattleMusic
+	self.arrowColor = args.arrowColor
 	
 	local onEnterCallback = args.onEnter or function(scene) return Action() end
 
@@ -79,7 +80,7 @@ function BattleScene:onEnter(args)
 		Transform(580,150,2,2),
 		Transform(640,210,2,2),
 		Transform(580,270,2,2),
-		Transform(640,340,2,2)
+		Transform(640,340,2,2),
 	}
 	self.opponentSlots = {
 		Transform(220,150,2,2),
@@ -102,32 +103,9 @@ function BattleScene:onEnter(args)
 	self.party = {}
 	self.partyTurns = {}
 	self.selectedTarget = 1
-	
-	local slotsByPartySize = {{2}, {2,3}, {1,2,3}, {1,2,3,4}}
-	local partySize = table.count(GameState.party)
-	local slotIndex = slotsByPartySize[partySize]
-	
-	local index = 1
+
 	for _,v in pairs(GameState.party) do
-		local mem = table.clone(v)
-		mem.sprite = SpriteNode(
-			self,
-			self.playerSlots[slotIndex[index]],
-			{255,255,255,255},
-			v.battlesprite
-		)
-		mem.sprite.transform.ox = mem.sprite.w/2
-		mem.sprite.transform.oy = mem.sprite.h/2
-		mem.sprite.transform.x = mem.sprite.transform.x + mem.sprite.w
-		mem.sprite.transform.y = mem.sprite.transform.y + mem.sprite.h
-		mem.playerSlot = index
-		
-		local partyMember = PartyMember(self, mem)
-		partyMember:setShadow()
-		table.insert(self.party, partyMember)
-		self.partyByName[v.id] = partyMember
-		
-		index = index + 1
+		self:addParty(v.id)
 	end
 	
 	self.xpGain = 0
@@ -161,12 +139,12 @@ function BattleScene:onEnter(args)
 		
 		-- Double the turns
 		for _, mem in pairs(self.party) do
-			if mem.state ~= BattleActor.STATE_DEAD then
+			if mem.state ~= BattleActor.STATE_DEAD and not mem.isHologram then
 				table.insert(self.partyTurns, mem)
 			end
 		end
 		for _, mem in pairs(self.party) do
-			if mem.state ~= BattleActor.STATE_DEAD then
+			if mem.state ~= BattleActor.STATE_DEAD and not mem.isHologram then
 				table.insert(self.partyTurns, mem)
 			end
 		end
@@ -223,7 +201,7 @@ function BattleScene:onEnter(args)
 		}
 	else
 		for _, mem in pairs(self.party) do
-			if mem.state ~= BattleActor.STATE_DEAD then
+			if mem.state ~= BattleActor.STATE_DEAD and not mem.isHologram then
 				table.insert(self.partyTurns, mem)
 			end
 		end
@@ -267,8 +245,10 @@ function BattleScene:update(dt)
 			local sprite = oppo:getSprite()
 			oppo.dropShadow.transform.x = sprite.transform.x - sprite.w/2 + 18
 		end
+
+		oppo:onUpdate(dt)
 	end
-	
+
 	if self.state == BattleScene.STATE_PLAYERTURN then
 		-- Resolve against dead players
 		self.currentPlayer = table.remove(self.partyTurns, 1)
@@ -281,7 +261,7 @@ function BattleScene:update(dt)
 		then
 			local allDead = true
 			for _, mem in pairs(self.party) do
-				if mem.state ~= BattleActor.STATE_DEAD then
+				if mem.state ~= BattleActor.STATE_DEAD and not mem.isHologram then
 					allDead = false
 					break
 				end
@@ -302,9 +282,9 @@ function BattleScene:update(dt)
 		self.topSprite = sprite
 
 		if playerId == "rotor" then
-			self.arrow = Arrow(self, Transform.relative(sprite.transform, Transform(0, -sprite.h * 1.3)))
+			self.arrow = Arrow(self, Transform.relative(sprite.transform, Transform(0, -sprite.h * 1.3)), self.arrowColor)
 		else
-			self.arrow = Arrow(self, Transform.relative(sprite.transform, Transform(0, -sprite.h)))
+			self.arrow = Arrow(self, Transform.relative(sprite.transform, Transform(0, -sprite.h)), self.arrowColor)
 		end
 		self.state = BattleScene.STATE_PLAYERTURN_PENDING
 	elseif self.state == BattleScene.STATE_PLAYERTURN_PENDING then
@@ -359,7 +339,7 @@ function BattleScene:update(dt)
 			if not next(self.opponentTurns) then
 				-- Add turns for non-dead party members
 				for _, mem in pairs(self.party) do
-					if mem.state ~= BattleActor.STATE_DEAD then
+					if mem.state ~= BattleActor.STATE_DEAD and not mem.isHologram then
 						table.insert(self.partyTurns, mem)
 					elseif mem.extraLives > 0 then
 						mem.extraLives = mem.extraLives - 1
@@ -433,38 +413,40 @@ function BattleScene:update(dt)
 		-- Update hp + sp + xp on all players
 		local victoryAnimActions = {}
 		for _,mem in ipairs(self.party) do
-			local partyMember = GameState.party[mem.id]
-			partyMember.hp = mem.hp
-			partyMember.sp = mem.sp
-			
-			-- Only living players get xp and to do their cool pose at end of battle
-			if mem.state ~= BattleActor.STATE_DEAD then
-				partyMember.xp = partyMember.xp + self.xpGain
+			if not mem.isHologram then
+				local partyMember = GameState.party[mem.id]
+				partyMember.hp = mem.hp
+				partyMember.sp = mem.sp
 				
-				if partyMember.xp >= GameState:calcNextXp(mem.id, partyMember.level) then
-					table.insert(
-						spoilsActions,
-						MessageBox {
-							message=mem.name .. " gained a level!",
-							rect=MessageBox.HEADLINER_RECT,
-							sfx="levelup"
-						}
-					)
-					local messages = GameState:levelup(mem.id)
+				-- Only living players get xp and to do their cool pose at end of battle
+				if mem.state ~= BattleActor.STATE_DEAD then
+					partyMember.xp = partyMember.xp + self.xpGain
 					
-					-- If we learned anything this level, show message for that
-					for _, message in pairs(messages) do
+					if partyMember.xp >= GameState:calcNextXp(mem.id, partyMember.level) then
 						table.insert(
 							spoilsActions,
 							MessageBox {
-								message=message,
+								message=mem.name .. " gained a level!",
 								rect=MessageBox.HEADLINER_RECT,
 								sfx="levelup"
 							}
 						)
+						local messages = GameState:levelup(mem.id)
+						
+						-- If we learned anything this level, show message for that
+						for _, message in pairs(messages) do
+							table.insert(
+								spoilsActions,
+								MessageBox {
+									message=message,
+									rect=MessageBox.HEADLINER_RECT,
+									sfx="levelup"
+								}
+							)
+						end
 					end
+					table.insert(victoryAnimActions, Animate(mem.sprite, "victory"))
 				end
-				table.insert(victoryAnimActions, Animate(mem.sprite, "victory"))
 			end
 		end
 				
@@ -506,6 +488,22 @@ function BattleScene:update(dt)
 				},
 				Do(function()
 					self.sceneMgr:popScene{}
+				end),
+				Do(function()
+				end)
+			}
+		elseif self.noLose then
+			self:run {
+				AudioFade("music", self.audio:getMusicVolume(), 0, 2),
+				PlayAudio("music", "nomore", 1.0, true),
+				Do(function() self.opponents[1].sprite:setAnimation("hatlaugh") end),
+				MessageBox {
+					message="Fleet: How embarassing for you...",
+					rect=MessageBox.HEADLINER_RECT,
+					textSpeed = 3
+				},
+				Do(function()
+					self.sceneMgr:popScene{hint="lost_fight"}
 				end),
 				Do(function()
 				end)
@@ -587,6 +585,35 @@ function BattleScene:onExit(args)
 				PlayAudio("music", self.prevMusic, 1, true, true)
 		}
 	end
+end
+
+function BattleScene:addParty(id)
+	-- Ran out of space on game board
+	if next(self.playerSlots) == nil then
+		return
+	end
+	
+	local slot = table.count(self.party) + 1
+	local partyMem = GameState.party[id]
+	local mem = table.clone(partyMem)
+	mem.sprite = SpriteNode(
+		self,
+		self.playerSlots[slot],
+		{255,255,255,255},
+		partyMem.battlesprite
+	)
+	mem.sprite.transform.ox = mem.sprite.w/2
+	mem.sprite.transform.oy = mem.sprite.h/2
+	mem.sprite.transform.x = mem.sprite.transform.x + mem.sprite.w
+	mem.sprite.transform.y = mem.sprite.transform.y + mem.sprite.h
+	mem.playerSlot = slot
+
+	local partyMember = PartyMember(self, mem)
+	partyMember:setShadow()
+	table.insert(self.party, partyMember)
+	self.partyByName[id] = partyMember
+
+	return partyMember
 end
 
 function BattleScene:addMonster(monster)

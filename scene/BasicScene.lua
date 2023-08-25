@@ -49,9 +49,10 @@ function BasicScene:onEnter(args)
 	self.tutorial = args.tutorial
 	self.nighttime = args.nighttime or self.map.properties.nighttime
 	self.noBattleMusic = self.map.properties.noBattleMusic
-	
-	print(self.mapName .. " is night? " .. tostring(self.nighttime))
-	
+	self.layered = self.map.properties.layered
+	self.currentLayerId = self.map.properties.currentLayer or 1
+	self.currentLayer = "objects"..(self.currentLayerId > 1 and tostring(self.currentLayerId) or "")
+
 	self.args = args
 	self.cacheSceneData = args.cache
 	
@@ -96,7 +97,7 @@ function BasicScene:onEnter(args)
 		-- Initialize map objects
 		if layer.objects then
 			self:pushLayer(layer.name, true)
-		
+
 			local drawFun = layer.draw
 			layer.draw = function()
 				drawFun()
@@ -118,6 +119,7 @@ function BasicScene:onEnter(args)
 				-- If object is marked as a player spawn location
 				if  object.type == "Player" or
 					object.type == "TinyPlayer" or
+					object.type == "SnowboardPlayer" or
 					object.type == "EscapePlayer" or
 					object.type == "EscapePlayerVert" or
 					object.type == "SavePoint" or
@@ -169,10 +171,14 @@ function BasicScene:onEnter(args)
 	end
 	
 	-- Pan to player
+	local toLayer
 	if self.player then
 		-- Place player at spawn point and orient them appropriately
 		if self.lastSpawnPoint then
 			local spawn = self.spawnPoints[self.lastSpawnPoint]
+			local spawnNpc = self.objectLookup[spawn.name]
+			toLayer = spawnNpc.layer.name
+
 			local spawnOffset = args.spawn_point_offset or
 				Transform(spawn.width/2, spawn.height/2)
 			if not self.player.object.properties.strictLocation then
@@ -239,6 +245,13 @@ function BasicScene:onEnter(args)
 	
 	return Serial {
 		args.enterDelay and Wait(args.enterDelay) or Action(),
+		Do(function()
+			-- Swap layer, if applicable
+			if self.layered and toLayer then
+				local layerId = toLayer:gsub("objects", "")
+				self:swapLayer(layerId ~= "" and tonumber(layerId) or 1)
+			end
+		end),
 		Spawn(
 			Serial {
 				Parallel {
@@ -278,8 +291,11 @@ function BasicScene:onReEnter(args)
 	self.player.y = prevPlayer.y
 
 	-- Place player at spawn point and orient them appropriately
+	local toLayer = self.currentLayer
 	if args.spawn_point then
 		local spawn = self.spawnPoints[args.spawn_point]
+		local spawnNpc = self.objectLookup[spawn.name]
+		toLayer = spawnNpc.layer.name
 		local spawnOffset = args.spawn_point_offset or
 			Transform(spawn.width/2, spawn.height/2)
 		self.player.x = spawn.x + spawnOffset.x
@@ -322,13 +338,11 @@ function BasicScene:onReEnter(args)
 	for _, obj in pairs(self.map.objects) do
 		if obj.flagForDeletion then
 			obj:remove()
-		end
-		
-		if obj.onEnter then
+		elseif obj.onEnter then
 			obj:onEnter()
 		end
 	end
-	
+
 	local onLoadAction = Action()
 	if self.map.properties.onload then
 		onLoadAction = love.filesystem.load("maps/"..self.map.properties.onload)()(self, args.hint)
@@ -344,6 +358,12 @@ function BasicScene:onReEnter(args)
 	return Serial {
 		Do(function()
 			self.player.cinematicStack = 1
+
+			-- Swap layer, if applicable
+			if self.layered and toLayer then
+				local layerId = toLayer:gsub("objects", "")
+				self:swapLayer(layerId ~= "" and tonumber(layerId) or 1)
+			end
 		end),
 	
 		Parallel {
@@ -423,6 +443,27 @@ function BasicScene:hasUpperLayer()
 	return false
 end
 
+function BasicScene:lightningFlash()
+	if not BasicScene.flashShader then
+		local script = [[
+			vec4 effect(vec4 colour, Image tex, vec2 tc, vec2 sc)
+			{
+			    return vec4(1,1,1,0) + Texel(tex, tc);
+			}
+		]]
+		BasicScene.flashShader = love.graphics.newShader(script)
+	end
+	return Serial {
+		Do(function()
+			self.lightFlash = true
+		end),
+		Wait(0.1),
+		Do(function()
+			self.lightFlash = false
+		end)
+	}
+end
+
 function BasicScene:fadeIn(speed)
 	speed = speed or 1
 	return Parallel {
@@ -468,6 +509,8 @@ function BasicScene:remove()
 	self.player = nil
 	
 	self:cleanupLayers()
+	
+	print("destroying cur scene")
 end
 
 function BasicScene:restart(args)
@@ -497,6 +540,7 @@ function BasicScene:changeScene(args)
 			animations = self.animations
 		}
 	else
+		print("change scene...")
 		self.sceneMgr[fun](self.sceneMgr, {
 			class = "BasicScene",
 			map = self.maps[mapName],
@@ -520,7 +564,7 @@ function BasicScene:changeScene(args)
 end
 
 -- Vertical screen shake
-function BasicScene:screenShake(str, sp, rp)
+function BasicScene:screenShake(str, sp, rp, noReset)
 	local strength = str or 50
 	local speed = sp or 15
 	local repeatTimes = rp or 1
@@ -540,7 +584,9 @@ function BasicScene:screenShake(str, sp, rp)
 		
 		Do(function()
 			self.isScreenShaking = false
-			self.camPos.y = 0
+			if not noReset then
+				self.camPos.y = 0
+			end
 		end)
 	}
 end
@@ -568,7 +614,8 @@ function BasicScene:enterBattle(args)
 		Do(function()
 			self.player.cinematic = true
 			self.enteringBattle = true
-			
+			self:invoke("onEnterBattle")
+
 			self.bgColor = {255,255,255,255}
 			ScreenShader:sendColor("multColor", self.bgColor)
 		end),
@@ -603,7 +650,8 @@ function BasicScene:enterBattle(args)
 				initiative = args.initiative,
 				color = args.color,
 				practice = args.practice,
-				onEnter = args.onEnter
+				onEnter = args.onEnter,
+				arrowColor = args.arrowColor
 			}
 		end),
 		
@@ -795,15 +843,20 @@ function BasicScene:update(dt)
 		self.timer = 0
 	end
 
-	-- Shift tiles based on player position
-	local worldOffsetX = math.floor((-self.player.x + love.graphics.getWidth()/2))
-	local worldOffsetY = math.floor((-self.player.y + love.graphics.getHeight()/2))
+	local panX = self.panX or self.player.x
+	local panY = self.panY or self.player.y
 	
+	-- Shift tiles based on player position
+	local worldOffsetX = math.floor((-panX + love.graphics.getWidth()/2))
+	local worldOffsetY = math.floor((-panY + love.graphics.getHeight()/2))
 	self:pan(
 		math.floor((worldOffsetX + self.camPos.x)),
 		math.floor((worldOffsetY + self.camPos.y))
 	)
-	self:updatePlayerPos()
+
+	if not self.panX and not self.panY then
+		self:updatePlayerPos()
+	end
 end
 
 function BasicScene:getMapWidth()
@@ -887,12 +940,48 @@ function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList)
 	return not self.map[mapName][mapy][mapx] or (whiteList and whiteList[mapy] and whiteList[mapy][mapx])
 end
 
+function BasicScene:swapLayer(toLayerNum)
+	-- Swap object layer (assumes naming convention of "objects" or "objectsN"
+	local layerStr = tostring(toLayerNum)
+	local objLayer = toLayerNum == 1 and "objects" or ("objects"..layerStr)
+	self.player.sprite:swapLayer(objLayer)
+	if not self.player.dropShadow:isRemoved() then
+		self.player.dropShadow.sprite:swapLayer(objLayer)
+	end
+	self.player.onlyInteractWithLayer = objLayer
+	self.player.layer = {name = objLayer}
+	self.currentLayer = objLayer
+	self.currentLayerId = toLayerNum
+
+	-- Swap collision layer (assumes naming convention of "Collision" or "CollisionN"
+	local colLayer = toLayerNum == 1 and "Collision" or ("Collision"..layerStr)
+	for _,layer in pairs(self.map.layers) do
+		if layer.name == colLayer then
+			self.map.collisionMap = layer.data
+			break
+		end
+	end
+
+	-- Update collision map with objects on same layer
+	for _, obj in pairs(self.map.objects) do
+		if obj.layer.name == objLayer then
+			obj:updateCollision()
+		end
+	end
+end
+
 function BasicScene:draw()
 	if self.blur then
 		self.blur:draw(function()
 			love.graphics.setDefaultFilter("nearest", "nearest")
 			Scene.draw(self)
 		end)
+	elseif self.lightFlash then
+		local prevShader = love.graphics.getShader()
+		love.graphics.setDefaultFilter("nearest", "nearest")
+		love.graphics.setShader(BasicScene.flashShader)
+		Scene.draw(self)
+		love.graphics.setShader(prevShader)
 	else
 		love.graphics.setDefaultFilter("nearest", "nearest")
 		Scene.draw(self)

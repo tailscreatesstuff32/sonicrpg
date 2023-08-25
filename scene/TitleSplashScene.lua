@@ -44,7 +44,7 @@ function TitleSplashScene:onEnter()
 	self.pressXText = TextNode(
 		self,
 		Transform(710, 550),
-		{255,255,255,0},
+		{0,0,0,0},
 		"select",
 		FontCache.Consolas,
 		"ui",
@@ -62,7 +62,7 @@ function TitleSplashScene:onEnter()
 	self.pressZText = TextNode(
 		self,
 		Transform(590, 550),
-		{255,255,255,0},
+		{0,0,0,0},
 		"cancel",
 		FontCache.Consolas,
 		"ui",
@@ -70,20 +70,20 @@ function TitleSplashScene:onEnter()
 	)
 	
 	self.bg = love.graphics.newImage("art/splash/title3.png")
-	self.bgY = 0
+	self.bgY = -600
 	
 	-- Setup menu sfx
 	self.audio:registerAs("sfx", "choose", love.audio.newSource("audio/sfx/choose.wav", "static"))
 	self.audio:registerAs("sfx", "cursor", love.audio.newSource("audio/sfx/cursor.wav", "static"))
 	self.audio:registerAs("sfx", "error", love.audio.newSource("audio/sfx/error.wav", "static"))
-	self.audio:registerAs("sfx", "wolf", love.audio.newSource("audio/sfx/wolf.ogg", "static"))
+	self.audio:registerAs("sfx", "wind", love.audio.newSource("audio/sfx/wind.ogg", "static"))
 	self.audio:registerAs("music", "pretitle", love.audio.newSource("audio/music/title.ogg", "static"))
-	
-	self.bgColor = {0,0,0,255}
+
+	self.bgColor = {255,255,255,255}
 	self.logoColor = {255,255,255,0}
 	self.menuTextColor = {0,0,0,255}
 	self.logoScale = 0
-	
+
 	self.menu = Menu {
 		layout = Layout{
 			{
@@ -109,7 +109,8 @@ function TitleSplashScene:onEnter()
 	}
 	
 	ScreenShader:sendColor("multColor", {255,255,255,255})
-	
+	love.graphics.setBackgroundColor(0,0,0,255)
+
 	self.exiting = false
 	return Executor(self):act(While(
 		function()
@@ -122,11 +123,10 @@ function TitleSplashScene:onEnter()
 				Ease(self.bgColor, 3, 255, 0.2, "linear"),
 				AudioFade("music", 0.5, 1.0, 0.1),
 				Serial {
-					Wait(3),
-					PlayAudio("sfx", "wolf", 0.5, true),
-					Wait(5),
+					PlayAudio("sfx", "wind", 0.5, true, true),
+					Wait(4),
 					PlayAudio("music", "pretitle", 0.5, true),
-					Ease(self, "bgY", -466, 0.05, "inout"),
+					Ease(self, "bgY", 0, 0.053, "inout"),
 				}
 			},
 
@@ -173,9 +173,12 @@ function TitleSplashScene:onExit(args)
 end
 
 function TitleSplashScene:newGame()
-	GameState:addToParty("sally", 6, true)
-	GameState.leader = "sally"
+	GameState:addToParty("rotor", 8, true)
+	GameState:addToParty("logan", 8, true)
+	GameState.leader = "logan"
 	GameState:setFlag("ep3_intro")
+	
+	self.audio:stopSfx("wind")
 	
 	self.exiting = true
 	self.sceneMgr:switchScene {class = "ChapterSplashScene", manifest = "maps/sonicdemo_manifest.lua"}
@@ -183,11 +186,13 @@ end
 
 function TitleSplashScene:continue()
 	-- Make sure we have images ready for this screen
-	local party = {"sonic", "sally", "bunny", "rotor", "antoine"}
+	local party = {"sonic", "sally", "bunny", "rotor", "antoine", "logan"}
 	for _, member in pairs(party) do
 		self.images["sprites/"..member] = love.graphics.newImage("art/sprites/"..member..".png")
 		self.animations["sprites/"..member] = love.filesystem.load("art/sprites/"..member..".lua")()
 	end
+	
+	self.audio:stopSfx("wind")
 	
 	self:run(Savescreen {
 		scene = self,

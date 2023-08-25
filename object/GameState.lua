@@ -245,6 +245,10 @@ function GameState:useItem(record)
 	end
 end
 
+function GameState:removeItem(name)
+	self.items[name] = nil
+end
+
 function GameState:isEquipped(member, itemType, itemName)
 	local item = self.party[member].equip[itemType]
 	if item then
@@ -339,10 +343,6 @@ function GameState:loadSlots()
 end
 
 function GameState:save(scene, slot, spawnPoint)
-	if slot > 3 or slot < 1 then
-		error("Only valid slot value is 1, 2, or 3")
-	end
-
 	-- Save slots meta
 	local maxLevel = 0
 	for _, v in pairs(self.party) do
@@ -404,10 +404,6 @@ function GameState:save(scene, slot, spawnPoint)
 end
 
 function GameState:load(scene, slot)
-	if slot > 3 or slot < 1 then
-		error("Only valid slot value is 1, 2, or 3")
-	end
-
 	local data = love.filesystem.load("sage2020_game"..tostring(slot)..".sav")()
 	
 	-- Load inventory and flags
@@ -424,8 +420,9 @@ function GameState:load(scene, slot)
 	
 	self.flags = data.flags
 	
-	-- ep3 save file
-	if self:isFlagSet("ep3_introdone") then
+	self:setFlag("ep4_introdone")
+	-- ep4 save file
+	if self:isFlagSet("ep4_introdone") then
 		-- Add party members, grant items, set flags
 		for k, v in pairs(data.party) do
 			self:addToParty(k, v.level, false)
@@ -479,7 +476,7 @@ function GameState:load(scene, slot)
 				hint = "fromload"
 			}
 		end
-	-- ep1 or ep2 save, treat as new game+
+	-- ep1 or ep2 or ep3 save, treat as new game+
 	else
 		self:addToParty("sally", 6, true)
 		self.leader = "sally"

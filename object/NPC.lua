@@ -50,8 +50,10 @@ function NPC:construct(scene, layer, object)
 	self.noHideDown = object.properties.nohidedown
 	self.movespeed = object.properties.movespeed or 3
 	self.disappearOn = object.properties.disappearOn
+	self.disappearOnFlag = object.properties.disappearOnFlag
 	self.angle = (object.properties.angle or 0) * (math.pi/180)
 	self.isBot = object.properties.isBot
+	self.destructable = object.properties.destructable
 	
 	if object.properties.onInit then
 		self.onInit = assert(loadstring(object.properties.onInit))()
@@ -175,7 +177,13 @@ end
 
 function NPC:updateCollision()
 	self.collision = {}
-	
+    if self.scene.map.properties.layered and
+	   self.scene.currentLayer ~= self.layer.name and
+	   self.layer.name ~= "all"
+	then
+		return
+	end
+
 	if not self.object.properties.nocollision then
 		local sx,sy = self.scene:worldCoordToCollisionCoord(self.object.x, self.object.y)
 		local dx,dy = self.scene:worldCoordToCollisionCoord(self.object.x + self.object.width, self.object.y + self.object.height)
@@ -282,7 +290,7 @@ function NPC:init(useBaseUpdate)
 		end
 	end
 	
-	if self.isBot and GameState:isFlagSet(self:getFlag()) then
+	if (self.isBot or self.disappearOnFlag) and GameState:isFlagSet(self:getFlag()) then
 		self:remove()
 		return
 	end
@@ -435,8 +443,14 @@ end
 
 function NPC:onBattleComplete(args)
 	for _, flag in pairs(args.flags) do
+		print("Setting flag "..flag)
 		GameState:setFlag(flag)
 	end
+end
+
+function NPC:permanentRemove()
+	GameState:setFlag(self:getFlag())
+	self:remove()
 end
 
 function NPC:getInitiative()
@@ -560,7 +574,15 @@ function NPC:update(dt)
 		}
 		return
 	end
-	
+
+	-- Don't interact with player if player doesn't care about your layer
+	if (self.scene.player.onlyInteractWithLayer ~= nil and
+		self.scene.player.onlyInteractWithLayer ~= self.layer.name) and
+		self.layer.name ~= "all"
+	then
+		return
+	end
+
 	for _,coord in ipairs(self.collision) do
 		-- Separating axis-theorem
 		local x = self.scene.player.collisionX
@@ -608,10 +630,10 @@ function NPC:isTouching(x, y, w, h)
 	if not self.hotspots then
 		return false
 	end
-	
+
 	w = w or self.scene:getTileWidth()
 	h = h or self.scene:getTileHeight()
-	
+
 	local fuzz = 5
 	return (x + w) >= (self.hotspots.left_bot.x - fuzz) and
 		x < (self.hotspots.right_bot.x + fuzz) and

@@ -20,6 +20,7 @@ local BattleActor = class(EventHandler)
 BattleActor.STATE_IDLE   = "idle"
 BattleActor.STATE_DEAD   = "dead"
 BattleActor.STATE_IMMOBILIZED = "immobile"
+BattleActor.STATE_HOLOGRAM = "hologram"
 
 function BattleActor:construct(scene, data)
 	self.scene = scene
@@ -109,7 +110,7 @@ function BattleActor:getSprite()
 	return self.sprite
 end
 
-function BattleActor:takeDamage(stats, isPassive, knockbackActionFun)
+function BattleActor:takeDamage(stats, isPassive, knockbackActionFun, attacker)
 	isPassive = isPassive or false
 	
 	local sprite = self:getSprite()
@@ -182,7 +183,7 @@ function BattleActor:takeDamage(stats, isPassive, knockbackActionFun)
 		
 		Serial {
 			Do(function()
-				self:invoke("hit", damage)
+				self:invoke("hit", damage, attacker)
 				if (damage > 0 and sprite.animations["hurt"] and not self.noHurtAnim) then
 					sprite:setAnimation("hurt")
 				end
@@ -238,7 +239,10 @@ function BattleActor:calculateDamage(stats)
 	local damage = math.max(0, math.floor((stats.attack * 10 + math.random(stats.attack)) - defense))
 
 	-- Random chance of miss
-	if stats.miss or damage == 0 or ((math.random(10)/100) + (selfStats.speed/100)) > ((math.random(30)/100) + (stats.speed/100)) then
+	if stats.miss or
+	   damage == 0 or
+	   ((selfStats.speed > stats.speed) and math.random(100) <= (selfStats.speed - stats.speed))
+	then
 		if damage ~= 0 or stats.miss then
 			damage = 0
 			stats.miss = true

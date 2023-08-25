@@ -33,11 +33,11 @@ return {
 	insult = "Swatbutt",
 
 	stats = {
-		xp    = 20,
-		maxhp = 450,
-		attack = 30,
+		xp    = 10,
+		maxhp = 380,
+		attack = 26,
 		defense = 20,
-		speed = 12,
+		speed = 8,
 		focus = 5,
 		luck = 5,
 	},
@@ -64,13 +64,11 @@ return {
 		self.targetSprite.transform.ox = self.targetSprite.w/2
 		self.targetSprite.transform.oy = self.targetSprite.h/2
 		self.targetSprite.color[4] = 0
-		
-		self.firstTurn = true
 	end,
 
 	behavior = function (self, target)
 		-- Either do laser attack or poison gas
-		if not self.firstTurn and math.random() < 0.8 or self.scene.usedPoisonGas then
+		if math.random() < 0.4 or self.scene.usedPoisonGas then
 			-- Either do Arm Laser or Laser Sweep
 			if math.random() < 0.9 or next(self.targetOverrideStack) ~= nil then
 				local laserShot = function(t)
@@ -290,7 +288,6 @@ return {
 				}
 			end
 		else
-			self.firstTurn = false
 			local targetActionList = {}
 			local backToIdleList = {}
 			self.scene.usedPoisonGas = true

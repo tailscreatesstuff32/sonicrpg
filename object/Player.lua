@@ -51,6 +51,7 @@ Player.ToIdle = {
 Player.DEFAULT_DUST_COLOR      = {255, 255, 255, 255}
 Player.ROBOTROPOLIS_DUST_COLOR = {130, 130, 200, 255}
 Player.FOREST_DUST_COLOR       = {255, 255, 200, 255}
+Player.SNOW_FOOTPRINT_TIME     = 0.2
 
 Player.MAX_SORT_ORDER_Y = 999999999
 
@@ -61,7 +62,8 @@ function Player:construct(scene, layer, object)
 	self.y = 0
 	self.collisionX = 0
 	self.collisionY = 0
-	self.movespeed = 4
+	self.baseMoveSpeed = 4
+	self.movespeed = self.baseMoveSpeed
 	self.layer = layer
 	self.object = object
 	self.cinematicStack = 0
@@ -70,7 +72,7 @@ function Player:construct(scene, layer, object)
 	
 	self.isSwatbot = {}
 	self.lastSwatbotStepSfx = love.timer.getTime()
-	
+
 	-- A hashset of objects that are contributing to our hiding in shadow
 	-- Note: If hashset is empty, we are not in shadows/light. If it has at least
 	-- one element, then we are in shadows/light.
@@ -97,7 +99,10 @@ function Player:construct(scene, layer, object)
 	
 	-- A hashset of ladders we are touching
 	self.ladders = {}
-	
+
+	-- A hashset of things blocking your ladder access
+	self.noLadder = {}
+
 	-- A hashset of keyhints we are touching
 	self.keyhints = {}
 
@@ -268,6 +273,13 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 			self.transform,
 			Transform(self.sprite.w - 10, 0)
 		)
+		-- HACK: Rotor is too differently shaped for this transform, change it
+		if GameState.leader == "rotor" then
+			pressDirXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 15, -10)
+			)
+		end
 		local pressDir = SpriteNode(
 			self.scene,
 			pressDirXForm,
@@ -286,6 +298,13 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 			self.transform,
 			Transform(self.sprite.w - 10, 0)
 		)
+		-- HACK: Rotor is too differently shaped for this transform, change it
+		if GameState.leader == "rotor" then
+			pressXXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 15, -10)
+			)
+		end
 		local pressX = SpriteNode(
 			self.scene,
 			pressXXForm,
@@ -305,6 +324,13 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 			self.transform,
 			Transform(self.sprite.w - 12, 0)
 		)
+		-- HACK: Rotor is too differently shaped for this transform, change it
+		if GameState.leader == "rotor" then
+			pressLshXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 17, -10)
+			)
+		end
 		local pressLsh = SpriteNode(
 			self.scene,
 			pressLshXForm,
@@ -324,6 +350,13 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 			self.transform,
 			Transform(self.sprite.w - 10, 0)
 		)
+		-- HACK: Rotor is too differently shaped for this transform, change it
+		if GameState.leader == "rotor" then
+			pressXXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 15, -10)
+			)
+		end
 		local pressX = SpriteNode(
 			self.scene,
 			pressXXForm,
@@ -622,7 +655,6 @@ function Player:updateSprite()
 		nil,
 		self.layer.name
 	)
-	
 	if self.scene.nighttime then
 		self.sprite.drawWithNight = false
 	end
@@ -750,7 +782,12 @@ function Player:basicUpdate(dt)
 	-- Update drop shadow position
 	self.dropShadow.x = self.x - 22
 	self.dropShadow.y = self.dropShadowOverrideY or self.y + self.sprite.h - 15
-	
+
+	-- HACK: Rotor is big
+	if GameState.leader == "rotor" then
+		self.dropShadow.x = self.x - 5
+	end
+
 	local prevState = self.state
 	
 	if not self.noIdle then
@@ -786,6 +823,14 @@ function Player:basicUpdate(dt)
 	end
 	self.doingSpecialMove = false
 	
+	if self.scene.map.properties.snow then
+		if not self.snowtime then
+			self.snowtime = 0
+			self.snowoffsety = 1
+		end
+		self.snowtime = self.snowtime + dt
+	end
+	
 	local moving = false
 	local movingX = false
 	local movingY = false
@@ -795,7 +840,10 @@ function Player:basicUpdate(dt)
 		then
 			self.x = self.x + movespeed
 			self.state = Player.STATE_WALKRIGHT
-			
+			if self.scene.map.properties.snow then
+				self:makeSnowFootprint(hotspots.left_bot.x, hotspots.left_bot.y - 10 + self.snowoffsety * 5)
+			end
+
 			-- Going up stairs
 			local _, stairs = next(self.stairs)
 			if stairs then
@@ -861,7 +909,10 @@ function Player:basicUpdate(dt)
 		then
 			self.x = self.x - movespeed
 			self.state = Player.STATE_WALKLEFT
-			
+			if self.scene.map.properties.snow then
+				self:makeSnowFootprint(hotspots.right_bot.x - 10, hotspots.right_bot.y - 10 + self.snowoffsety * 5)
+			end
+
 			-- Going up stairs
 			local _, stairs = next(self.stairs)
 			if stairs then
@@ -928,6 +979,9 @@ function Player:basicUpdate(dt)
 		then
 			self.y = self.y + movespeed
 			self.state = Player.STATE_WALKDOWN
+			if self.scene.map.properties.snow then
+				self:makeSnowFootprint(hotspots.left_top.x + 15 + self.snowoffsety * 5, hotspots.left_top.y)
+			end
 			moving = true
 			movingY = true
 		elseif not moving then
@@ -993,6 +1047,9 @@ function Player:basicUpdate(dt)
 		then
 			self.y = self.y - movespeed
 			self.state = Player.STATE_WALKUP
+			if self.scene.map.properties.snow then
+				self:makeSnowFootprint(hotspots.left_bot.x + 15 + self.snowoffsety * 5, hotspots.left_bot.y)
+			end
 			moving = true
 			movingY = true
 		elseif not moving then
@@ -1132,6 +1189,34 @@ function Player:peakDistance(dir)
 	end
 end
 
+function Player:makeSnowFootprint(x, y)
+	if self.snowtime > Player.SNOW_FOOTPRINT_TIME then
+		local footprint = BasicNPC(
+			self.scene,
+			{name = "footprint"},
+			{name = "snow", x = x, y = y, width = 12, height = 6,
+				properties = {nocollision = true, sprite = "art/sprites/snowfootprint.png", align = NPC.ALIGN_BOTLEFT}
+			}
+		)
+		self.sprite.color = {255,255,255,255}
+		footprint.sprite:addSceneHandler("update", function(self, dt)
+			if not self.foottime then
+				self.foottime = 0
+			end
+			self.foottime = self.foottime + dt
+			if self.foottime > 1 then
+				self.color[4] = self.color[4] - 1
+				if self.color[4] == 0 then
+					self:remove()
+				end
+			end
+		end)
+		self.scene:addObject(footprint)
+		self.snowtime = 0
+		self.snowoffsety = self.snowoffsety * -1
+	end
+end
+
 function Player:update(dt)
 	self:basicUpdate(dt)
 end
@@ -1204,6 +1289,13 @@ function Player:spacialRelation(hotspots, obj)
 	elseif result == abovediff then
 		return "above"
 	end
+end
+
+function Player:hop()
+	return Serial {
+		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y - 50 end, 8),
+		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y + 50 end, 8)
+	}
 end
 
 function Player:run(action)

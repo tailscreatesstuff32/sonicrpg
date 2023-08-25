@@ -8,8 +8,16 @@ return {
         idleright = {
             frames = {{0,0}}
         },
+		idleleft = {
+            frames = {{0,1}}
+        },
 		idledown = {
             frames = {{0,2}}
+        },
+
+		coffeeleft = {
+            frames = {{10,1},{11,1}},
+			speed = 0.5
         },
 
 		walkright = {

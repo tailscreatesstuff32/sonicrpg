@@ -1,4 +1,4 @@
-return function(scene)
+return function(scene, hint)
 	local Transform = require "util/Transform"
 	local Rect = unpack(require "util/Shapes")
 	local Layout = require "util/Layout"
@@ -15,27 +15,32 @@ return function(scene)
 	local Executor = require "actions/Executor"
 	local Wait = require "actions/Wait"
 	local Do = require "actions/Do"
+	local Spawn = require "actions/Spawn"
 	local BlockPlayer = require "actions/BlockPlayer"
 	local Animate = require "actions/Animate"
 	local SpriteNode = require "object/SpriteNode"
 
-	local text = TypeText(
-		Transform(50, 500),
-		{255, 255, 255, 0},
-		FontCache.Techno,
-		scene.map.properties.regionName,
-		100
-	)
+	local titleText = function()
+		local text = TypeText(
+			Transform(50, 500),
+			{255, 255, 255, 0},
+			FontCache.Techno,
+			scene.map.properties.regionName,
+			100
+		)
 
-	Executor(scene):act(Serial {
-		Wait(0.5),
-		text,
-		Ease(text.color, 4, 255, 1),
-		Wait(2),
-		Ease(text.color, 4, 0, 1)
-	})
-
-	if not scene.nighttime then
+		Executor(scene):act(Serial {
+			Wait(0.5),
+			text,
+			Ease(text.color, 4, 255, 1),
+			Wait(2),
+			Ease(text.color, 4, 0, 1)
+		})
+	end
+	
+	if hint == "snowday" then
+		scene.objectLookup.Door.object.properties.scene = "knotholesnowday.lua"
+	elseif not scene.nighttime then
 		if GameState:isFlagSet("ep3_ffmeeting") or
 		   not GameState:isFlagSet("ep3_knotholerun")
 		then
@@ -106,7 +111,7 @@ return function(scene)
 			end
 		)
 	end
-	
+
 	if scene.nighttime then
 		scene.objectLookup.TailsBed.sprite:setAnimation("tailssleep")
 
@@ -117,7 +122,55 @@ return function(scene)
 			end
 		end
 
-		if not GameState:isFlagSet("ep3_read") then
+		if hint == "sleep" then
+			scene.player.sprite.visible = false
+			scene.player.dropShadow.hidden = true
+
+			scene.camPos.x = 0
+			scene.camPos.y = 0
+
+			-- Undo ignore night
+			local shine = require "lib/shine"
+
+			scene.map.properties.ignorenight = false
+			scene.originalMapDraw = scene.map.drawTileLayer
+			scene.map.drawTileLayer = function(map, layer)
+				if not scene.night then
+					scene.night = shine.nightcolor()
+				end
+				scene.night:draw(function()
+					scene.night.shader:send("opacity", layer.opacity or 1)
+					scene.night.shader:send("lightness", 1 - (layer.properties.darkness or 0))
+					scene.originalMapDraw(map, layer)
+				end)
+			end
+			
+			scene.objectLookup.TailsBed.sprite:setAnimation("tailsawake")
+
+			return BlockPlayer {
+				Do(function()
+					scene.player.sprite.visible = false
+					scene.player.dropShadow.hidden = true
+					scene.camPos.x = 0
+					scene.camPos.y = 0
+				end),
+				Wait(1),
+				-- Flash twice
+				scene:lightningFlash(),
+				Wait(0.1),
+				scene:lightningFlash(),
+				Do(function() scene.audio:stopSfx("thunder2") end),
+				Spawn(scene:screenShake(35, 20, 10)),
+				PlayAudio("sfx", "thunder2",0.8, true),
+				Wait(1),
+				MessageBox{message="Tails: Whoah! {p60}Cool!!", closeAction=Wait(1)},
+				Do(function()
+					scene:changeScene{map="antoineshut", fadeOutSpeed=0.5, fadeInSpeed=0.5, hint="sleep", nighttime=true}
+					--scene:changeScene{map="rotorsworkshop", fadeOutSpeed=0.2, fadeInSpeed=0.08, enterDelay=3, hint="intro"}
+				end)
+			}
+		elseif not GameState:isFlagSet("ep3_read") then
+			titleText()
 			scene.objectLookup.TailsBed.sprite:setAnimation("tailsawake")
 			if GameState:isFlagSet("ep3_book") then
 			    GameState:setFlag("ep3_read")
@@ -183,6 +236,7 @@ return function(scene)
 					end)
 				}
 			else
+				titleText()
 				return BlockPlayer {
 					Do(function()
 						scene.player.hidekeyhints[tostring(scene.objectLookup.Door)] = scene.objectLookup.Door
@@ -200,5 +254,6 @@ return function(scene)
 		end
 	end
 
+	titleText()
 	return Action()
 end

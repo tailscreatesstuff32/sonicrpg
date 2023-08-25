@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="25" height="23" tilewidth="32" tileheight="32" infinite="0" nextobjectid="29">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="25" height="23" tilewidth="32" tileheight="32" infinite="0" nextobjectid="32">
  <properties>
   <property name="battlebg" type="file" value="../art/backgrounds/prisonbg.png"/>
   <property name="onload" type="file" value="actions/rotorsworkshop.lua"/>
@@ -180,11 +180,11 @@ Workshop</property>
     <property name="orientation" value="up"/>
    </properties>
   </object>
-  <object id="26" name="Logan" type="BasicNPC" gid="4565" x="192" y="352" width="64" height="96">
+  <object id="26" name="Logan" type="BasicNPC" gid="4565" x="320" y="320" width="64" height="96">
    <properties>
     <property name="align" value="bottom_left"/>
-    <property name="alignOffsetX" type="float" value="-8"/>
-    <property name="alignOffsetY" type="float" value="-32"/>
+    <property name="alignOffsetX" type="float" value="-24"/>
+    <property name="alignOffsetY" type="float" value="-48"/>
     <property name="defaultAnim" value="idleleft"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="hidden" type="bool" value="true"/>
@@ -256,9 +256,23 @@ end</property>
     <property name="defaultAnim" value="computer_idle"/>
     <property name="nonight" type="bool" value="true"/>
     <property name="onInteract">local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+local Do = require &quot;actions/Do&quot;
 local MessageBox = require &quot;actions/MessageBox&quot;
 
 return function(self)
+    if GameState.leader == &quot;logan&quot; then
+        return BlockPlayer {
+            Do(function()
+                self.scene.player.noIdle = true
+                self.scene.player.state = &quot;pose&quot;
+            end),
+            MessageBox{message=&quot;Logan: Hey, it may not look like much, but it's a reliable!&quot;},
+            Do(function()
+                self.scene.player.noIdle = false
+            end),
+        }
+    end
+
     return BlockPlayer {
         MessageBox{message=&quot;Sally: Logan could use a new computer... {p60}this one's older than I am!&quot;}
     }
@@ -272,7 +286,6 @@ return function(self)
     }
 end</property>
     <property name="sprite" type="file" value="../art/sprites/p.png"/>
-    <property name="usableBy" value="sally"/>
    </properties>
   </object>
   <object id="28" name="Chest1" type="Chest" gid="6839" x="128" y="576" width="64" height="64">
@@ -280,6 +293,28 @@ end</property>
     <property name="Microchip" type="int" value="1"/>
     <property name="nonight" type="bool" value="true"/>
     <property name="sprite" type="file" value="../art/sprites/chest2.png"/>
+   </properties>
+  </object>
+  <object id="29" name="Rotor2" type="BasicNPC" gid="4565" x="448" y="256" width="64" height="96">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="alignOffsetX" type="float" value="-24"/>
+    <property name="alignOffsetY" type="float" value="0"/>
+    <property name="defaultAnim" value="sleeping"/>
+    <property name="ghost" type="bool" value="true"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="true"/>
+    <property name="onInteract">local MessageBox = require &quot;actions/MessageBox&quot;
+
+return function(self)
+    return MessageBox{message=&quot;Rotor: Why don't you check the thermometer out there?&quot;, blocking=true}
+end</property>
+    <property name="sprite" type="file" value="../art/sprites/rotor.png"/>
+   </properties>
+  </object>
+  <object id="31" name="Waypoint1" type="BasicNPC" gid="4565" x="352" y="512" width="32" height="32">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>

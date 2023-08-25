@@ -45,23 +45,25 @@ return {
 	},
 
 	equip = {
-		weapon    = require "data/weapons/Wrench",
+		weapon    = require "data/weapons/Hammer",
 		armor     = nil,
-		accessory = require "data/accessories/OldHat",
+		accessory = require "data/accessories/LeatherSash",
 	},
 
 	items = {
 	},
 	
 	levelup = {
-		--[[[2] = {
-			messages = {"Rotor learned \"Tinker\"!"},
+		[3] = {
+			messages = {"Rotor learned \"Sabotage\"!"},
 			skills = {
-				require "data/battle/skills/Tinker",
+				require "data/battle/skills/Throw",
+				require "data/battle/skills/Sabotage",
+				GameState:getGatedSkill("ep4_abominable_rotor", "CallYeti")
 			}
-		},]]
+		},
 	},
-	
+
 	specialmove = require "data/specialmoves/rotor",
 
 	battle = {

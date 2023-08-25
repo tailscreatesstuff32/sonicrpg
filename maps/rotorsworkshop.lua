@@ -8,7 +8,7 @@ return {
   height = 23,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 29,
+  nextobjectid = 32,
   properties = {
     ["battlebg"] = "../art/backgrounds/prisonbg.png",
     ["onload"] = "actions/rotorsworkshop.lua",
@@ -495,8 +495,8 @@ return {
           name = "Logan",
           type = "BasicNPC",
           shape = "rectangle",
-          x = 192,
-          y = 352,
+          x = 320,
+          y = 320,
           width = 64,
           height = 96,
           rotation = 0,
@@ -504,8 +504,8 @@ return {
           visible = true,
           properties = {
             ["align"] = "bottom_left",
-            ["alignOffsetX"] = -8,
-            ["alignOffsetY"] = -32,
+            ["alignOffsetX"] = -24,
+            ["alignOffsetY"] = -48,
             ["defaultAnim"] = "idleleft",
             ["ghost"] = true,
             ["hidden"] = true,
@@ -532,10 +532,9 @@ return {
             ["alignOffsetY"] = -32,
             ["defaultAnim"] = "computer_idle",
             ["nonight"] = true,
-            ["onInteract"] = "local BlockPlayer = require \"actions/BlockPlayer\"\nlocal MessageBox = require \"actions/MessageBox\"\n\nreturn function(self)\n    return BlockPlayer {\n        MessageBox{message=\"Sally: Logan could use a new computer... {p60}this one's older than I am!\"}\n    }\nend",
+            ["onInteract"] = "local BlockPlayer = require \"actions/BlockPlayer\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\n\nreturn function(self)\n    if GameState.leader == \"logan\" then\n        return BlockPlayer {\n            Do(function()\n                self.scene.player.noIdle = true\n                self.scene.player.state = \"pose\"\n            end),\n            MessageBox{message=\"Logan: Hey, it may not look like much, but it's a reliable!\"},\n            Do(function()\n                self.scene.player.noIdle = false\n            end),\n        }\n    end\n\n    return BlockPlayer {\n        MessageBox{message=\"Sally: Logan could use a new computer... {p60}this one's older than I am!\"}\n    }\nend",
             ["onScan"] = "local BlockPlayer = require \"actions/BlockPlayer\"\nlocal MessageBox = require \"actions/MessageBox\"\n\nreturn function(self)\n    return BlockPlayer {\n        MessageBox{message=\"Nicole: The computer terminal appears to be locked{p40}, Sally.\"}\n    }\nend",
-            ["sprite"] = "../art/sprites/p.png",
-            ["usableBy"] = "sally"
+            ["sprite"] = "../art/sprites/p.png"
           }
         },
         {
@@ -554,6 +553,46 @@ return {
             ["Microchip"] = 1,
             ["nonight"] = true,
             ["sprite"] = "../art/sprites/chest2.png"
+          }
+        },
+        {
+          id = 29,
+          name = "Rotor2",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 448,
+          y = 256,
+          width = 64,
+          height = 96,
+          rotation = 0,
+          gid = 4565,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["alignOffsetX"] = -24,
+            ["alignOffsetY"] = 0,
+            ["defaultAnim"] = "sleeping",
+            ["ghost"] = true,
+            ["hidden"] = true,
+            ["nonight"] = true,
+            ["onInteract"] = "local MessageBox = require \"actions/MessageBox\"\n\nreturn function(self)\n    return MessageBox{message=\"Rotor: Why don't you check the thermometer out there?\", blocking=true}\nend",
+            ["sprite"] = "../art/sprites/rotor.png"
+          }
+        },
+        {
+          id = 31,
+          name = "Waypoint1",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 352,
+          y = 512,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 4565,
+          visible = true,
+          properties = {
+            ["ghost"] = true
           }
         }
       }

@@ -13,6 +13,8 @@ local Ladder = class(NPC)
 
 function Ladder:construct(scene, layer, object)
 	self.ghost = true
+	self.topLayer = self.object.properties.topLayer
+	self.botLayer = self.object.properties.botLayer
 	NPC.init(self)
 	
 	self.updateFun = function(player, dt)
@@ -35,6 +37,12 @@ function Ladder:construct(scene, layer, object)
 		player.dropShadow.x = player.x - 22
 		player.dropShadow.y = self.y + self.object.height + player.sprite.h*2
 
+		-- HACK: Rotor is big
+		if GameState.leader == "rotor" then
+			player.x = self.x
+			player.dropShadow.x = player.x - 10
+		end
+		
 		if love.keyboard.isDown("up") then
 			player.y = player.y - movespeed
 			self.climbAnimTime = self.climbAnimTime + dt
@@ -57,16 +65,28 @@ function Ladder:construct(scene, layer, object)
 end
 
 function Ladder:notColliding(player)
+	if next(player.noLadder) ~= nil then
+		return
+	end
+
 	if player.ladders[tostring(self)] then
 		player.ladders[tostring(self)] = nil
 		player.noSpecialMove = false
 		player.noChangeChar = false
 		player.movespeed = player.origMoveSpeed
 		player.basicUpdate = player.updateFun
+
+		if self.botLayer and love.keyboard.isDown("down") then
+			self.scene:swapLayer(self.botLayer)
+		end
 	end
 end
 
 function Ladder:whileColliding(player)
+	if next(player.noLadder) ~= nil then
+		return
+	end
+
 	if player.doingSpecialMove and GameState.leader == "sonic" then
 		player.basicUpdate = self.updateFun
 	end
@@ -81,6 +101,10 @@ function Ladder:whileColliding(player)
 		
 		self.climbAnimTime = 0
 		player.basicUpdate = self.updateFun
+
+		if self.topLayer then
+			self.scene:swapLayer(self.topLayer)
+		end
 	end
 end
 

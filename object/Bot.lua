@@ -41,7 +41,9 @@ function Bot:construct(scene, layer, object)
 	self.audibleDist = object.properties.audibleDistance
 	self.noSetFlag = object.properties.noSetFlag
 	self.removeAfterFollow = object.properties.removeAfterFollow
-	
+	self.noPushAway = object.properties.noPushAway
+	self.disabled = object.properties.disabled
+
 	self.manualFacingTime = 0
 	self.movespeed = 2
 	self.walkspeed = 3
@@ -165,7 +167,7 @@ function Bot:postInit()
 		end
 	end
 	
-	if not self.visualColliders then
+	if not self.object.properties.novisualcolliders and not self.visualColliders then
 		self.visualColliders = {}
 		self.visualColliders.left = BasicNPC(
 			self.scene,
@@ -327,7 +329,15 @@ function Bot:update(dt)
 	if not self:baseUpdate(dt) then
 		return
 	end
-	
+
+	-- Don't interact with player if player doesn't care about your layer
+	if (self.scene.player.onlyInteractWithLayer ~= nil and
+		self.scene.player.onlyInteractWithLayer ~= self.layer.name) and
+		self.layer.name ~= "all"
+	then
+		return
+	end
+
 	if not self.friendlyCond or not self.friendlyCond(self) then
 		if self.viewRanges then
 			local touching = false
@@ -482,25 +492,27 @@ function Bot:chaseUpdate(dt)
 	self:baseUpdate(dt)
 
 	-- If other bots are too close, push them away
-	for _, object in pairs(self.scene.map.objects) do
-		if object.isBot and
-			not object:isRemoved() and
-			object.name ~= self.name
-		then
-			local dx = self.x - object.x
-			local dy = self.y - object.y
-			local sqdist = dx*dx + dy*dy
-			if sqdist < 100*100 then
-				local dist = math.sqrt(sqdist)
-				if self.x > object.x then
-					self.x = self.x + self.movespeed * (dt/0.016)
-				else
-					self.x = self.x - self.movespeed * (dt/0.016)
-				end
-				if self.y > object.y then
-					self.y = self.y + self.movespeed * (dt/0.016)
-				else
-					self.y = self.y - self.movespeed * (dt/0.016)
+	if not self.noPushAway then
+		for _, object in pairs(self.scene.map.objects) do
+			if object.isBot and
+				not object:isRemoved() and
+				object.name ~= self.name
+			then
+				local dx = self.x - object.x
+				local dy = self.y - object.y
+				local sqdist = dx*dx + dy*dy
+				if sqdist < 100*100 then
+					local dist = math.sqrt(sqdist)
+					if self.x > object.x then
+						self.x = self.x + self.movespeed * (dt/0.016)
+					else
+						self.x = self.x - self.movespeed * (dt/0.016)
+					end
+					if self.y > object.y then
+						self.y = self.y + self.movespeed * (dt/0.016)
+					else
+						self.y = self.y - self.movespeed * (dt/0.016)
+					end
 				end
 			end
 		end
@@ -857,6 +869,14 @@ function Bot:updateAction(dt)
 		local cy = self.hotspots.left_top.y
 		local cw = self.hotspots.right_top.x - cx
 		local ch = self.hotspots.right_bot.y - cy
+
+		if (self.scene.player.onlyInteractWithLayer ~= nil and
+			self.scene.player.onlyInteractWithLayer ~= self.layer.name) and
+			self.layer.name ~= "all"
+		then
+			return
+		end
+
 		if  self.scene.player:isTouching(cx, cy, cw, ch) then
 			self.scene.audio:stopSfx(self.stepSfx)
 			self.state = NPC.STATE_TOUCHING
@@ -883,7 +903,7 @@ function Bot:getBattleArgs()
 			npc.flagForDeletion = true
 			npc.collided = true
 			table.insert(args.opponents, npc:getMonsterData())
-			table.insert(args.flags, self:getFlag())
+			table.insert(args.flags, npc:getFlag())
 		end
 	end
 	
@@ -935,11 +955,23 @@ function Bot:remove()
 	NPC.remove(self)
 end
 
-function Bot:removeAllUpdates()
+function Bot:removeAllUpdates(exceptActions)
 	self:removeSceneHandler("update", Bot.investigateUpdate)
 	self:removeSceneHandler("update", Bot.chaseUpdate)
-	self:removeSceneHandler("update", Bot.updateAction)
 	self:removeSceneHandler("update", Bot.update)
+	if not exceptActions then
+		self:removeSceneHandler("update", Bot.updateAction)
+	end
 end
+
+function Bot:disableBot()
+	self:removeAllUpdates(true)
+end
+
+function Bot:enableBot()
+	self:removeSceneHandler("update", Bot.updateAction)
+	self:addSceneHandler("update")
+end
+
 
 return Bot

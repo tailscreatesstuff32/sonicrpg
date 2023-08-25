@@ -5,26 +5,20 @@ local BlockPlayer = require "actions/BlockPlayer"
 local Layout = require "util/Layout"
 local Transform = require "util/Transform"
 
-return function(mapQtoA)
-    local options = {Layout.Text("Choose:"), selectable=false}
-	for q, a in pairs(mapQtoA) do
+return function(topDialogue, mapQtoA)
+	topDialogue = topDialogue or "Choose:"
+    local options = {{Layout.Text(topDialogue), selectable=false}}
+	for _, questionAndAnswer in ipairs(mapQtoA) do
+		local q, a = unpack(questionAndAnswer)
 		table.insert(options, {
 			Layout.Text(q),
-			choose = function(menu)
-				menu:close()
-				self.scene:run(BlockPlayer{
-					menu,
-					a
-				})
-			end
+			choose = a
 		})
 	end
-    return BlockPlayer {
-	    Menu {
-			layout = Layout(options),
-			cancellable = true,
-			selectedRow = 2,
-			transform = Transform(love.graphics.getWidth()/2, love.graphics.getHeight() - 30)
-		}
+    return Menu {
+		layout = Layout(options),
+		cancellable = true,
+		selectedRow = 2,
+		transform = Transform(love.graphics.getWidth()/2, love.graphics.getHeight() - 150)
 	}
 end

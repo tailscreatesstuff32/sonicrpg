@@ -116,6 +116,11 @@ return {
 		nicholeup = {
 			frames = {{9,3}}
 		},
+
+		nicholedown_beep = {
+			frames = {{10,2},{9,2}},
+			speed = 0.4
+		},
 		
 		hideright = {
 			frames = {{1,4}}
@@ -152,6 +157,11 @@ return {
 		
 		dead = {
 			frames = {{14,2}}
+		},
+		
+		coffeeright = {
+			frames = {{15,2},{16,2}},
+			speed = 0.5
 		},
 		
 		leapleft = {
