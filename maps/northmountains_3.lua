@@ -8,7 +8,7 @@ return {
   height = 155,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 204,
+  nextobjectid = 227,
   properties = {
     ["battlebg"] = "../art/backgrounds/northmountainsbg.png",
     ["layered"] = true,
@@ -891,7 +891,7 @@ return {
           visible = true,
           properties = {
             ["ghost"] = true,
-            ["whileColliding"] = "local Ease = require \"actions/Ease\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal Serial = require \"actions/Serial\"\nlocal Parallel = require \"actions/Parallel\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Wait = require \"actions/Wait\"\nlocal Animate = require \"actions/Animate\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\n\nreturn function(self, player)\n    if GameState:isFlagSet(\"ep4_abominable3\") then\n        player.chasers = {}\n        return\n    end\n    GameState:setFlag(\"ep4_abominable3\")\n    if self.scene.objectLookup.Swatbot1:isRemoved() and self.scene.objectLookup.Swatbot2:isRemoved() then\n        self.scene.objectLookup.Abominable:permanentRemove()\n        player.chasers = {}\n        return\n    end\n    player.chasers = {}\n    self.scene.objectLookup.Swatbot1.dropShadow:remove()\n    self.scene.objectLookup.Swatbot2.dropShadow:remove()\n    self.scene.objectLookup.Swatbot2.falling = true\n    self.scene.objectLookup.Swatbot1.falling = true\n    self.scene.objectLookup.Swatbot2.falling = true\n    self.scene.objectLookup.Swatbot1.sprite:setAnimation(\"idleright\")\n    self.scene.objectLookup.Swatbot2.sprite:setAnimation(\"idleleft\")\n    self.scene.objectLookup.Swatbot2.falling = true\n    self.scene.objectLookup.Swatbot1:removeCollision()\n    self.scene.objectLookup.Swatbot2:removeCollision()\n    self.scene.objectLookup.Swatbot1:removeAllUpdates()\n    self.scene.objectLookup.Swatbot2:removeAllUpdates()\n    self.scene:run(BlockPlayer {\n        Parallel {\n            Ease(self.scene.camPos, \"x\", -300, 1),\n            Ease(self.scene.camPos, \"y\", 500, 1)\n        },\n        Wait(1),\n        Animate(self.scene.objectLookup.Abominable.sprite, \"dark_leap_left\"),\n        Ease(self.scene.objectLookup.Abominable, \"y\", self.scene.objectLookup.Swatbot1.y - 80, 3, \"quad\"),\n        Do(function() self.scene.objectLookup.Abominable.sprite:setAnimation(\"dark_left\") end),\n        PlayAudio(\"sfx\", \"cyclopsstep\", 1.0, true),\n        Animate(self.scene.objectLookup.Swatbot1.sprite, \"hurtdown\"),\n        Animate(self.scene.objectLookup.Swatbot2.sprite, \"hurtdown\"),\n        Parallel {\n            self.scene:screenShake(20, 30, 1, true),\n            Serial {\n                Parallel {\n                    Ease(self.scene.objectLookup.Swatbot1, \"x\", function() return self.scene.objectLookup.Swatbot1.x - 80 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot1, \"y\", function() return self.scene.objectLookup.Swatbot1.y - 250 end, 2),\n                    Ease(self.scene.objectLookup.Swatbot2, \"x\", function() return self.scene.objectLookup.Swatbot2.x + 80 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot2, \"y\", function() return self.scene.objectLookup.Swatbot2.y - 250 end, 2)\n                },\n                Parallel {\n                    Ease(self.scene.objectLookup.Swatbot1, \"x\", function() return self.scene.objectLookup.Swatbot1.x - 100 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot1, \"y\", function() return self.scene.objectLookup.Swatbot1.y + 800 end, 2, \"quad\"),\n                    Ease(self.scene.objectLookup.Swatbot2, \"x\", function() return self.scene.objectLookup.Swatbot2.x + 100 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot2, \"y\", function() return self.scene.objectLookup.Swatbot2.y + 800 end, 2, \"quad\")\n                },\n                Do(function()\n                    self.scene.objectLookup.Swatbot1:permanentRemove()\n                    self.scene.objectLookup.Swatbot2:permanentRemove()\n                end)\n            }\n        },\n        Wait(1),\n        Parallel {\n            Ease(self.scene.camPos, \"x\", 0, 1),\n            Ease(self.scene.camPos, \"y\", 0, 1)\n        },\n        Do(function()\n            self.scene.objectLookup.Abominable:permanentRemove()\n        end)\n    })\nend"
+            ["whileColliding"] = "local Ease = require \"actions/Ease\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal Serial = require \"actions/Serial\"\nlocal Parallel = require \"actions/Parallel\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Wait = require \"actions/Wait\"\nlocal Animate = require \"actions/Animate\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\n\nreturn function(self, player)\n    player.noLadder = {}\n    if GameState:isFlagSet(\"ep4_abominable3\") then\n        player.chasers = {}\n        return\n    end\n    GameState:setFlag(\"ep4_abominable3\")\n    if self.scene.objectLookup.Swatbot1:isRemoved() and self.scene.objectLookup.Swatbot2:isRemoved() then\n        self.scene.objectLookup.Abominable:permanentRemove()\n        player.chasers = {}\n        return\n    end\n    player.chasers = {}\n    self.scene.objectLookup.Swatbot1.dropShadow:remove()\n    self.scene.objectLookup.Swatbot2.dropShadow:remove()\n    self.scene.objectLookup.Swatbot2.falling = true\n    self.scene.objectLookup.Swatbot1.falling = true\n    self.scene.objectLookup.Swatbot2.falling = true\n    self.scene.objectLookup.Swatbot1.sprite:setAnimation(\"idleright\")\n    self.scene.objectLookup.Swatbot2.sprite:setAnimation(\"idleleft\")\n    self.scene.objectLookup.Swatbot2.falling = true\n    self.scene.objectLookup.Swatbot1:removeCollision()\n    self.scene.objectLookup.Swatbot2:removeCollision()\n    self.scene.objectLookup.Swatbot1:removeAllUpdates()\n    self.scene.objectLookup.Swatbot2:removeAllUpdates()\n    self.scene:run(BlockPlayer {\n        Parallel {\n            Ease(self.scene.camPos, \"x\", -300, 1),\n            Ease(self.scene.camPos, \"y\", 500, 1)\n        },\n        Wait(1),\n        Animate(self.scene.objectLookup.Abominable.sprite, \"dark_leap_left\"),\n        Ease(self.scene.objectLookup.Abominable, \"y\", self.scene.objectLookup.Swatbot1.y - 80, 3, \"quad\"),\n        Do(function() self.scene.objectLookup.Abominable.sprite:setAnimation(\"dark_left\") end),\n        PlayAudio(\"sfx\", \"cyclopsstep\", 1.0, true),\n        Animate(self.scene.objectLookup.Swatbot1.sprite, \"hurtdown\"),\n        Animate(self.scene.objectLookup.Swatbot2.sprite, \"hurtdown\"),\n        Parallel {\n            self.scene:screenShake(20, 30, 1, true),\n            Serial {\n                Parallel {\n                    Ease(self.scene.objectLookup.Swatbot1, \"x\", function() return self.scene.objectLookup.Swatbot1.x - 80 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot1, \"y\", function() return self.scene.objectLookup.Swatbot1.y - 250 end, 2),\n                    Ease(self.scene.objectLookup.Swatbot2, \"x\", function() return self.scene.objectLookup.Swatbot2.x + 80 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot2, \"y\", function() return self.scene.objectLookup.Swatbot2.y - 250 end, 2)\n                },\n                Parallel {\n                    Ease(self.scene.objectLookup.Swatbot1, \"x\", function() return self.scene.objectLookup.Swatbot1.x - 100 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot1, \"y\", function() return self.scene.objectLookup.Swatbot1.y + 800 end, 2, \"quad\"),\n                    Ease(self.scene.objectLookup.Swatbot2, \"x\", function() return self.scene.objectLookup.Swatbot2.x + 100 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot2, \"y\", function() return self.scene.objectLookup.Swatbot2.y + 800 end, 2, \"quad\")\n                },\n                Do(function()\n                    self.scene.objectLookup.Swatbot1:permanentRemove()\n                    self.scene.objectLookup.Swatbot2:permanentRemove()\n                end)\n            }\n        },\n        Wait(1),\n        Parallel {\n            Ease(self.scene.camPos, \"x\", 0, 1),\n            Ease(self.scene.camPos, \"y\", 0, 1)\n        },\n        Do(function()\n            self.scene.objectLookup.Abominable:permanentRemove()\n            self.scene.player.ladders = {}\n            self.scene.player.noLadder = {}\n        end)\n    })\nend"
           }
         },
         {
@@ -908,7 +908,7 @@ return {
           visible = true,
           properties = {
             ["ghost"] = true,
-            ["whileColliding"] = "local Ease = require \"actions/Ease\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal Serial = require \"actions/Serial\"\nlocal Parallel = require \"actions/Parallel\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Wait = require \"actions/Wait\"\nlocal Animate = require \"actions/Animate\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\n\nreturn function(self, player)\n    if GameState:isFlagSet(\"ep4_abominable3\") then\n        player.chasers = {}\n        return\n    end\n    GameState:setFlag(\"ep4_abominable3\")\n    if self.scene.objectLookup.Swatbot1:isRemoved() and self.scene.objectLookup.Swatbot2:isRemoved() then\n        self.scene.objectLookup.Abominable:permanentRemove()\n        player.chasers = {}\n        return\n    end\n    player.chasers = {}\n    self.scene.objectLookup.Swatbot1.dropShadow:remove()\n    self.scene.objectLookup.Swatbot2.dropShadow:remove()\n    self.scene.objectLookup.Swatbot2.falling = true\n    self.scene.objectLookup.Swatbot1.falling = true\n    self.scene.objectLookup.Swatbot2.falling = true\n    self.scene.objectLookup.Swatbot1.sprite:setAnimation(\"idleright\")\n    self.scene.objectLookup.Swatbot2.sprite:setAnimation(\"idleleft\")\n    self.scene.objectLookup.Swatbot2.falling = true\n    self.scene.objectLookup.Swatbot1:removeCollision()\n    self.scene.objectLookup.Swatbot2:removeCollision()\n    self.scene.objectLookup.Swatbot1:removeAllUpdates()\n    self.scene.objectLookup.Swatbot2:removeAllUpdates()\n    self.scene:run(BlockPlayer {\n        Parallel {\n            Ease(self.scene.camPos, \"x\", -300, 1),\n            Ease(self.scene.camPos, \"y\", 500, 1)\n        },\n        Wait(1),\n        Animate(self.scene.objectLookup.Abominable.sprite, \"dark_leap_left\"),\n        Ease(self.scene.objectLookup.Abominable, \"y\", self.scene.objectLookup.Swatbot1.y - 80, 3, \"quad\"),\n        Do(function() self.scene.objectLookup.Abominable.sprite:setAnimation(\"dark_left\") end),\n        PlayAudio(\"sfx\", \"cyclopsstep\", 1.0, true),\n        Animate(self.scene.objectLookup.Swatbot1.sprite, \"hurtdown\"),\n        Animate(self.scene.objectLookup.Swatbot2.sprite, \"hurtdown\"),\n        Parallel {\n            self.scene:screenShake(20, 30, 1, true),\n            Serial {\n                Parallel {\n                    Ease(self.scene.objectLookup.Swatbot1, \"x\", function() return self.scene.objectLookup.Swatbot1.x - 80 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot1, \"y\", function() return self.scene.objectLookup.Swatbot1.y - 250 end, 2),\n                    Ease(self.scene.objectLookup.Swatbot2, \"x\", function() return self.scene.objectLookup.Swatbot2.x + 80 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot2, \"y\", function() return self.scene.objectLookup.Swatbot2.y - 250 end, 2)\n                },\n                Parallel {\n                    Ease(self.scene.objectLookup.Swatbot1, \"x\", function() return self.scene.objectLookup.Swatbot1.x - 100 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot1, \"y\", function() return self.scene.objectLookup.Swatbot1.y + 800 end, 2, \"quad\"),\n                    Ease(self.scene.objectLookup.Swatbot2, \"x\", function() return self.scene.objectLookup.Swatbot2.x + 100 end, 2, \"linear\"),\n                    Ease(self.scene.objectLookup.Swatbot2, \"y\", function() return self.scene.objectLookup.Swatbot2.y + 800 end, 2, \"quad\")\n                },\n                Do(function()\n                    self.scene.objectLookup.Swatbot1:permanentRemove()\n                    self.scene.objectLookup.Swatbot2:permanentRemove()\n                end)\n            }\n        },\n        Wait(1),\n        Parallel {\n            Ease(self.scene.camPos, \"x\", 0, 1),\n            Ease(self.scene.camPos, \"y\", 0, 1)\n        },\n        Do(function()\n            self.scene.objectLookup.Abominable:permanentRemove()\n        end)\n    })\nend"
+            ["whileColliding"] = "local Ease = require \"actions/Ease\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal Serial = require \"actions/Serial\"\nlocal Parallel = require \"actions/Parallel\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Wait = require \"actions/Wait\"\nlocal Animate = require \"actions/Animate\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\n\nreturn function(self, player)\n    player.noLadder = {}\n    if GameState:isFlagSet(\"ep4_abominable3\") then\n        return\n    end\n    GameState:setFlag(\"ep4_abominable3\")\n    self.scene.objectLookup.Abominable:permanentRemove()\nend"
           }
         }
       }
@@ -1433,7 +1433,7 @@ return {
       y = 0,
       width = 96,
       height = 155,
-      visible = false,
+      visible = true,
       opacity = 1,
       offsetx = 0,
       offsety = 0,
@@ -1623,17 +1623,17 @@ return {
           name = "NoLadderPlz",
           type = "BasicNPC",
           shape = "rectangle",
-          x = 768,
-          y = 3872,
-          width = 96,
-          height = 192,
+          x = 736,
+          y = 3904,
+          width = 448,
+          height = 320,
           rotation = 0,
           gid = 10970,
-          visible = true,
+          visible = false,
           properties = {
             ["ghost"] = true,
-            ["notColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = nil\nend",
-            ["whileColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = true\nend"
+            ["notColliding"] = "return function(self, player)\n    self.scene.objectLookup.Ladder2.noThanks = nil\n    self.scene.objectLookup.Ladder3.noThanks = nil\nend",
+            ["whileColliding"] = "return function(self, player)\n    self.scene.objectLookup.Ladder2.noThanks = true\n    self.scene.objectLookup.Ladder3.noThanks = true\nend"
           }
         },
         {
@@ -1676,8 +1676,8 @@ return {
           name = "Swatbot3",
           type = "Swatbot",
           shape = "rectangle",
-          x = 1888,
-          y = 2784,
+          x = 1920,
+          y = 2752,
           width = 32,
           height = 32,
           rotation = 0,
@@ -1685,7 +1685,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idledown",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -1703,7 +1702,7 @@ return {
           type = "Swatbot",
           shape = "rectangle",
           x = 2016,
-          y = 2784,
+          y = 2752,
           width = 32,
           height = 32,
           rotation = 0,
@@ -1711,7 +1710,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idledown",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -1737,7 +1735,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idledown",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -1763,7 +1760,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idleleft",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -1789,7 +1785,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idleleft",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -1815,7 +1810,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idleleft",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -1842,6 +1836,7 @@ return {
           properties = {
             ["align"] = "bottom_left",
             ["defaultAnim"] = "idleright",
+            ["flagOverride"] = "SwatbotLedge",
             ["ghost"] = true,
             ["isBot"] = true,
             ["noInvestigate"] = true,
@@ -1864,6 +1859,7 @@ return {
           properties = {
             ["align"] = "bottom_left",
             ["defaultAnim"] = "idleright",
+            ["flagOverride"] = "SwatbotLedge",
             ["ghost"] = true,
             ["isBot"] = true,
             ["noInvestigate"] = true,
@@ -1886,6 +1882,7 @@ return {
           properties = {
             ["align"] = "bottom_left",
             ["defaultAnim"] = "idleright",
+            ["flagOverride"] = "SwatbotLedge",
             ["ghost"] = true,
             ["isBot"] = true,
             ["noInvestigate"] = true,
@@ -1908,6 +1905,7 @@ return {
           properties = {
             ["align"] = "bottom_left",
             ["defaultAnim"] = "idleright",
+            ["flagOverride"] = "SwatbotLedge",
             ["ghost"] = true,
             ["isBot"] = true,
             ["noInvestigate"] = true,
@@ -1930,7 +1928,7 @@ return {
           properties = {
             ["align"] = "bottom_left",
             ["battle"] = "../data/monsters/abominable.lua",
-            ["battleInitiative"] = "opponent",
+            ["battleInitiative"] = "cinematic",
             ["battleOnCollide"] = true,
             ["defaultAnim"] = "idleleft",
             ["disappearAfterBattle"] = true,
@@ -1939,24 +1937,8 @@ return {
             ["isBot"] = true,
             ["noInvestigate"] = true,
             ["noPush"] = true,
+            ["onRotorTrap"] = "local Serial = require \"actions/Serial\"\nlocal Animate = require \"actions/Animate\"\nlocal Do = require \"actions/Do\"\nlocal Parallel = require \"actions/Parallel\"\nlocal Ease = require \"actions/Ease\"\n\nreturn function(self)\n    return Serial {\n        Animate(self.sprite, \"leapright\"),\n        Parallel {\n            Ease(self, \"x\", function() return self.x + 200 end, 3, \"linear\"),\n            Ease(self, \"y\", function() return self.y - 200 end, 3, \"linear\")\n        },\n        Parallel {\n            Ease(self, \"x\", function() return self.x + 100 end, 3, \"linear\"),\n            Ease(self, \"y\", function() return self.y + 800 end, 3, \"quad\")\n        },\n        Do(function() self:permanentRemove() end),\n    }\nend",
             ["sprite"] = "../art/sprites/abominable.png"
-          }
-        },
-        {
-          id = 163,
-          name = "Chest2",
-          type = "Chest",
-          shape = "rectangle",
-          x = 2688,
-          y = 2112,
-          width = 64,
-          height = 64,
-          rotation = 0,
-          gid = 10970,
-          visible = true,
-          properties = {
-            ["BlueLeaf"] = 1,
-            ["sprite"] = "../art/sprites/chest2.png"
           }
         },
         {
@@ -1973,6 +1955,7 @@ return {
           visible = true,
           properties = {
             ["LaserShield"] = 1,
+            ["loganTargetable"] = true,
             ["sprite"] = "../art/sprites/chest2.png"
           }
         },
@@ -1989,7 +1972,8 @@ return {
           gid = 10970,
           visible = true,
           properties = {
-            ["Marshmallow"] = 1,
+            ["BlueLeaf"] = 1,
+            ["loganTargetable"] = true,
             ["sprite"] = "../art/sprites/chest2.png"
           }
         },
@@ -2039,7 +2023,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idledown",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -2065,7 +2048,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idledown",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -2128,7 +2110,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idleleft",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -2172,7 +2153,8 @@ return {
           gid = 10970,
           visible = true,
           properties = {
-            ["RainbowSyrup"] = 1,
+            ["YellowLeaf"] = 1,
+            ["loganTargetable"] = true,
             ["sprite"] = "../art/sprites/chest2.png"
           }
         },
@@ -2207,7 +2189,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idleright",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -2233,7 +2214,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idleright",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -2275,7 +2255,7 @@ return {
           visible = true,
           properties = {
             ["ghost"] = true,
-            ["whileColliding"] = "local Ease = require \"actions/Ease\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal Serial = require \"actions/Serial\"\nlocal Parallel = require \"actions/Parallel\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Wait = require \"actions/Wait\"\nlocal Animate = require \"actions/Animate\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\nlocal YieldUntil = require \"actions/YieldUntil\"\n\nreturn function(self, player)\n    if GameState:isFlagSet(\"ep4_abominable5\") then\n        player.chasers = {}\n        return\n    end\n    GameState:setFlag(\"ep4_abominable5\")\n    \n    local layer\n    for k,v in pairs(self.scene.map.layers) do\n        if v.name == \"hidden\" then\n            layer = v\n            break\n        end\n    end\n    self.scene.objectLookup.block:remove()\n\n    self.doneWithThat = false\n    self.scene:run(BlockPlayer {\n        Ease(self.scene.camPos, \"x\", 200, 1),\n        Wait(1.5),\n        Ease(self.scene.camPos, \"x\", 0, 1),\n        Do(function()\n            player.x = player.x + 60\n            player.y = player.y - 60\n            local walkout, walkin, sprites = player:split()\n            self:run {\n                walkout,\n                Animate(sprites.rotor.sprite, \"explaining_left1\"),\n                MessageBox{message=\"Rotor: A dead end?\"},\n                Animate(sprites.logan.sprite, \"scandown\"),\n                MessageBox{message=\"Logan: Not exactly.\"},\n                PlayAudio(\"sfx\", \"nicholescan\", 1.0),\n                Animate(sprites.logan.sprite, \"idleup\"),\n                Wait(1),\n                Animate(sprites.rotor.sprite, \"idleup\"),\n                Ease(layer, \"opacity\", 0, 0.5),\n                Animate(sprites.rotor.sprite, \"shock\"),\n                sprites.rotor:hop(),\n                MessageBox{message=\"Rotor: Wow! {p60}A holographic entrance!\"},\n                Animate(sprites.rotor.sprite, \"idleright\"),\n                MessageBox{message=\"Logan: Looks like your 'Pop-Pop' has some tricks up his sleeve...\"},\n                walkin,\n                Do(function()\n                    player.x = player.x + 60\n                    player.y = player.y + 60\n                    self.doneWithThat = true\n                end)\n            }\n        end),\n        YieldUntil(self, \"doneWithThat\")\n    })\nend"
+            ["whileColliding"] = "local Ease = require \"actions/Ease\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal Serial = require \"actions/Serial\"\nlocal Parallel = require \"actions/Parallel\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Wait = require \"actions/Wait\"\nlocal Animate = require \"actions/Animate\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\nlocal YieldUntil = require \"actions/YieldUntil\"\n\nreturn function(self, player)\n    if GameState:isFlagSet(\"ep4_abominable5\") then\n        player.chasers = {}\n        return\n    end\n    GameState:setFlag(\"ep4_abominable5\")\n    \n    local layer\n    for k,v in pairs(self.scene.map.layers) do\n        if v.name == \"hidden\" then\n            layer = v\n            break\n        end\n    end\n    self.scene.objectLookup.block:permanentRemove()\n\n    self.doneWithThat = false\n    self.scene:run(BlockPlayer {\n        Ease(self.scene.camPos, \"x\", 200, 1),\n        Wait(1.5),\n        Ease(self.scene.camPos, \"x\", 0, 1),\n        Do(function()\n            player.x = player.x + 60\n            player.y = player.y - 60\n            local walkout, walkin, sprites = player:split()\n            self:run {\n                walkout,\n                Animate(sprites.rotor.sprite, \"explaining_left1\"),\n                MessageBox{message=\"Rotor: A dead end?\"},\n                Animate(sprites.logan.sprite, \"scandown\"),\n                MessageBox{message=\"Logan: Not exactly.\"},\n                PlayAudio(\"sfx\", \"nicholescan\", 1.0),\n                Animate(sprites.logan.sprite, \"idleup\"),\n                Wait(1),\n                Animate(sprites.rotor.sprite, \"idleup\"),\n                Ease(layer, \"opacity\", 0, 0.5),\n                Animate(sprites.rotor.sprite, \"shock\"),\n                sprites.rotor:hop(),\n                MessageBox{message=\"Rotor: Wow! {p60}A holographic entrance!\"},\n                Animate(sprites.rotor.sprite, \"idleright\"),\n                MessageBox{message=\"Logan: Looks like your 'Pop-Pop' has some tricks up his sleeve...\"},\n                walkin,\n                Do(function()\n                    player.x = player.x + 60\n                    player.y = player.y + 60\n                    self.doneWithThat = true\n                end)\n            }\n        end),\n        YieldUntil(self, \"doneWithThat\")\n    })\nend"
           }
         },
         {
@@ -2284,14 +2264,14 @@ return {
           type = "SceneEdge",
           shape = "rectangle",
           x = 2208,
-          y = 896,
+          y = 864,
           width = 128,
           height = 32,
           rotation = 0,
           gid = 10970,
           visible = true,
           properties = {
-            ["enterDelay"] = 3,
+            ["enterDelay"] = 1,
             ["fade_in_speed"] = 1,
             ["fade_out_music"] = true,
             ["fade_out_speed"] = 0.2,
@@ -2310,28 +2290,14 @@ return {
           x = 2208,
           y = 928,
           width = 128,
-          height = 32,
-          rotation = 0,
-          gid = 10970,
-          visible = true,
-          properties = {}
-        },
-        {
-          id = 200,
-          name = "NoLadderPlz",
-          type = "BasicNPC",
-          shape = "rectangle",
-          x = 992,
-          y = 3872,
-          width = 96,
-          height = 192,
+          height = 64,
           rotation = 0,
           gid = 10970,
           visible = true,
           properties = {
-            ["ghost"] = true,
-            ["notColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = nil\nend",
-            ["whileColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = true\nend"
+            ["align"] = "bottom_left",
+            ["flagOverride"] = "block",
+            ["isBot"] = true
           }
         },
         {
@@ -2348,7 +2314,184 @@ return {
           visible = true,
           properties = {
             ["Wrench"] = 1,
+            ["loganTargetable"] = true,
             ["sprite"] = "../art/sprites/chest2.png"
+          }
+        },
+        {
+          id = 207,
+          name = "Cambot2",
+          type = "LegacyCambot",
+          shape = "rectangle",
+          x = 896,
+          y = 2880,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 8696,
+          visible = true,
+          properties = {
+            ["battle"] = "../data/monsters/legacycambot.lua",
+            ["defaultAnim"] = "idledown",
+            ["disappearAfterBattle"] = true,
+            ["ghost"] = true,
+            ["ignorePlayer"] = false,
+            ["noInvestigate"] = true,
+            ["sprite"] = "../art/sprites/cambot2.png",
+            ["viewRange"] = "CantSee"
+          }
+        },
+        {
+          id = 212,
+          name = "ViewC2",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 768,
+          y = 2912,
+          width = 256,
+          height = 96,
+          rotation = 0,
+          gid = 10581,
+          visible = false,
+          properties = {
+            ["ghost"] = true,
+            ["viewRange"] = "CantSee"
+          }
+        },
+        {
+          id = 213,
+          name = "CantSee",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 672,
+          y = 2336,
+          width = 256,
+          height = 96,
+          rotation = 0,
+          gid = 10581,
+          visible = false,
+          properties = {
+            ["ghost"] = true,
+            ["viewRange"] = "CantSee"
+          }
+        },
+        {
+          id = 216,
+          name = "StopLadderDown",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 864,
+          y = 3744,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["whileColliding"] = "return function(self, player)\n    local ladder8str = tostring(self.scene.objectLookup.Ladder8)\n    if love.keyboard.isDown(\"down\") and player.ladders[ladder8str] then\n        player.ladders[ladder8str] = nil\n        player.noSpecialMove = false\n        player.noChangeChar = false\n        player.movespeed = player.origMoveSpeed\n        player.basicUpdate = player.updateFun\n        if self.botLayer then\n            self.scene:swapLayer(self.botLayer)\n        end\n    end\nend"
+          }
+        },
+        {
+          id = 221,
+          name = "StopLadder3",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 2560,
+          y = 2880,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["whileColliding"] = "return function(self, player)\n    player.noLadder = {}\nend"
+          }
+        },
+        {
+          id = 222,
+          name = "StopLadder4",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 2560,
+          y = 2208,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["whileColliding"] = "return function(self, player)\n    player.noLadder = {}\nend"
+          }
+        },
+        {
+          id = 223,
+          name = "StopLadder5",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 1920,
+          y = 2272,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["whileColliding"] = "return function(self, player)\n    player.noLadder = {}\nend"
+          }
+        },
+        {
+          id = 224,
+          name = "StopLadder6",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 1920,
+          y = 1696,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["whileColliding"] = "return function(self, player)\n    player.noLadder = {}\nend"
+          }
+        },
+        {
+          id = 225,
+          name = "StopLadder7",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 2656,
+          y = 1568,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["whileColliding"] = "return function(self, player)\n    player.noLadder = {}\nend"
+          }
+        },
+        {
+          id = 226,
+          name = "StopLadder8",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 2656,
+          y = 928,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["whileColliding"] = "return function(self, player)\n    player.noLadder = {}\nend"
           }
         }
       }
@@ -2556,12 +2699,12 @@ return {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 539, 539, 538, 539, 539, 538, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 539, 539, 538, 539, 539, 538, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 539, 539, 538, 539, 539, 538, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 539, 539, 538, 539, 539, 538, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 539, 539, 538, 539, 539, 538, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 539, 539, 538, 539, 539, 538, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1929, 2273, 2205, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1719, 1720, 1721, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1789, 1790, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2903,7 +3046,8 @@ return {
             ["fromLayer"] = 2,
             ["ghost"] = true,
             ["key"] = "left",
-            ["toLayer"] = 3
+            ["toLayer"] = 3,
+            ["viewRange"] = "CantSee"
           }
         },
         {
@@ -2911,15 +3055,16 @@ return {
           name = "Chest8",
           type = "Chest",
           shape = "rectangle",
-          x = 736,
-          y = 3616,
+          x = 768,
+          y = 3584,
           width = 64,
           height = 64,
           rotation = 0,
           gid = 10970,
           visible = true,
           properties = {
-            ["LaserShield"] = 1,
+            ["CrystalWater"] = 1,
+            ["loganTargetable"] = true,
             ["sprite"] = "../art/sprites/chest2.png"
           }
         },
@@ -2939,7 +3084,63 @@ return {
             ["fromLayer"] = 2,
             ["ghost"] = true,
             ["key"] = "down",
-            ["toLayer"] = 3
+            ["toLayer"] = 3,
+            ["viewRange"] = "CantSee"
+          }
+        },
+        {
+          id = 209,
+          name = "NoLadderPlz",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 864,
+          y = 3744,
+          width = 96,
+          height = 224,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["notColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = nil\nend",
+            ["viewRange"] = "CantSee",
+            ["whileColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = true\nend"
+          }
+        },
+        {
+          id = 211,
+          name = "NoLadderPlz",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 832,
+          y = 3744,
+          width = 160,
+          height = 256,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["notColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = nil\nend",
+            ["viewRange"] = "CantSee",
+            ["whileColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = true\nend"
+          }
+        },
+        {
+          id = 220,
+          name = "StopLadderDown2",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 768,
+          y = 3680,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["whileColliding"] = "return function(self, player)\n    local ladder2str = tostring(self.scene.objectLookup.Ladder2)\n    if love.keyboard.isDown(\"up\") and player.ladders[ladder2str] then\n        player.ladders[ladder2str] = nil\n        player.noSpecialMove = false\n        player.noChangeChar = false\n        player.movespeed = player.origMoveSpeed\n        player.basicUpdate = player.updateFun\n    end\nend"
           }
         }
       }
@@ -3321,7 +3522,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idleright",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -3330,7 +3530,7 @@ return {
             ["noMusic"] = true,
             ["noPush"] = true,
             ["sprite"] = "../art/sprites/swatbotwhite.png",
-            ["viewRange"] = "View1"
+            ["viewRange"] = "CantSee"
           }
         },
         {
@@ -3347,7 +3547,6 @@ return {
           visible = true,
           properties = {
             ["battle"] = "../data/monsters/legacyswatbot.lua",
-            ["battleOnCollide"] = true,
             ["defaultAnim"] = "idleleft",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
@@ -3356,7 +3555,7 @@ return {
             ["noMusic"] = true,
             ["noPush"] = true,
             ["sprite"] = "../art/sprites/swatbotwhite.png",
-            ["viewRange"] = "View1"
+            ["viewRange"] = "CantSee"
           }
         },
         {
@@ -3429,6 +3628,7 @@ return {
             ["defaultAnim"] = "dark_left",
             ["disabled"] = true,
             ["isBot"] = true,
+            ["noDropShadow"] = true,
             ["nocollision"] = true,
             ["sprite"] = "../art/sprites/abominable.png"
           }
@@ -3446,7 +3646,8 @@ return {
           gid = 10970,
           visible = true,
           properties = {
-            ["Mine"] = 1,
+            ["RainbowSyrup"] = 1,
+            ["loganTargetable"] = true,
             ["sprite"] = "../art/sprites/chest2.png"
           }
         },
@@ -3467,6 +3668,41 @@ return {
             ["ghost"] = true,
             ["key"] = "right",
             ["toLayer"] = 2
+          }
+        },
+        {
+          id = 210,
+          name = "NoLadderPlz",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 832,
+          y = 3616,
+          width = 160,
+          height = 256,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["notColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = nil\nend",
+            ["whileColliding"] = "return function(self, player)\n    self.scene.player.noLadder[tostring(self)] = true\nend"
+          }
+        },
+        {
+          id = 218,
+          name = "StopLadderUp",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 992,
+          y = 3520,
+          width = 64,
+          height = 32,
+          rotation = 0,
+          gid = 10970,
+          visible = true,
+          properties = {
+            ["ghost"] = true,
+            ["whileColliding"] = "return function(self, player)\n    local ladder3str = tostring(self.scene.objectLookup.Ladder3)\n    if love.keyboard.isDown(\"up\") and player.ladders[ladder3str] then\n        player.ladders[ladder3str] = nil\n        player.noSpecialMove = false\n        player.noChangeChar = false\n        player.movespeed = player.origMoveSpeed\n        player.basicUpdate = player.updateFun\n    end\nend"
           }
         }
       }
@@ -3603,7 +3839,10 @@ return {
           rotation = 0,
           gid = 8696,
           visible = true,
-          properties = {}
+          properties = {
+            ["botLayer"] = 3,
+            ["topLayer"] = 3
+          }
         }
       }
     },
@@ -4001,11 +4240,11 @@ return {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 741, 0, 741, 741, 741, 741, 741, 741, 0, 0, 741, 741, 741, 741, 741, 741, 0, 0, 0, 0, 741, 741, 741, 741, 741, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 741, 741, 741, 741, 741, 0, 741, 0, 0, 0, 0, 741, 741, 741, 741, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 741, 741, 0, 0, 0, 0, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 741, 741, 0, 0, 0, 0, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 0, 0, 0, 0, 0, 741, 741, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 741, 0, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 741, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 741, 741, 741, 741, 741, 741, 741, 741, 0, 0, 741, 741, 741, 741, 741, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 741, 741, 741, 0, 0, 741, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 741, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 741, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

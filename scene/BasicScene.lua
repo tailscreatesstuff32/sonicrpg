@@ -55,6 +55,20 @@ function BasicScene:onEnter(args)
 
 	self.args = args
 	self.cacheSceneData = args.cache
+
+	-- Cache collision layers
+	self.collisionLayer = {}
+	for _,layer in pairs(self.map.layers) do
+		if layer.name == "Collision" then
+			self.collisionLayer["objects"] = layer.data
+		elseif layer.name == "Collision2" then
+			self.collisionLayer["objects2"] = layer.data
+		elseif layer.name == "Collision3" then
+			self.collisionLayer["objects3"] = layer.data
+		elseif layer.name == "Collision4" then
+			self.collisionLayer["objects4"] = layer.data
+		end
+	end
 	
 	-- NOTE: This is how we draw the lua map data
 	-- There is a draw function on the sti map object.
@@ -428,7 +442,12 @@ function BasicScene:onExit(args)
 		fadeAction,
 		Do(function()
 			if not self.enteringBattle and not args.tutorial then
-				self:remove()
+				if args.manifest then
+					self.sceneMgr:cleanup()
+					print("done with cleanup")
+				else
+					self:remove()
+				end
 			end
 		end)
 	}
@@ -490,26 +509,62 @@ function BasicScene:fadeOut(speed)
 	}
 end
 
-function BasicScene:remove()
-	-- Delete all map objects
-	for _, obj in pairs(self.map.objects) do
-		obj:remove()
+function BasicScene:remove(cleanupResources)
+	if self.cleaned then -- Already cleaned up
+		return
 	end
-	self.map.drawTileLayer = self.originalMapDraw
-	self.map.drawImageLayer = self.originalImgDraw
-	self.map.objects = nil
+	if cleanupResources then
+		print("clean up map")
+		self.audio:cleanup()
+		self.audio = nil
+		self.images = nil
+		self.animations = nil
+		self.mboxGradient = nil
+		self:removeNode(self.map)
+		for _, map in pairs(self.maps) do
+			if map.layers then
+				for _,layer in pairs(map.layers) do
+					layer.image = nil
+				end
+			end
+			if map.objects then
+				for _, obj in pairs(map.objects) do
+					if obj.remove then
+						obj:remove()
+						obj.sprite:remove()
+						obj.sprite:cleanup()
+					end
+				end
+			end
+		end
+	else
+		-- Delete all map objects
+		for _, obj in pairs(self.map.objects) do
+			obj:remove()
+		end
+		self.map.drawTileLayer = self.originalMapDraw
+		self.map.drawImageLayer = self.originalImgDraw
+		self.map.objects = nil
+		self.map.fallables = nil
+		self:removeNode(self.map)
+	end
+
 	self.objectLookup = nil
-	self.map.fallables = nil
-	self:removeNode(self.map)
-	
+
 	self:cleanupLayers()
 	self.handlers = {}
 
 	self.player:remove()
 	self.player = nil
-	
+
 	self:cleanupLayers()
-	
+
+	if cleanupResources then
+		self.map = nil
+		self.maps = nil
+		self.cleaned = true
+	end
+
 	print("destroying cur scene")
 end
 
@@ -537,7 +592,15 @@ function BasicScene:changeScene(args)
 			manifest = string.format("maps/%s.lua", args.manifest),
 			images = self.images,
 			audio = self.audio,
-			animations = self.animations
+			animations = self.animations,
+			hint = args.hint,
+			tutorial = args.tutorial,
+			fadeOutSpeed = args.fadeOutSpeed,
+			fadeInSpeed = args.fadeInSpeed,
+			fadeOutMusic = args.fadeOutMusic,
+			spawn_point = args.spawnPoint,
+			nighttime = args.nighttime,
+			enterDelay = args.enterDelay
 		}
 	else
 		print("change scene...")
@@ -602,9 +665,14 @@ function BasicScene:removeObject(object)
 end
 
 function BasicScene:enterBattle(args)
-	if self.enteringBattle then
+	if self.enteringBattle or next(args.opponents) == nil then
 		return Action()
 	end
+	local oppostr = ""
+	for k,v in pairs(args.opponents) do
+		oppostr = oppostr..v..", "
+	end
+	print("entering battle against... "..oppostr)
 	if not self.blur then
 		self.blur = shine.boxblur()
 		self.blur.radius_v = 0.0
@@ -926,8 +994,8 @@ function BasicScene:canMove(x, y, dx, dy, mapName)
 	return not self.map[mapName][mapy][mapx]
 end
 
-function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList)
-	mapName = "collisionMap"
+function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList, collisionLayer)
+	collisionLayer = collisionLayer or self.map.collisionMap
 	-- Special case for map boundaries
 	if  (x + dx) <= 0 or
 		(x + dx) >= self:getMapWidth() or
@@ -937,7 +1005,7 @@ function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList)
 		return false
 	end
 	local mapx, mapy = self:worldCoordToCollisionCoord(x + dx, y + dy)
-	return not self.map[mapName][mapy][mapx] or (whiteList and whiteList[mapy] and whiteList[mapy][mapx])
+	return not collisionLayer[mapy][mapx] or (whiteList and whiteList[mapy] and whiteList[mapy][mapx])
 end
 
 function BasicScene:swapLayer(toLayerNum)
@@ -954,13 +1022,7 @@ function BasicScene:swapLayer(toLayerNum)
 	self.currentLayerId = toLayerNum
 
 	-- Swap collision layer (assumes naming convention of "Collision" or "CollisionN"
-	local colLayer = toLayerNum == 1 and "Collision" or ("Collision"..layerStr)
-	for _,layer in pairs(self.map.layers) do
-		if layer.name == colLayer then
-			self.map.collisionMap = layer.data
-			break
-		end
-	end
+	self.map.collisionMap = self.collisionLayer[objLayer]
 
 	-- Update collision map with objects on same layer
 	for _, obj in pairs(self.map.objects) do

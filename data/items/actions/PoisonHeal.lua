@@ -87,7 +87,7 @@ return function()
 				Parallel {
 					Ease(target.sprite.glowColor, 4, 0, 6, "quad"),
 					Ease(target.sprite, "glowSize", 2, 6, "quad"),
-					Ease(target.sprite.color, 1, target.color[2], 6, "quad"),
+					Ease(target.sprite.color, 1, target.color[1], 6, "quad"),
 					Ease(target.sprite.color, 3, target.color[3], 6, "quad"),
 				},
 				Do(function() target.sprite:removeGlow() end)

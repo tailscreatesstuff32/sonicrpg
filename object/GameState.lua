@@ -209,7 +209,9 @@ end
 
 function GameState:grantItem(item, count)
 	if item.type then
-		table.insert(self[item.type], item)
+		for i=1,count do
+			table.insert(self[item.type], item)
+		end
 	else
 		if not (self.items[item.name]) then
 			self.items[item.name] = {item = item, count = count}
@@ -414,13 +416,24 @@ function GameState:load(scene, slot)
 		ItemType.Accessory,
 		"items"
 	}
+	-- Regrant all items to make sure they are using latest code
 	for _, t in pairs(types) do
-		self[t] = data[t]
+		if t == "items" then
+			for itemName, item in pairs(data[t]) do
+				local itemFile = "data/items/"..itemName:gsub("%s+", "")
+				print("grant item "..itemFile)
+				local status = pcall(require, itemFile)
+				if status then
+					self:grantItem(require(itemFile), item.count)
+				end
+			end
+		else
+			self[t] = data[t]
+		end
 	end
 	
 	self.flags = data.flags
-	
-	self:setFlag("ep4_introdone")
+
 	-- ep4 save file
 	if self:isFlagSet("ep4_introdone") then
 		-- Add party members, grant items, set flags
@@ -455,7 +468,35 @@ function GameState:load(scene, slot)
 		self.leader = data.leader
 		
 		-- What manifest to use?...
-		if self:isFlagSet("ironlock_intro") then
+		if self:isFlagSet("ep4_to_the_mnt") or self:isFlagSet("ep4_abominable1") then
+			scene.sceneMgr:pushScene {
+				class = "Region",
+				manifest = "maps/northmountainsmanifest.lua",
+				map = data.map,
+				spawn_point = data.spawnPoint,
+				nextMusic = data.music,
+				hint = "fromload"
+			}
+		elseif self:isFlagSet("ep4_ffmeetingover") then
+			scene.sceneMgr:pushScene {
+				class = "Region",
+				manifest = "maps/sonicdemo_manifest.lua",
+				map = data.map,
+				spawn_point = data.spawnPoint,
+				nextMusic = data.music,
+				hint = "fromload"
+			}
+		elseif self:isFlagSet("ep4_introdone") then
+			-- Use ironlock manifest file
+			scene.sceneMgr:pushScene {
+				class = "Region",
+				manifest = "maps/sonicdemo_manifest.lua",
+				map = data.map,
+				spawn_point = data.spawnPoint,
+				nextMusic = data.music,
+				hint = "fromload"
+			}
+		elseif self:isFlagSet("ironlock_intro") then
 			-- Use ironlock manifest file
 			scene.sceneMgr:pushScene {
 				class = "Region",
@@ -478,8 +519,8 @@ function GameState:load(scene, slot)
 		end
 	-- ep1 or ep2 or ep3 save, treat as new game+
 	else
-		self:addToParty("sally", 6, true)
-		self.leader = "sally"
+		self:addToParty("logan", 8, true)
+		self.leader = "logan"
 		self:setFlag("ep3_intro")
 		scene.sceneMgr:switchScene {class = "ChapterSplashScene", manifest = "maps/sonicdemo_manifest.lua"}
 	end

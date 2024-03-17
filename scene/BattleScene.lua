@@ -199,6 +199,12 @@ function BattleScene:onEnter(args)
 				end
 			end)
 		}
+	-- Cinematic, opponent gets first turn but its just for cinematic purposes
+	elseif self.initiative == "cinematic" then
+		for _, oppo in pairs(self.opponents) do
+			table.insert(self.opponentTurns, oppo)
+		end
+		self.state = BattleScene.STATE_MONSTERTURN
 	else
 		for _, mem in pairs(self.party) do
 			if mem.state ~= BattleActor.STATE_DEAD and not mem.isHologram then
@@ -273,6 +279,10 @@ function BattleScene:update(dt)
 			end
 			return
 		end
+		
+		-- Fix messed up sfx
+		self.audio:stopSfx("choose")
+		self.audio:stopSfx("levelup")
 
 		-- Player begin turn
 		self.currentPlayer:beginTurn()
@@ -290,6 +300,9 @@ function BattleScene:update(dt)
 	elseif self.state == BattleScene.STATE_PLAYERTURN_PENDING then
 		local member = self.currentPlayer
 		if member:isTurnOver() then
+			-- Fix messed up sfx
+			self.audio:stopSfx("choose")
+			self.audio:stopSfx("levelup")
 			self.arrow:remove()
 			self.state = BattleScene.STATE_PLAYERTURN_COMPLETE
 		end
@@ -391,16 +404,18 @@ function BattleScene:update(dt)
 	
 		-- Add up spoils of war from each opponent
 		local spoilsActions = {}
-		for _,reward in pairs(self.rewards) do
-			GameState:grantItem(reward.item, reward.count)
-			table.insert(
-				spoilsActions,
-				MessageBox {
-					message="Found "..tostring(reward.count).." "..tostring(reward.item.name)..
-					(reward.count > 1 and "s" or "").."!",
-					rect=MessageBox.HEADLINER_RECT
-				}
-			)
+		if not self.enemyRan then
+			for _,reward in pairs(self.rewards) do
+				GameState:grantItem(reward.item, reward.count)
+				table.insert(
+					spoilsActions,
+					MessageBox {
+						message="Found "..tostring(reward.count).." "..tostring(reward.item.name)..
+						(reward.count > 1 and "s" or "").."!",
+						rect=MessageBox.HEADLINER_RECT
+					}
+				)
+			end
 		end
 		table.insert(
 			spoilsActions,

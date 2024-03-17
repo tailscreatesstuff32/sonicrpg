@@ -70,19 +70,27 @@ return function(player)
 				player.placeTrap.y = player.y + 64
 			end
 		else
+			if not player.scene.objectLookup.RotorTrap then
+				return
+			end
 			player.basicUpdate = function(self, dt) end
+			local placeTrap = player.placeTrap
 			player:run(Serial {
 				PlayAudio("sfx", "factoryspit", 1.0, true),
 				Do(function()
 					player.scene.objectLookup.RotorTrap.sprite.color[4] = 255
 				end),
+				Do(function()
+					player.basicUpdate = player.updateFun
+					if placeTrap then
+						placeTrap:addSceneHandler("update")
+						placeTrap = nil
+					end
+				end),
 				player.scene.objectLookup.RotorTrap:hop(),
 				Animate(player.scene.objectLookup.RotorTrap.sprite, "activate"),
 				Do(function()
 					player.scene.objectLookup.RotorTrap.sprite:setAnimation("active")
-					player.basicUpdate = player.updateFun
-					player.placeTrap:addSceneHandler("update")
-					player.placeTrap = nil
 				end)
 			})
 		end

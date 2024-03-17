@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="81" height="45" tilewidth="32" tileheight="32" infinite="0" nextobjectid="28">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="81" height="45" tilewidth="32" tileheight="32" infinite="0" nextobjectid="29">
  <properties>
   <property name="onload" type="file" value="actions/bartcave.lua"/>
   <property name="regionName" value="Northern Mountains"/>
@@ -310,7 +310,7 @@
  </layer>
  <objectgroup name="lower"/>
  <objectgroup name="objects">
-  <object id="21" name="DownPath" type="SceneEdge" gid="6839" x="1120" y="1440" width="384" height="64">
+  <object id="21" name="DownPath" type="SceneEdge" gid="6839" x="1120" y="1440" width="384" height="32">
    <properties>
     <property name="ghost" type="bool" value="true"/>
     <property name="key" value="down"/>
@@ -470,6 +470,7 @@ end</property>
     <property name="sprite" type="file" value="../art/sprites/boulder.png"/>
    </properties>
   </object>
+  <object id="28" name="HidingSpot1" type="HidingSpot" gid="6860" x="1152" y="992" width="320" height="32"/>
  </objectgroup>
  <layer name="top" width="81" height="45">
   <data encoding="csv">

@@ -18,6 +18,7 @@ local SpriteNode = require "object/SpriteNode"
 local BattleActor = require "object/BattleActor"
 
 local Transform = require "util/Transform"
+local ItemType = require "util/ItemType"
 
 local PressX = require "data/battle/actions/PressX"
 local PressZ = require "data/battle/actions/PressZ"
@@ -38,8 +39,8 @@ return {
 
 	stats = {
 		xp = 120,
-		maxhp = 10, --4000,
-		attack = 60,
+		maxhp = 5000,
+		attack = 80,
 		defense = 30,
 		speed = 5,
 		focus = 1,
@@ -149,6 +150,10 @@ return {
 	end,
 
 	behavior = function (self, target)
+		if self.hp <= 0 then
+			return Action()
+		end
+	
 		local sprite = self:getSprite()
 		if self.state == "pause_to_ice" then
 			-- 50% chance of shifting to ice or fly
@@ -231,6 +236,7 @@ return {
 					self.beamSprite.transform.x = 700
 					self.beamSprite.transform.y = self.beamSpriteStart.transform.y + self.beamSpriteStart.h*4
 				end),
+				PlayAudio("sfx", "plasmabeam", 0.8, true),
 				Parallel {
 					Ease(self.beamSpriteStart.transform, "sy", 5, 3),
 					Ease(self.beamSprite.transform, "sy", 5, 3),
@@ -274,9 +280,13 @@ return {
 							target,
 							Serial {
 								PlayAudio("sfx", "pressx", 1.0, true),
-								target:takeDamage({miss = true, attack = 1, speed = 1, luck = 1})
+								Spawn(function()
+								    return target:takeDamage({miss = true, attack = 1, speed = 1, luck = 1})
+								end)
 							},
-							target:takeDamage(self.stats)
+							Spawn(function()
+							    return target:takeDamage(self.stats)
+							end)
 						)
 					}
 				},
@@ -340,7 +350,7 @@ return {
 								PlayAudio("sfx", "pressx", 1.0, true),
 								target:takeDamage({miss = true, attack = 1, speed = 1, luck = 1})
 							},
-							target:takeDamage({attack = 90, speed = 100, luck = 0})
+							target:takeDamage({attack = 95, speed = 100, luck = 0})
 						),
 						Wait(1),
 					},
@@ -349,6 +359,10 @@ return {
 							local xform = sprite.transform
 							local targetXForm = target.sprite.transform
 							local fireball = SpriteNode(self.scene, Transform(xform.x + sprite.w*2 - 50, xform.y + 200, 4, 4), nil, "fireball", nil, nil, "infront")
+							if not self.fireballs then
+								self.fireballs = {}
+							end
+							table.insert(self.fireballs, fireball)
 							Executor(self.scene):act(Serial {
 								Parallel {
 									Ease(fireball.transform, "x", target.sprite.transform.x - 20, 2, "linear"),
@@ -368,6 +382,12 @@ return {
 						Wait(0.05),
 					}, 50)
 				},
+				Do(function()
+					for _, f in pairs(self.fireballs) do
+						f:remove()
+					end
+					self.fireballs = nil
+				end),
 				Parallel {
 					Ease(sprite.transform, "x", sprite.transform.x, 2),
 					Ease(sprite.transform, "y", sprite.transform.y, 2),
@@ -387,6 +407,8 @@ return {
 				end)
 			}
 		elseif self.state == "ice" then
+			local hasYetiArmor = not target.laserShield and
+				GameState:isEquipped(target.id, ItemType.Armor, "Yeti Armor")
 			local origTargetXform = target.sprite.transform
 			local transitionSp = SpriteNode(
 			    self.scene,
@@ -408,15 +430,19 @@ return {
 				Animate(self:getSprite(), "iceattack"),
 				PlayAudio("sfx", "firebirdbreath", 1.0, true),
 				Parallel {
-					Serial {
+					not hasYetiArmor and Serial {
 						Wait(0.5),
 						Animate(target.sprite, "cold")
-					},
+					} or Action(),
 					Repeat(Serial {
 						Do(function()
 							local xform = sprite.transform
 							local targetXForm = target.sprite.transform
 							local freezepoof = SpriteNode(self.scene, Transform(xform.x + sprite.w*2 - 50, xform.y + 200, 4, 4), nil, "freezepoof", nil, nil, "infront")
+							if not self.freezepoofs then
+								self.freezepoofs = {}
+							end
+							table.insert(self.freezepoofs, freezepoof)
 							Executor(self.scene):act(Serial {
 								Parallel {
 									Ease(freezepoof.transform, "x", target.sprite.transform.x - 20, 2, "linear"),
@@ -435,27 +461,43 @@ return {
 						Wait(0.05),
 					}, 30)
 				},
-				Spawn(
-					PressZ(
-						self,
-						target,
-						Serial {
-							PlayAudio("sfx", "pressx", 1.0, true),
-							target:takeDamage(self.stats, false, function(_self, _impact, _direction) return Action() end)
-						},
-						Serial {
-							target:takeDamage(self.stats, false, function(_self, _impact, _direction) return Action() end),
-							PlayAudio("sfx", "slice", 0.3, true),
-							Animate(target.sprite, "frozen"),
-							Do(function()
-								target.state = BattleActor.STATE_IMMOBILIZED
-								target.turnsImmobilized = 2
-								self:getSprite():pushOverride("idle", "iceidle")
-								self:getSprite():pushOverride("hurt", "icehurt")
-							end)
-						}
-					)
-				),
+				Do(function()
+					for _, f in pairs(self.freezepoofs) do
+						f:remove()
+					end
+					self.freezepoofs = nil
+				end),
+				not hasYetiArmor and
+					Spawn(
+						PressZ(
+							self,
+							target,
+							Serial {
+								PlayAudio("sfx", "pressx", 1.0, true),
+								target:takeDamage(self.stats, false, function(_self, _impact, _direction) return Action() end)
+							},
+							Serial {
+								target:takeDamage(self.stats, false, function(_self, _impact, _direction) return Action() end),
+								PlayAudio("sfx", "slice", 0.3, true),
+								Do(function()
+									if target.hp > 0 then
+										target.state = BattleActor.STATE_IMMOBILIZED
+										target.turnsImmobilized = 2
+										target.sprite:setAnimation("frozen")
+										self:getSprite():pushOverride("idle", "iceidle")
+										self:getSprite():pushOverride("hurt", "icehurt")
+									else
+										target.state = BattleActor.STATE_DEAD
+										target.sprite:setAnimation("dead")
+									end
+									self.doneWithIce = true
+								end)
+							}
+						)
+					) or Serial {
+						PlayAudio("sfx", "pressx", 1.0, true),
+						target:takeDamage({damage=0,attack=0,luck=0,speed=0}, false, function(_self, _impact, _direction) return Action() end)
+					},
 				Repeat(Serial {
 					Do(function()
 						local xform = sprite.transform
@@ -484,7 +526,9 @@ return {
 					Ease(target.sprite.transform, "x", origTargetXform.x, 2),
 					Ease(target.sprite.transform, "y", origTargetXform.y, 2)
 				},
+				YieldUntil(self, "doneWithIce"),
 				Do(function()
+					self.doneWithIce = false
 					self:getSprite():setAnimation("idle")
 					self.state = "pause_to_fire"
 				end)

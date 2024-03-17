@@ -32,7 +32,7 @@ Bot.BEHAVIOR_CHASING       = 2
 function Bot:construct(scene, layer, object)	
 	self.action = Serial{}
 	
-	--self.ghost = true
+	self.ghost = true
 	self.alignment = NPC.ALIGN_BOTLEFT
 	self.ignorePlayer = object.properties.ignorePlayer
 	self.noInvestigate = object.properties.noInvestigate
@@ -59,9 +59,11 @@ function Bot:construct(scene, layer, object)
 	--self:updateFacing()
 	self.manualFacing = "down"
 	self.originalFacing = self.manualFacing
-	
-	self:createDropShadow()
-	
+
+	if not object.properties.noDropShadow then
+		self:createDropShadow()
+	end
+
 	self.udflashlight = SpriteNode(
 		self.scene,
 		Transform(),
@@ -120,15 +122,38 @@ function Bot:construct(scene, layer, object)
 	
 	self:addSceneHandler("update", Bot.update)
 	self:addSceneHandler("exit", Bot.exit)
-	
+	self:addCollisionHandler()
+
 	self.isBot = true
+end
+
+function Bot:addCollisionHandler()
+	self:addHandler(
+		"collision",
+		NPC.messageBox,
+		self,
+		self.object
+	)
+end
+
+function Bot:removeCollisionHandler()
+	self:removeHandler(
+		"collision",
+		NPC.messageBox,
+		self,
+		self.object
+	)
 end
 
 function Bot:exit()
 	if self.prevSceneMusic and not self.scene.enteringBattle then
 		self.scene.audio:playMusic(self.prevSceneMusic)
 	end
-	
+
+	if self.shocked then
+		return
+	end
+
 	-- Go back to regular patrolling
 	if not self:isRemoved() then
 		self:removeAllUpdates()
@@ -345,6 +370,7 @@ function Bot:update(dt)
 				if v.state == NPC.STATE_TOUCHING and
 				   self:isTouching(v.x, v.y, v.object.width, v.object.height)
 				then
+					print("is touching view range "..v.object.name)
 					touching = true
 					break
 				end
@@ -496,12 +522,13 @@ function Bot:chaseUpdate(dt)
 		for _, object in pairs(self.scene.map.objects) do
 			if object.isBot and
 				not object:isRemoved() and
-				object.name ~= self.name
+				object.name ~= self.name and
+				not object.shocked
 			then
 				local dx = self.x - object.x
 				local dy = self.y - object.y
 				local sqdist = dx*dx + dy*dy
-				if sqdist < 100*100 then
+				if sqdist < 10*10 then
 					local dist = math.sqrt(sqdist)
 					if self.x > object.x then
 						self.x = self.x + self.movespeed * (dt/0.016)
@@ -665,6 +692,7 @@ function Bot:hop(waitTime)
 	if waitTime then
 		waitAction = Wait(waitTime)
 	end
+	self.hopping = true
 	return Parallel {
 		Serial {
 			Ease(self, "y", self.y - 50, 8, "linear"),
@@ -673,6 +701,7 @@ function Bot:hop(waitTime)
 		},
 		Do(function()
 			self:updateDropShadowPos(true)
+			self.hopping = false
 		end)
 	}
 end
@@ -707,6 +736,9 @@ function Bot:updateFacing()
 end]]
 
 function Bot:updateDropShadowPos(xonly)
+	if not self.dropShadow then
+		return
+	end
 	self.dropShadow.x = self.x + 18
 	
 	if not xonly then
@@ -753,7 +785,13 @@ function Bot:baseUpdate(dt)
 	end
 	
 	self:updateAction(dt)
-	
+
+	if not self.hopping then
+		self.object.x = self.x
+		self.object.y = self.y + self.sprite.h*2
+		self:updateCollision()
+	end
+
 	-- HACK
 	if not self.sprite or not self.scene.player then
 		return
@@ -832,7 +870,7 @@ function Bot:updateAction(dt)
 			self.action = Serial{}
 		end
 	end
-	
+
 	-- HACK
 	if not self.sprite or not self.scene.player then
 		return
@@ -865,17 +903,17 @@ function Bot:updateAction(dt)
 			(GameState.leader == "sonic" or GameState.leader == "bunny")) and
 		not self.scene.player.falling and not self.scene.ignorePlayer
 	then
-		local cx = self.hotspots.left_top.x
-		local cy = self.hotspots.left_top.y
-		local cw = self.hotspots.right_top.x - cx
-		local ch = self.hotspots.right_bot.y - cy
-
 		if (self.scene.player.onlyInteractWithLayer ~= nil and
 			self.scene.player.onlyInteractWithLayer ~= self.layer.name) and
 			self.layer.name ~= "all"
 		then
 			return
 		end
+
+		local cx = self.hotspots.left_top.x
+		local cy = self.hotspots.left_top.y
+		local cw = self.hotspots.right_top.x - cx
+		local ch = self.hotspots.right_bot.y - cy
 
 		if  self.scene.player:isTouching(cx, cy, cw, ch) then
 			self.scene.audio:stopSfx(self.stepSfx)
@@ -930,7 +968,9 @@ function Bot:remove()
 		return
 	end
 
-	self.dropShadow:remove()
+	if self.dropShadow then
+		self.dropShadow:remove()
+	end
 	for _, light in pairs(self.flashlight) do
 		light:remove()
 	end
@@ -971,6 +1011,12 @@ end
 function Bot:enableBot()
 	self:removeSceneHandler("update", Bot.updateAction)
 	self:addSceneHandler("update")
+end
+
+function Bot:restart()
+    self.behavior = Bot.BEHAVIOR_PATROLLING
+	self:addSceneHandler("update")
+	self:postInit()
 end
 
 

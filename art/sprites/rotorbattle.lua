@@ -33,8 +33,17 @@ return {
         hurt = {
             frames = {{5,1}}
         },
+		stun = {
+            frames = {{5,1}}
+        },
         dead = {
             frames = {{6,1}}
+        },
+		leap = {
+            frames = {{3,1}}
+        },
+		crouchtinker = {
+            frames = {{1,4}}
         },
     }
 }

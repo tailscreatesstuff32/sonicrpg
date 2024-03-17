@@ -108,6 +108,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="lower"/>
  <objectgroup name="objects">
   <object id="1" name="BigChest" type="BasicNPC" gid="6839" x="384" y="256" width="32" height="32">
    <properties>
@@ -350,7 +351,7 @@ return function(self)
                     layout = Layout {
                         {Layout.Text(&quot;Practice fighting&quot;), choose = function(menu)
                             local fightMenuOpts = {{Layout.Text(&quot;Which boss?&quot;), selectable = false}}
-                            local bots = {&quot;rover&quot;, &quot;juggerbot&quot;}
+                            local bots = {&quot;rover&quot;, &quot;juggerbot&quot;, &quot;cyclops&quot;}
                             for _, name in pairs(bots) do
                                 local bot = require (&quot;data/monsters/&quot;..name)
                                 table.insert(fightMenuOpts, {Layout.Text(bot.name), choose = function(menu2)
@@ -444,15 +445,19 @@ return function(self)
                             menu:close()
                             self.menuClosing = true
                             local msg = &quot;&quot;
-                            if not GameState:isFlagSet(&quot;ep3_knotholerun&quot;) then
+                            if GameState:isFlagSet(&quot;ep4_tails_snowman&quot;) then
+                                msg = &quot;Ride the pulley out of Knothole and head to the Great Forest to get the Freedom Stormer!&quot;
+                            elseif GameState:isFlagSet(&quot;ep4_introdone&quot;) then
+                                 msg = &quot;Tails could use some help with that snowman...&quot;
+                            elseif GameState:isFlagSet(&quot;ep3_intro&quot;) then
                                 msg = &quot;It's a beautiful day outside! {p60}Why are you spending it inside on the computer?&quot;
-                            elseif not GameState:isFlagSet(&quot;ep3_ffmeetingover&quot;) then
+                            elseif GameState:isFlagSet(&quot;ep3_knotholerun&quot;) then
                                 msg = &quot;It sounds like there's quite a bit of arguing between the Freedom Fighters and the Rebellion, doesn't it?&quot;
-                            elseif not GameState:isFlagSet(&quot;ep3_sallynap&quot;) then
+                            elseif GameState:isFlagSet(&quot;ep3_ffmeetingover&quot;) then
                                 msg = &quot;Ride the pulley out of Knothole and head East to the Dark Swamp!{p60}... But before you do that{p60}... maybe take a rest, huh?&quot;
-                            elseif not GameState:isFlagSet(&quot;ep3_sallynap_over&quot;) then
+                            elseif GameState:isFlagSet(&quot;ep3_sallynap&quot;) then
                                 msg = &quot;At this time of night, the view from the {h Lookout} must be breathtaking.&quot;
-                            else
+                            elseif GameState:isFlagSet(&quot;ep3_sallynap_over&quot;) then
                                 msg = &quot;Ride the pulley out of Knothole and head East to the Dark Swamp!&quot;
                             end
 

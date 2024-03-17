@@ -134,6 +134,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="lower"/>
  <objectgroup name="objects">
   <object id="4" name="Door" type="Door" gid="6839" x="372" y="210" width="64" height="32">
    <properties>
@@ -216,7 +217,7 @@ return function(self)
                     menu:close()
                     self.scene:run {
                         menu,
-                        MessageBox{message=&quot;Diary: That Fleet person seems pretty cool. {p50}Sonic doesn't seem to like her though... {p50}why's that?&quot;, blocking = true, textSpeed = 3}
+                        MessageBox{message=&quot;Diary: Snow days are the best! {p60}Everybody hangs out in Knothole instead of heading to the city, and Sonic actually has time to play with me!&quot;, blocking = true, textSpeed = 3}
                     }
                 end},
                 {Layout.Text(&quot;No&quot;), choose = function(menu)

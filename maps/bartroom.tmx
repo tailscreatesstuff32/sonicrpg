@@ -82,8 +82,8 @@
     <property name="ghost" type="bool" value="true"/>
     <property name="key" value="down"/>
     <property name="orientation" value="up"/>
-    <property name="scene" type="file" value="northmountains_3.lua"/>
-    <property name="spawn_point" value="CavePath"/>
+    <property name="scene" type="file" value="bartcave2.lua"/>
+    <property name="spawn_point" value="ToBartRoom"/>
    </properties>
   </object>
   <object id="19" name="Spawn 1" type="Player" gid="4565" x="448" y="736" width="32" height="32">
@@ -110,8 +110,8 @@ local PlayAudio = require &quot;actions/PlayAudio&quot;
 local Move = require &quot;actions/Move&quot;
 
 return function(self)
-    if GameState:isFlagSet(&quot;ep4_bart_intro4&quot;) then
-        GameState:setFlag(&quot;ep4_bart_intro5&quot;)
+    if self.step == &quot;ep4_bart_intro4&quot; then
+        self.step = &quot;ep4_bart_intro5&quot;
         self.scene.player.x = self.x + 16
         self.scene.player.y = self.y - 64
         local walkout, walkin, sprites = self.scene.player:split()
@@ -194,9 +194,17 @@ return function(self)
             end),
             MessageBox{message=&quot;Bart: ...&quot;},
         }
-    elseif GameState:isFlagSet(&quot;ep4_bart_intro3&quot;) then
-        GameState:setFlag(&quot;ep4_bart_intro4&quot;)
+    elseif self.step == &quot;ep4_bart_intro3&quot; then
+        self.step = &quot;ep4_bart_intro4&quot;
+        self.scene.player.x = self.x
+        self.scene.player.y = self.y + 64
+        local walkout, walkin, sprites = self.scene.player:split()
+        self.scene.player.x = self.x + 96
+        self.scene.player.y = self.y + 96
         return BlockPlayer {
+            walkout,
+            Animate(sprites.rotor.sprite, &quot;idleup&quot;),
+            Animate(sprites.logan.sprite, &quot;idleup&quot;),
             MessageBox{message=&quot;Bart: This pod is uh... {p60}technically just a washing machine and dryer...{p100} but it functions satisfactorily!&quot;},
             MessageBox{message=&quot;Rotor: *sigh*&quot;},
             Do(function()
@@ -219,11 +227,20 @@ return function(self)
                 self.object.x = self.x
                 self.object.y = self.y + 64
                 self:updateCollision()
-            end)
+            end),
+            walkin
         }
-    elseif GameState:isFlagSet(&quot;ep4_bart_intro2&quot;) then
-        GameState:setFlag(&quot;ep4_bart_intro3&quot;)
+    elseif self.step == &quot;ep4_bart_intro2&quot; then
+        self.step = &quot;ep4_bart_intro3&quot;
+        self.scene.player.x = self.x
+        self.scene.player.y = self.y + 64
+        local walkout, walkin, sprites = self.scene.player:split()
+        self.scene.player.x = self.x + 96
+        self.scene.player.y = self.y + 96
         return BlockPlayer {
+            walkout,
+            Animate(sprites.rotor.sprite, &quot;idleup&quot;),
+            Animate(sprites.logan.sprite, &quot;idleup&quot;),
             MessageBox{message=&quot;Bart: Here is my workstation... {p60}on the right you can see an excavated skull from one of our ancient Mobian ancestors...&quot;},
             MessageBox{message=&quot;Bart: They worshipped a mythical race of giants called the 'Mandara'. {p60}The tomb you were standing in was a sacred place meant for self-reflection... {p100} fascinating!&quot;},
             MessageBox{message=&quot;Rotor: Yeah, that's super interesting... {p60}listen, uh--&quot;},
@@ -240,11 +257,20 @@ return function(self)
                 self.object.x = self.x
                 self.object.y = self.y + 96
                 self:updateCollision()
-            end)
+            end),
+            walkin
         }
     else
-        GameState:setFlag(&quot;ep4_bart_intro2&quot;)
+        self.step = &quot;ep4_bart_intro2&quot;
+        self.scene.player.x = self.x
+        self.scene.player.y = self.y + 64
+        local walkout, walkin, sprites = self.scene.player:split()
+        self.scene.player.x = self.x + 96
+        self.scene.player.y = self.y + 96
         return BlockPlayer {
+            walkout,
+            Animate(sprites.rotor.sprite, &quot;idleup&quot;),
+            Animate(sprites.logan.sprite, &quot;idleup&quot;),
             MessageBox{message=&quot;Bart: In the ancient ruins there are plants which can only be seen under florescent light{p60}, the ancient Mobians referred to them as {h Angel's Hair}!&quot;},
             MessageBox{message=&quot;Bart: They would sometimes build entire cities beneath a brush of Angel's Hair to avoid detection! {p100}Truly remakable{p30}, isn't it?&quot;},
             MessageBox{message=&quot;Rotor: Uhh{p60}, yeah that's incredible Pop-Pop... {p60}I, uh--&quot;},
@@ -261,7 +287,8 @@ return function(self)
                 self.object.x = self.x
                 self.object.y = self.y + 96
                 self:updateCollision()
-            end)
+            end),
+            walkin
         }
     end
 end</property>

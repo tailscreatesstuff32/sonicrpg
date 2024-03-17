@@ -7,6 +7,8 @@ local PlayAudio = require "actions/PlayAudio"
 local Parallel = require "actions/Parallel"
 local Repeat = require "actions/Repeat"
 local Ease = require "actions/Ease"
+local Try = require "actions/Try"
+local YieldUntil = require "actions/YieldUntil"
 local Animate = require "actions/Animate"
 local IfElse = require "actions/IfElse"
 local BouncyText = require "actions/BouncyText"
@@ -26,8 +28,8 @@ return {
 
 	stats = {
 		xp    = 40,
-		maxhp = 1000,
-		attack = 35,
+		maxhp = 800,
+		attack = 30,
 		defense = 10,
 		speed = 10,
 		focus = 5,
@@ -174,7 +176,7 @@ return {
 				}
 			end
 		elseif math.random() < 0.4 then
-			target = self.scene.opponents[math.random(#self.scene.opponents)]
+			target = self.scene.opponents[math.random(1, #self.scene.opponents)]
 			return Serial {
 				Telegraph(self, "Repair", {255,255,255,50}),
 				Ease(self.sprite.color, 2, 512, 1),
@@ -197,6 +199,9 @@ return {
 					self.shockSprite.transform.y = self.sprite.transform.y - self.sprite.h/2
 				end),
 				Parallel {
+					target.defenseEvent and
+						target.defenseEvent(self, target) or
+						Action(),
 					Serial {
 						Ease(self.shockSprite.color, 4, 255, 5),
 						Wait(0.5),
@@ -206,7 +211,17 @@ return {
 					Ease(self.shockSprite.transform, "y", target.sprite.transform.y - target.sprite.h/2, 1)
 				},
 				Parallel {
-					target:takeDamage(self.stats, true, BattleActor.shockKnockback),
+					Try(
+						YieldUntil(
+							function()
+								return target.dodged
+							end
+						),
+						Do(function()
+							target.dodged = false
+						end),
+						target:takeDamage(self.stats, true, BattleActor.shockKnockback)
+					),
 					Ease(self.sprite.color, 1, 255, 1),
 					Ease(self.sprite.color, 2, 255, 1),
 					Ease(self.sprite.color, 3, 255, 1)
