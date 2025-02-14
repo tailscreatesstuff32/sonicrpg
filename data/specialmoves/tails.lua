@@ -91,8 +91,6 @@ return function(player)
 						self.y = self.y + movespeed * 0.7
 					end
 				end
-			else
-				print("wah 2? "..tostring(self.scene.currentLayerId))
 			end
 
 		elseif love.keyboard.isDown("left") then
@@ -111,8 +109,6 @@ return function(player)
 						self.y = self.y - movespeed * 0.7
 					end
 				end
-			else
-				print("wah? "..tostring(self.scene.currentLayerId))
 			end
 		end
 
@@ -168,12 +164,12 @@ return function(player)
 		-- Update collision layer
 		if self.flyOffsetY > 160 then
 			if self.scene.currentLayerId ~= 1 then
-				print "set layer to 1"
+				print "F set layer to 1"
 				self.scene:swapLayer(1, true)
 			end
 		else
 			if self.scene.currentLayerId ~= 3 then
-				print "set layer to 3"
+				print "F set layer to 3"
 				self.scene:swapLayer(3, true)
 			end
 		end
@@ -191,7 +187,7 @@ return function(player)
 			end
 
 			if self.scene.currentLayerId ~= self.flyLandingLayer then
-				print("set layer to "..tostring(self.flyLandingLayer))
+				print("T set layer to "..tostring(self.flyLandingLayer))
 				self.scene:swapLayer(self.flyLandingLayer, true)
 
 				if self.flyLandingLayer < 3 then

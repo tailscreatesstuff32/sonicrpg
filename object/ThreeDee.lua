@@ -32,6 +32,7 @@ function ThreeDee:whileColliding(player, prevState)
 		player.flyLandingLayer = self.flyLandingLayer
 		player.nextFlyLandingLayer = self.nextFlyLandingLayer
 		player.nextFlyOffsetY = self.nextFlyOffsetY
+		print("set fly layer to "..tostring(player.flyLandingLayer))
     else
 		player.sprite.sortOrderY = nil
 		player.dropShadow.sprite.sortOrderY = -1
@@ -39,6 +40,7 @@ function ThreeDee:whileColliding(player, prevState)
 		player.flyLandingLayer = self.nextFlyLandingLayer
 		player.nextFlyLandingLayer = self.nextFlyLandingLayer
 		player.nextFlyOffsetY = 0
+		print("UNset fly layer to "..tostring(player.flyLandingLayer))
     end
 end
 
@@ -52,6 +54,7 @@ function ThreeDee:notColliding(player, prevState)
 
     player.tempFlyOffsetY = 0
 	player.flyLandingLayer = self.nextFlyLandingLayer
+	print("UNset 2 fly layer to "..tostring(player.flyLandingLayer))
 end
 
 

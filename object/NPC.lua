@@ -182,34 +182,13 @@ end
 function NPC:updateCollision()
 	self.collision = {}
 
-    if self.scene.map.properties.layered and
-	   self.scene.currentLayer ~= self.layer.name and
-	   self.layer.name ~= "all"
-	then
-		-- FIXME: Need to implement an object-only collision map so we can independently remove
-		-- object collision without impacting map collision
-		if not self.ghost then
-			local sx,sy = self.scene:worldCoordToCollisionCoord(self.object.x, self.object.y)
-			local dx,dy = self.scene:worldCoordToCollisionCoord(self.object.x + self.object.width, self.object.y + self.object.height)
-			for y=sy, dy-1 do
-				for x=sx, dx-1 do
-					if self.scene.map.collisionMap[y] then
-						self.scene.map.collisionMap[y][x] = nil
-					end
-				end
-			end
-		end
-
-		return
-	end
-
 	if not self.object.properties.nocollision then
 		local sx,sy = self.scene:worldCoordToCollisionCoord(self.object.x, self.object.y)
 		local dx,dy = self.scene:worldCoordToCollisionCoord(self.object.x + self.object.width, self.object.y + self.object.height)
 		for y=sy, dy-1 do
 			for x=sx, dx-1 do
 				if not self.ghost then
-					self.scene.map.collisionMap[y][x] = 1
+					self.scene.objectCollisionLayer[self.layer.name][y][x] = 1
 				end
 				table.insert(self.collision, {x,y})
 			end
@@ -229,8 +208,8 @@ end
 
 function NPC:removeCollision()
 	for _, pair in pairs(self.collision or {}) do
-		if self.scene.map.collisionMap[pair[2]] then
-			self.scene.map.collisionMap[pair[2]][pair[1]] = nil
+		if self.scene.objectCollisionLayer[self.layer.name][pair[2]] then
+			self.scene.objectCollisionLayer[self.layer.name][pair[2]][pair[1]] = nil
 		end
 	end
 	self.collision = {}
@@ -743,8 +722,8 @@ function NPC:remove()
 	-- Remove from collision map
 	if not self.ghost and not self.object.properties.ghost then
 		for _, pair in pairs(self.collision or {}) do
-			if self.scene.map.collisionMap[pair[2]] then
-				self.scene.map.collisionMap[pair[2]][pair[1]] = nil
+			if self.scene.objectCollisionLayer[self.layer.name][pair[2]] then
+				self.scene.objectCollisionLayer[self.layer.name][pair[2]][pair[1]] = nil
 			end
 		end
 	end

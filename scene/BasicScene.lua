@@ -70,7 +70,21 @@ function BasicScene:onEnter(args)
 			self.collisionLayer["objects4"] = layer.data
 		end
 	end
-	
+
+	-- Create object collision maps
+	self.objectCollisionLayer = {}
+	self.objectCollisionLayer["objects"] = {}
+	self.objectCollisionLayer["objects2"] = {}
+	self.objectCollisionLayer["objects3"] = {}
+	self.objectCollisionLayer["objects4"] = {}
+
+	for y = 0, self.map.height do
+		self.objectCollisionLayer["objects"][y] = {}
+		self.objectCollisionLayer["objects2"][y] = {}
+		self.objectCollisionLayer["objects3"][y] = {}
+		self.objectCollisionLayer["objects4"][y] = {}
+	end
+
 	-- NOTE: This is how we draw the lua map data
 	-- There is a draw function on the sti map object.
 	-- All our SceneNode drawing interface requires is a
@@ -984,11 +998,7 @@ function BasicScene:canMove(x, y, dx, dy, mapName, printl)
 		return false
 	end
 	local mapx, mapy = self:worldCoordToCollisionCoord(x + dx, y + dy)
-	result = not self.map[mapName][mapy][mapx]
-	if printl then
-		print("map collision check x = "..tostring(x + dx)..", y = "..tostring(y+dy)..", "..mapName..": mapx = "..tostring(mapx)..", mapy = "..tostring(mapy)..", result = "..tostring(self.map.collisionMap == self.map.collisionMap1))
-	end
-	return result
+	return (not self.map[mapName][mapy][mapx] and not self.map.objectCollisionMap[mapy][mapx])
 end
 
 function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList, collisionLayer)
@@ -1002,7 +1012,8 @@ function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList, collisionLayer)
 		return false
 	end
 	local mapx, mapy = self:worldCoordToCollisionCoord(x + dx, y + dy)
-	return not collisionLayer[mapy][mapx] or (whiteList and whiteList[mapy] and whiteList[mapy][mapx])
+	return (not collisionLayer[mapy][mapx] and not self.map.objectCollisionMap[mapy][mapx]) or
+	  (whiteList and whiteList[mapy] and whiteList[mapy][mapx])
 end
 
 function BasicScene:swapLayer(toLayerNum, ignoreSprites)
@@ -1024,13 +1035,7 @@ function BasicScene:swapLayer(toLayerNum, ignoreSprites)
 
 	-- Swap collision layer (assumes naming convention of "Collision" or "CollisionN"
 	self.map.collisionMap = self.collisionLayer[objLayer]
-
-	-- Update collision map with objects on same layer
-	for _, obj in pairs(self.map.objects) do
-		if obj.updateCollision then
-			obj:updateCollision()
-		end
-	end
+	self.map.objectCollisionMap = self.objectCollisionLayer[objLayer]
 end
 
 function BasicScene:draw()
