@@ -987,7 +987,7 @@ function BasicScene:getTileHeight()
 	return self.map.tileheight
 end
 
-function BasicScene:canMove(x, y, dx, dy, mapName, printl)
+function BasicScene:canMove(x, y, dx, dy, mapName)
 	mapName = mapName or "collisionMap"
 	-- Special case for map boundaries
 	if  (x + dx) <= 0 or
@@ -1016,13 +1016,13 @@ function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList, collisionLayer)
 	  (whiteList and whiteList[mapy] and whiteList[mapy][mapx])
 end
 
-function BasicScene:swapLayer(toLayerNum, ignoreSprites)
+function BasicScene:swapLayer(toLayerNum, ignoreDropShadow)
 	-- Swap object layer (assumes naming convention of "objects" or "objectsN"
 	local layerStr = tostring(toLayerNum)
 	local objLayer = toLayerNum == 1 and "objects" or ("objects"..layerStr)
 
-	if not ignoreSprites then
-		self.player.sprite:swapLayer(objLayer)
+	self.player.sprite:swapLayer(objLayer)
+	if not ignoreDropShadow then
 		if not self.player.dropShadow:isRemoved() then
 			self.player.dropShadow.sprite:swapLayer(objLayer)
 		end

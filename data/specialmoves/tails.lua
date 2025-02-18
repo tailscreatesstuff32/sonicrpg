@@ -6,7 +6,9 @@ local NPC = require "object/NPC"
 local Do = require "actions/Do"
 local Ease = require "actions/Ease"
 local Animate = require "actions/Animate"
+local Serial = require "actions/Serial"
 local Parallel = require "actions/Parallel"
+local Repeat = require "actions/Repeat"
 local Wait = require "actions/Wait"
 local Action = require "actions/Action"
 
@@ -18,7 +20,8 @@ return function(player)
 	
 	-- While flying, you can press X to change perspective (Tails' body to his drop spot)
 	player.flyOffsetY = player.flyOffsetY or player.defaultFlyOffsetY
-	player.tempFlyOffsetY = 0
+	player.tempFlyOffsetY = player.tempFlyOffsetY or 0
+	player.threeDeeObjects = {}
 
 	player.flyingHotspots = player.hotspots
 	player.origIsTouching = player.isTouching
@@ -164,12 +167,10 @@ return function(player)
 		-- Update collision layer
 		if self.flyOffsetY > 160 then
 			if self.scene.currentLayerId ~= 1 then
-				print "F set layer to 1"
 				self.scene:swapLayer(1, true)
 			end
 		else
 			if self.scene.currentLayerId ~= 3 then
-				print "F set layer to 3"
 				self.scene:swapLayer(3, true)
 			end
 		end
@@ -187,22 +188,51 @@ return function(player)
 			end
 
 			if self.scene.currentLayerId ~= self.flyLandingLayer then
-				print("T set layer to "..tostring(self.flyLandingLayer))
 				self.scene:swapLayer(self.flyLandingLayer, true)
 
 				if self.flyLandingLayer < 3 then
-					self.sprite.sortOrderY = 100001
-					self.dropShadow.sprite.sortOrderY = 100000
 					self.flyOffsetY = self.nextFlyOffsetY or 0
+					self.tempFlyOffsetY = -(self.flyOffsetY - 1)
 					self.flyLandingLayer = self.nextFlyLandingLayer
 				else
 					self.flyOffsetY = 0
+					self.tempFlyOffsetY = 0
 					self.flyLandingLayer = self.nextFlyLandingLayer
 				end
 			end
 
 			if self.scene.camPos.y < 0 then
 				self:run(Ease(self.scene.camPos, "y", 0, 2, "linear"))
+			end
+
+			-- Update hotspots
+			hotspots.right_top.y = hotspots.right_top.y - self.flyOffsetY
+			hotspots.right_bot.y = hotspots.right_bot.y - self.flyOffsetY
+			hotspots.left_top.y = hotspots.left_top.y - self.flyOffsetY
+			hotspots.left_bot.y = hotspots.left_bot.y - self.flyOffsetY
+
+			-- If we can't move after landing, reset our position to where we took off from and flicker
+			if not (
+			   (self.scene:canMove(hotspots.left_top.x, hotspots.left_top.y, 0, -movespeed) and
+				self.scene:canMove(hotspots.right_top.x, hotspots.right_top.y, 0, -movespeed)) or
+			   (self.scene:canMove(hotspots.left_bot.x, hotspots.left_bot.y, 0, movespeed) and
+				self.scene:canMove(hotspots.right_bot.x, hotspots.right_bot.y, 0, movespeed)) or
+			   (self.scene:canMove(hotspots.left_top.x, hotspots.left_top.y, -movespeed, 0, nil, true) and
+				self.scene:canMove(hotspots.left_bot.x, hotspots.left_bot.y, -movespeed, 0, nil, true)) or
+			   (self.scene:canMove(hotspots.right_top.x, hotspots.right_top.y, movespeed, 0) and
+				self.scene:canMove(hotspots.right_bot.x, hotspots.right_bot.y, movespeed, 0))
+			) then
+				self.x = self.takeOffX
+				self.y = self.takeOffY
+				self:run(
+					Repeat(
+						Serial {
+							Ease(self.sprite.color, 4, 0, 20, "linear"),
+							Ease(self.sprite.color, 4, 255, 20, "linear")
+						},
+						12
+					)
+				)
 			end
 		else
 			self.sprite:setAnimation(self.state)
@@ -214,4 +244,6 @@ return function(player)
 	player.basicUpdate = flyingUpdateFun
 	player.flyTime = 2.0
 	player.state = "flyright"
+	player.takeOffX = player.x
+	player.takeOffY = player.y
 end
