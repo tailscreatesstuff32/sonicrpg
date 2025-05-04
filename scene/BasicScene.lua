@@ -1016,13 +1016,13 @@ function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList, collisionLayer)
 	  (whiteList and whiteList[mapy] and whiteList[mapy][mapx])
 end
 
-function BasicScene:swapLayer(toLayerNum, ignoreDropShadow)
+function BasicScene:swapLayer(toLayerNum, ignoreShadow)
 	-- Swap object layer (assumes naming convention of "objects" or "objectsN"
 	local layerStr = tostring(toLayerNum)
 	local objLayer = toLayerNum == 1 and "objects" or ("objects"..layerStr)
 
 	self.player.sprite:swapLayer(objLayer)
-	if not ignoreDropShadow then
+	if not ignoreShadow then
 		if not self.player.dropShadow:isRemoved() then
 			self.player.dropShadow.sprite:swapLayer(objLayer)
 		end
