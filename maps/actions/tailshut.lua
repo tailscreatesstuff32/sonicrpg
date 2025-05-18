@@ -232,7 +232,7 @@ return function(scene, hint)
 								scene.player.noIdle = false
 								scene.player.sprite:setAnimation("idledown")
 							end),
-							MessageBox {message="Sally: *whipers* Goodnight Tails."},
+							MessageBox {message="Sally: *whispers* Goodnight Tails."},
 							Do(undonight),
 							Do(function()
 								scene.objectLookup.Door.isInteractable = true
