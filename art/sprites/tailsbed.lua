@@ -16,6 +16,9 @@ return {
 		},
 		tailssleep = {
 			frames = {{3,0}}
+		},
+		tailsawake_lookup = {
+			frames = {{4,0}}
 		}
     }
 }

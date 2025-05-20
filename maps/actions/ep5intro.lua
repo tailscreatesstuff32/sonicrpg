@@ -42,6 +42,7 @@ return function(scene, hint)
 		-- Undo ignore night
 		local shine = require "lib/shine"
 
+		scene.nighttime = true
 		scene.map.properties.ignorenight = false
 		scene.originalMapDraw = scene.map.drawTileLayer
 		scene.map.drawTileLayer = function(map, layer)
@@ -58,7 +59,7 @@ return function(scene, hint)
 
 	titleText()
 
-	scene.objectLookup.TailsBed.sprite:setAnimation("tailsawake")
+	scene.objectLookup.TailsBed.sprite:setAnimation("tailsawake_lookup")
 
 	GameState:setFlag("ep5_intro")
 
@@ -120,17 +121,41 @@ return function(scene, hint)
 		Ease(storybook.color, 4, 0, 1, "linear"),
 		MessageBox {message="Tails: That's Boulder Bay they're talkin' about, huh?\n{p40}Where Baby T lives?", textspeed=3},
 		MessageBox {message="Sally: You'll just have to wait and see!{p40} It's past your bedtime, Tails.", textspeed=3},
+		Animate(scene.objectLookup.Sally.sprite, "idledown"),
 		MessageBox {message="Tails: Aww man!", textspeed=3},
-		-- Sally closes book and walks toward door...
-		MessageBox {message="Tails: ...", textspeed=3},
+		MessageBox {message="Tails: ...", textspeed=3, closeAction=Wait(1)},
 		MessageBox {message="Tails: Hey Sally...", textspeed=3},
-		-- Sally turns around
 		MessageBox {message="Sally: Yeah?", textspeed=3},
 		MessageBox {message="Tails: Do ya think the 'Light of Mobius'...{p40}what they're lookin' for in the story...{p40}is really out there?", textspeed=3},
-		MessageBox {message="Sally: Well...{p40} we did find the 'Breath of Mobius'!\n{p40} So I wouldn't count it out!", textspeed=3},
+		Animate(scene.objectLookup.Sally.sprite, "thinking"),
+		MessageBox {message="Sally: Well...{p50} we did find the 'Breath of Mobius',\nso I wouldn't count it out!", textspeed=3},
 		MessageBox {message="Tails: Wow...", textspeed=3},
+		Animate(scene.objectLookup.Sally.sprite, "idledown"),
 		MessageBox {message="Sally: Good night, Tails.", textspeed=3},
-		-- Sally turns out light
-		-- Tails closes eyes for a second, but opens them again. Fade out *little Tails flute motif*
+
+		Do(function() scene.objectLookup.Sally.sprite:setAnimation("walkup") end),
+
+		Parallel {
+			Ease(scene.objectLookup.Sally, "x", scene.objectLookup.Sally.x - 40, 1, "linear"),
+			Ease(scene.objectLookup.Sally, "y", scene.objectLookup.Sally.y - 50, 1, "linear")
+		},
+		Animate(scene.objectLookup.Sally.sprite, "idleup"),
+		Wait(1),
+		Do(function() undonight() end),
+		Wait(1),
+		Do(function() scene.objectLookup.Door:interact() end),
+		Wait(0.5),
+		Do(function() scene.objectLookup.Sally:remove() end),
+		Wait(0.5),
+		Do(function() scene.objectLookup.Door:close() end),
+		Wait(1.0),
+		Animate(scene.objectLookup.TailsBed.sprite, "tailstired"),
+		Wait(0.5),
+		Animate(scene.objectLookup.TailsBed.sprite, "tailssleep"),
+		PlayAudio("music", "tailssleep2", 1.0, true),
+		Wait(5),
+		Do(function()
+			scene:changeScene{map="knothole_ep5", fadeOutSpeed=0.2, fadeInSpeed=0.2, enterDelay=1.0, hint="intro"}
+		end)
 	}
 end

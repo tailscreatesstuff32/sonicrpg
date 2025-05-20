@@ -6,6 +6,10 @@ return {
     },
 	{
         type = "map",
+        file = "maps/knothole_ep5.lua"
+    },
+	{
+        type = "map",
 		file = "maps/stealthtut1.lua",
 		--primary = true
     },
@@ -856,6 +860,11 @@ return {
 	{
 		type = "sound",
 		file = "audio/music/tailssleep.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/tailssleep2.ogg",
 		category = "music"
 	},
 	{
