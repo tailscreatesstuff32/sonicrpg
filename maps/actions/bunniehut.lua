@@ -93,14 +93,19 @@ return function(scene, hint)
 				layer.opacity = 0.0
 			end
 		end
-		scene.objectLookup.Door.object.properties.scene = "knothole.lua"
-
-		if GameState:isFlagSet("ep4_introdone") then
+		
+		if GameState:isFlagSet("ep5_knothole") then
 			scene.audio:playMusic("knotholehut", 0.8)
-		elseif not GameState:isFlagSet("ep3_ffmeeting") then
-			scene.audio:playMusic("awkward", 1.0)
+			scene.objectLookup.Door.object.properties.scene = "knothole_ep5.lua"
 		else
-			scene.audio:playMusic("knotholehut", 0.8)
+			if GameState:isFlagSet("ep4_introdone") then
+				scene.audio:playMusic("knotholehut", 0.8)
+			elseif not GameState:isFlagSet("ep3_ffmeeting") then
+				scene.audio:playMusic("awkward", 1.0)
+			else
+				scene.audio:playMusic("knotholehut", 0.8)
+			end
+			scene.objectLookup.Door.object.properties.scene = "knothole.lua"
 		end
 	end
 

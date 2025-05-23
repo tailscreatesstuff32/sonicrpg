@@ -47,11 +47,6 @@ return {
 		file = "maps/rotorsworkshop.lua",
 		--primary = true -- TEST
     },
-	{
-        type = "map",
-        file = "maps/knothole.lua",
-		--primary = true -- testing
-    },
 	
 	{
         type = "map",
@@ -537,6 +532,12 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/music/knothole.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
 		file = "audio/music/ep4harp.ogg",
 		category = "music"
 	},
@@ -866,6 +867,17 @@ return {
 		type = "sound",
 		file = "audio/music/tailssleep2.ogg",
 		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/tailsawake.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/knotholehut.ogg",
+		category = "music",
+		looping = true
 	},
 	{
 		type = "sound",

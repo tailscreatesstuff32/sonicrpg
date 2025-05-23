@@ -86,14 +86,9 @@ return function(scene, hint)
 			scene.camPos.x = 0
 			scene.camPos.y = 0
 		end),
-		Wait(4),
-		Parallel {
-			MessageBox {message="Sally: 'And so, Ben and his trusty companion, the Inventor Knight, made their way through the twisted\nand tangled Great Jungle...'", textSpeed=3},
-			Serial {
-				Wait(1),
-				PlayAudio("music", "tailssleep", 1.0, true)
-			}
-		},
+		Wait(3.5),
+		--[[PlayAudio("music", "tailssleep", 1.0, true),
+		MessageBox {message="Sally: 'And so, Ben and his trusty companion, the Inventor Knight, made their way through the twisted\nand tangled Great Jungle...'", textSpeed=3},
 		MessageBox {message="Sally: '*Gruff voice* \"What are we looking for, Ben?\",\nthe Knight pressed...'", textSpeed=3},
 		MessageBox {message="Sally: '*Playful voice* \"I will let you know once I've\nfound it!\", Ben retorted...'", textSpeed=3},
 		MessageBox {message="Sally: 'But just as Ben's tried companion was about\nto lash back in frustration{p50}, the brush finally cleared!'", textSpeed=3},
@@ -113,7 +108,7 @@ return function(scene, hint)
 				Wait(1),
 				Parallel {
 					Ease(storybook.color, 4, 255, 1, "linear"),
-					Ease(storybook.transform, "y", 0, 0.07, "linear")
+					Ease(storybook.transform, "y", -20, 0.07, "linear")
 				}
 			}
 		},
@@ -128,7 +123,7 @@ return function(scene, hint)
 		MessageBox {message="Sally: Yeah?", textspeed=3},
 		MessageBox {message="Tails: Do ya think the 'Light of Mobius'...{p40}what they're lookin' for in the story...{p40}is really out there?", textspeed=3},
 		Animate(scene.objectLookup.Sally.sprite, "thinking"),
-		MessageBox {message="Sally: Well...{p50} we did find the 'Breath of Mobius',\nso I wouldn't count it out!", textspeed=3},
+		MessageBox {message="Sally: Well...{p50} we did find the 'Breath of Mobius',{p60}\nso I wouldn't count it out!", textspeed=3},
 		MessageBox {message="Tails: Wow...", textspeed=3},
 		Animate(scene.objectLookup.Sally.sprite, "idledown"),
 		MessageBox {message="Sally: Good night, Tails.", textspeed=3},
@@ -147,15 +142,14 @@ return function(scene, hint)
 		Wait(0.5),
 		Do(function() scene.objectLookup.Sally:remove() end),
 		Wait(0.5),
-		Do(function() scene.objectLookup.Door:close() end),
-		Wait(1.0),
-		Animate(scene.objectLookup.TailsBed.sprite, "tailstired"),
-		Wait(0.5),
-		Animate(scene.objectLookup.TailsBed.sprite, "tailssleep"),
+		Do(function() scene.objectLookup.Door:close() end),]]
 		PlayAudio("music", "tailssleep2", 1.0, true),
-		Wait(5),
+		Wait(1),
+		Animate(scene.objectLookup.TailsBed.sprite, "tailstired"),
+		Wait(2),
+		Animate(scene.objectLookup.TailsBed.sprite, "tailssleep"),
 		Do(function()
-			scene:changeScene{map="knothole_ep5", fadeOutSpeed=0.2, fadeInSpeed=0.2, enterDelay=1.0, hint="intro"}
+			scene:changeScene{map="tailshut", fadeOutSpeed=0.1, fadeInSpeed=0.2, enterDelay=1.0, hint="ep5intro"}
 		end)
 	}
 end

@@ -270,6 +270,8 @@ function BasicScene:onEnter(args)
 			if self.layered and toLayer then
 				local layerId = toLayer:gsub("objects", "")
 				self:swapLayer(layerId ~= "" and tonumber(layerId) or 1)
+			else
+				self.map.objectCollisionMap = self.objectCollisionLayer["objects"]
 			end
 		end),
 		Spawn(

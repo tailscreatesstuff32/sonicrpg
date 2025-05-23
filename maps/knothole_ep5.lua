@@ -1901,15 +1901,15 @@ return {
           name = "Spawn 1",
           type = "Player",
           shape = "rectangle",
-          x = 1664,
-          y = 1952,
+          x = 1600,
+          y = 2016,
           width = 32,
           height = 32,
           rotation = 0,
           gid = 5323,
           visible = true,
           properties = {
-            ["orientation"] = "down"
+            ["orientation"] = "right"
           }
         },
         {
@@ -4670,7 +4670,7 @@ return {
           gid = 5323,
           visible = true,
           properties = {
-            ["depth"] = 96,
+            ["depth"] = 480,
             ["flyLandingLayer"] = 2,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 3,
@@ -4690,7 +4690,7 @@ return {
           gid = 5323,
           visible = true,
           properties = {
-            ["depth"] = 128,
+            ["depth"] = 160,
             ["flyLandingLayer"] = 2,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 3,
@@ -4710,7 +4710,7 @@ return {
           gid = 5323,
           visible = true,
           properties = {
-            ["depth"] = 128,
+            ["depth"] = 160,
             ["flyLandingLayer"] = 2,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 3,
@@ -4730,7 +4730,7 @@ return {
           gid = 5323,
           visible = true,
           properties = {
-            ["depth"] = 128,
+            ["depth"] = 160,
             ["flyLandingLayer"] = 2,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 3,
@@ -4750,7 +4750,7 @@ return {
           gid = 5323,
           visible = true,
           properties = {
-            ["depth"] = 96,
+            ["depth"] = 160,
             ["flyLandingLayer"] = 2,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 3,
@@ -4770,7 +4770,7 @@ return {
           gid = 5323,
           visible = true,
           properties = {
-            ["depth"] = 128,
+            ["depth"] = 160,
             ["flyLandingLayer"] = 2,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 3,

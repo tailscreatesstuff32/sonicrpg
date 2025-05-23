@@ -38,7 +38,10 @@ return function(scene, hint)
 		})
 	end
 	
-	if hint == "snowday" then
+	if hint == "ep5intro" then
+		scene.nighttime = false
+		scene.objectLookup.Door.object.properties.scene = "knothole_ep5.lua"
+	elseif hint == "snowday" then
 		scene.objectLookup.Door.object.properties.scene = "knotholesnowday.lua"
 		local prefix = "nighthide"
 		for _,layer in pairs(scene.map.layers) do
@@ -47,16 +50,21 @@ return function(scene, hint)
 			end
 		end
 	elseif not scene.nighttime then
-		if GameState:isFlagSet("ep4_introdone") then
+		if GameState:isFlagSet("ep5_knothole") then
 			scene.audio:playMusic("knotholehut", 0.8)
-		elseif GameState:isFlagSet("ep3_ffmeeting") or
-		   not GameState:isFlagSet("ep3_knotholerun")
-		then
-			scene.audio:playMusic("knotholehut", 0.8)
-		elseif not GameState:isFlagSet("ep3_ffmeeting") then
-			scene.audio:playMusic("awkward", 1.0)
+			scene.objectLookup.Door.object.properties.scene = "knothole_ep5.lua"
+		else
+			if GameState:isFlagSet("ep4_introdone") then
+				scene.audio:playMusic("knotholehut", 0.8)
+			elseif GameState:isFlagSet("ep3_ffmeeting") or
+			   not GameState:isFlagSet("ep3_knotholerun")
+			then
+				scene.audio:playMusic("knotholehut", 0.8)
+			elseif not GameState:isFlagSet("ep3_ffmeeting") then
+				scene.audio:playMusic("awkward", 1.0)
+			end
+			scene.objectLookup.Door.object.properties.scene = "knothole.lua"
 		end
-		scene.objectLookup.Door.object.properties.scene = "knothole.lua"
 	else
 		scene.objectLookup.Door.object.properties.scene = "knotholeatnight.lua"
 	end
@@ -270,5 +278,54 @@ return function(scene, hint)
 	end
 
 	titleText()
-	return Action()
+	
+	if hint == "ep5intro" then
+		scene.player.sprite.visible = false
+		scene.player.dropShadow.hidden = true
+
+		scene.objectLookup.TailsBed.sprite:setAnimation("tailssleep")
+
+		return BlockPlayer {
+			Do(function()
+				scene.player.sprite.visible = false
+				scene.player.dropShadow.hidden = true
+				scene.player.x = scene.objectLookup.TailsBed.x + 96
+				scene.player.y = scene.objectLookup.TailsBed.y + 20
+			end),
+			Wait(3),
+			Animate(scene.objectLookup.TailsBed.sprite, "tailstired"),
+			MessageBox{message="Tails: *YAWN*{p50} Morning already?", textSpeed=3},
+			Animate(scene.objectLookup.TailsBed.sprite, "tailsawake"),
+			MessageBox{message="Tails: Alright...", textSpeed=3},
+			Animate(scene.objectLookup.TailsBed.sprite, "empty"),
+			Do(function()
+				scene.player.sprite.visible = true
+				scene.player.dropShadow.hidden = false
+				scene.player.state = "joyleft"
+				scene.player.hidekeyhints[tostring(scene.objectLookup.Door)] = scene.objectLookup.Door
+				scene.player:removeKeyHint()
+				scene.player.sprite.sortOrderY = 10000
+			end),
+			PlayAudio("sfx", "jump", 0.5, true),
+			Parallel {
+				MessageBox{message="Tails: Time for a day of adventure!", textSpeed=3},
+				Ease(scene.player, "x", function() return scene.player.x - 120 end, 3),
+				Serial {
+					Ease(scene.player, "y", function() return scene.player.y - 120 end, 4),
+					Ease(scene.player, "y", function() return scene.player.y + 150 end, 6),
+					Do(function()
+						scene.player.sprite.sortOrderY = nil
+					end)
+				}
+			},
+			Do(function()
+				scene.audio:playMusic("knotholehut", 0.8)
+				scene.player.state = "idleleft"
+				scene.player.hidekeyhints[tostring(scene.objectLookup.Door)] = nil
+				GameState:setFlag("ep5_knothole")
+			end)
+		}
+	else
+		return Action()
+	end
 end

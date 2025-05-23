@@ -1406,9 +1406,9 @@
   </object>
  </objectgroup>
  <objectgroup name="objects3">
-  <object id="1" name="Spawn 1" type="Player" gid="5323" x="1664" y="1952" width="32" height="32">
+  <object id="1" name="Spawn 1" type="Player" gid="5323" x="1600" y="2016" width="32" height="32">
    <properties>
-    <property name="orientation" value="down"/>
+    <property name="orientation" value="right"/>
    </properties>
   </object>
   <object id="2" name="SallyHut" type="BasicNPC" gid="5323" x="1088" y="1664" width="416" height="192">
@@ -2927,7 +2927,7 @@ end</property>
  <objectgroup name="objects">
   <object id="395" name="3DTree" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="768">
    <properties>
-    <property name="depth" type="int" value="96"/>
+    <property name="depth" type="int" value="480"/>
     <property name="flyLandingLayer" type="int" value="2"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="3"/>
@@ -2936,7 +2936,7 @@ end</property>
   </object>
   <object id="400" name="3DBoneBase2" type="ThreeDee" gid="5323" x="4576" y="3424" width="448" height="480">
    <properties>
-    <property name="depth" type="int" value="128"/>
+    <property name="depth" type="int" value="160"/>
     <property name="flyLandingLayer" type="int" value="2"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="3"/>
@@ -2945,7 +2945,7 @@ end</property>
   </object>
   <object id="401" name="3DBoneBase3" type="ThreeDee" gid="5323" x="5696" y="3424" width="448" height="480">
    <properties>
-    <property name="depth" type="int" value="128"/>
+    <property name="depth" type="int" value="160"/>
     <property name="flyLandingLayer" type="int" value="2"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="3"/>
@@ -2954,7 +2954,7 @@ end</property>
   </object>
   <object id="403" name="3DBoneBase4" type="ThreeDee" gid="5323" x="6112" y="2528" width="448" height="480">
    <properties>
-    <property name="depth" type="int" value="128"/>
+    <property name="depth" type="int" value="160"/>
     <property name="flyLandingLayer" type="int" value="2"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="3"/>
@@ -2963,7 +2963,7 @@ end</property>
   </object>
   <object id="406" name="3DBoneBaseMeetingRoom" type="ThreeDee" gid="5323" x="4544" y="2816" width="256" height="448">
    <properties>
-    <property name="depth" type="int" value="96"/>
+    <property name="depth" type="int" value="160"/>
     <property name="flyLandingLayer" type="int" value="2"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="3"/>
@@ -2972,7 +2972,7 @@ end</property>
   </object>
   <object id="407" name="3DBoneBase5" type="ThreeDee" gid="5323" x="4224" y="2240" width="448" height="480">
    <properties>
-    <property name="depth" type="int" value="128"/>
+    <property name="depth" type="int" value="160"/>
     <property name="flyLandingLayer" type="int" value="2"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="3"/>
