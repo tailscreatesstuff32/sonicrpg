@@ -282,6 +282,9 @@ return function(scene, hint)
 	if hint == "ep5intro" then
 		scene.player.sprite.visible = false
 		scene.player.dropShadow.hidden = true
+		scene.objectLookup.Door.isInteractable = false
+		scene.objectLookup.Drawer.isInteractable = false
+		scene.objectLookup.TailsBed.isInteractable = false
 
 		scene.objectLookup.TailsBed.sprite:setAnimation("tailssleep")
 
@@ -302,17 +305,15 @@ return function(scene, hint)
 				scene.player.sprite.visible = true
 				scene.player.dropShadow.hidden = false
 				scene.player.state = "joyleft"
-				scene.player.hidekeyhints[tostring(scene.objectLookup.Door)] = scene.objectLookup.Door
-				scene.player:removeKeyHint()
 				scene.player.sprite.sortOrderY = 10000
 			end),
 			PlayAudio("sfx", "jump", 0.5, true),
 			Parallel {
 				MessageBox{message="Tails: Time for a day of adventure!", textSpeed=3},
-				Ease(scene.player, "x", function() return scene.player.x - 120 end, 3),
+				Ease(scene.player, "x", function() return scene.player.x - 130 end, 3),
 				Serial {
-					Ease(scene.player, "y", function() return scene.player.y - 120 end, 4),
-					Ease(scene.player, "y", function() return scene.player.y + 150 end, 6),
+					Ease(scene.player, "y", function() return scene.player.y - 150 end, 4),
+					Ease(scene.player, "y", function() return scene.player.y + 170 end, 5),
 					Do(function()
 						scene.player.sprite.sortOrderY = nil
 					end)
@@ -321,7 +322,9 @@ return function(scene, hint)
 			Do(function()
 				scene.audio:playMusic("knotholehut", 0.8)
 				scene.player.state = "idleleft"
-				scene.player.hidekeyhints[tostring(scene.objectLookup.Door)] = nil
+				scene.objectLookup.Door.isInteractable = true
+				scene.objectLookup.Drawer.isInteractable = true
+				scene.objectLookup.TailsBed.isInteractable = true
 				GameState:setFlag("ep5_knothole")
 			end)
 		}

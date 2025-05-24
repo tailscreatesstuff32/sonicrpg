@@ -20,23 +20,6 @@ return function(scene, hint)
 	local Animate = require "actions/Animate"
 	local SpriteNode = require "object/SpriteNode"
 
-	local titleText = function()
-		local text = TypeText(
-			Transform(50, 500),
-			{255, 255, 255, 0},
-			FontCache.Techno,
-			scene.map.properties.regionName,
-			100
-		)
-
-		Executor(scene):act(Serial {
-			Wait(0.5),
-			text,
-			Ease(text.color, 4, 255, 1),
-			Wait(2),
-			Ease(text.color, 4, 0, 1)
-		})
-	end
 
 	local undonight = function()
 		-- Undo ignore night
@@ -56,8 +39,6 @@ return function(scene, hint)
 			end)
 		end
 	end
-
-	titleText()
 
 	scene.objectLookup.TailsBed.sprite:setAnimation("tailsawake_lookup")
 
@@ -86,8 +67,8 @@ return function(scene, hint)
 			scene.camPos.x = 0
 			scene.camPos.y = 0
 		end),
-		Wait(3.5),
-		--[[PlayAudio("music", "tailssleep", 1.0, true),
+		Wait(2),
+		PlayAudio("music", "tailssleep", 1.0, true),
 		MessageBox {message="Sally: 'And so, Ben and his trusty companion, the Inventor Knight, made their way through the twisted\nand tangled Great Jungle...'", textSpeed=3},
 		MessageBox {message="Sally: '*Gruff voice* \"What are we looking for, Ben?\",\nthe Knight pressed...'", textSpeed=3},
 		MessageBox {message="Sally: '*Playful voice* \"I will let you know once I've\nfound it!\", Ben retorted...'", textSpeed=3},
@@ -97,8 +78,9 @@ return function(scene, hint)
 
 		Parallel {
 			Serial {
-				MessageBox {message="Sally: Take a look!", textspeed=3},
-				MessageBox {message="Tails: Wow...", textspeed=3}
+				MessageBox {message="Sally: Take a look!", textspeed=3, closeAction=Wait(3)},
+				Wait(3),
+				MessageBox {message="Tails: Wow...", textspeed=3, closeAction=Wait(3)}
 			},
 			Serial {
 				Wait(2),
@@ -118,8 +100,18 @@ return function(scene, hint)
 		MessageBox {message="Sally: You'll just have to wait and see!{p40} It's past your bedtime, Tails.", textspeed=3},
 		Animate(scene.objectLookup.Sally.sprite, "idledown"),
 		MessageBox {message="Tails: Aww man!", textspeed=3},
-		MessageBox {message="Tails: ...", textspeed=3, closeAction=Wait(1)},
+		Do(function() scene.objectLookup.Sally.sprite:setAnimation("walkup") end),
+
+		Parallel {
+			Ease(scene.objectLookup.Sally, "x", scene.objectLookup.Sally.x - 40, 1, "linear"),
+			Serial {
+				Ease(scene.objectLookup.Sally, "y", scene.objectLookup.Sally.y - 60, 1, "linear"),
+				Animate(scene.objectLookup.Sally.sprite, "idleup")
+			},
+			MessageBox {message="Tails: ...", textspeed=3, closeAction=Wait(1)}
+		},
 		MessageBox {message="Tails: Hey Sally...", textspeed=3},
+		Animate(scene.objectLookup.Sally.sprite, "idledown"),
 		MessageBox {message="Sally: Yeah?", textspeed=3},
 		MessageBox {message="Tails: Do ya think the 'Light of Mobius'...{p40}what they're lookin' for in the story...{p40}is really out there?", textspeed=3},
 		Animate(scene.objectLookup.Sally.sprite, "thinking"),
@@ -127,14 +119,8 @@ return function(scene, hint)
 		MessageBox {message="Tails: Wow...", textspeed=3},
 		Animate(scene.objectLookup.Sally.sprite, "idledown"),
 		MessageBox {message="Sally: Good night, Tails.", textspeed=3},
-
-		Do(function() scene.objectLookup.Sally.sprite:setAnimation("walkup") end),
-
-		Parallel {
-			Ease(scene.objectLookup.Sally, "x", scene.objectLookup.Sally.x - 40, 1, "linear"),
-			Ease(scene.objectLookup.Sally, "y", scene.objectLookup.Sally.y - 50, 1, "linear")
-		},
 		Animate(scene.objectLookup.Sally.sprite, "idleup"),
+
 		Wait(1),
 		Do(function() undonight() end),
 		Wait(1),
@@ -142,7 +128,7 @@ return function(scene, hint)
 		Wait(0.5),
 		Do(function() scene.objectLookup.Sally:remove() end),
 		Wait(0.5),
-		Do(function() scene.objectLookup.Door:close() end),]]
+		Do(function() scene.objectLookup.Door:close() end),
 		PlayAudio("music", "tailssleep2", 1.0, true),
 		Wait(1),
 		Animate(scene.objectLookup.TailsBed.sprite, "tailstired"),
