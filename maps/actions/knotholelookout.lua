@@ -145,6 +145,8 @@ return function(scene, hint)
 	showTitle()
 	if GameState:isFlagSet("ep3_ffmeeting") then
 		scene.audio:playMusic("lookout", 1.0)
+	else
+		scene.audio:playMusic("lookout", 1.0)
 	end
 
 	return Action()

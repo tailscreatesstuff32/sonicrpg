@@ -182,13 +182,14 @@ end
 function NPC:updateCollision()
 	self.collision = {}
 
-	if not self.object.properties.nocollision then
+	local collisionLayer = self.scene.objectCollisionLayer[self.layer.name]
+	if not self.object.properties.nocollision and collisionLayer then
 		local sx,sy = self.scene:worldCoordToCollisionCoord(self.object.x, self.object.y)
 		local dx,dy = self.scene:worldCoordToCollisionCoord(self.object.x + self.object.width, self.object.y + self.object.height)
 		for y=sy, dy-1 do
 			for x=sx, dx-1 do
 				if not self.ghost then
-					self.scene.objectCollisionLayer[self.layer.name][y][x] = 1
+					collisionLayer[y][x] = 1
 				end
 				table.insert(self.collision, {x,y})
 			end
@@ -207,9 +208,12 @@ function NPC:onPuzzleSolve()
 end
 
 function NPC:removeCollision()
-	for _, pair in pairs(self.collision or {}) do
-		if self.scene.objectCollisionLayer[self.layer.name][pair[2]] then
-			self.scene.objectCollisionLayer[self.layer.name][pair[2]][pair[1]] = nil
+    local collisionLayer = self.scene.objectCollisionLayer[self.layer.name]
+	if collisionLayer then
+		for _, pair in pairs(self.collision or {}) do
+			if collisionLayer[pair[2]] then
+				collisionLayer[pair[2]][pair[1]] = nil
+			end
 		end
 	end
 	self.collision = {}
@@ -720,10 +724,11 @@ end
 
 function NPC:remove()
 	-- Remove from collision map
-	if not self.ghost and not self.object.properties.ghost then
+	local collisionLayer = self.scene.objectCollisionLayer[self.layer.name]
+	if not self.ghost and not self.object.properties.ghost and collisionLayer then
 		for _, pair in pairs(self.collision or {}) do
-			if self.scene.objectCollisionLayer[self.layer.name][pair[2]] then
-				self.scene.objectCollisionLayer[self.layer.name][pair[2]][pair[1]] = nil
+			if collisionLayer[pair[2]] then
+				collisionLayer[pair[2]][pair[1]] = nil
 			end
 		end
 	end

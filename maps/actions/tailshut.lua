@@ -310,7 +310,7 @@ return function(scene, hint)
 			PlayAudio("sfx", "jump", 0.5, true),
 			Parallel {
 				MessageBox{message="Tails: Time for a day of adventure!", textSpeed=3},
-				Ease(scene.player, "x", function() return scene.player.x - 130 end, 3),
+				Ease(scene.player, "x", function() return scene.player.x - 130 end, 2.5),
 				Serial {
 					Ease(scene.player, "y", function() return scene.player.y - 150 end, 4),
 					Ease(scene.player, "y", function() return scene.player.y + 170 end, 5),

@@ -502,8 +502,9 @@ return {
 	},
 	{
 		type = "sound",
-		file = "audio/music/bart.ogg",
-		category = "music"
+		file = "audio/music/lookout.ogg",
+		category = "music",
+		looping = true
 	},
 	{
 		type = "sound",

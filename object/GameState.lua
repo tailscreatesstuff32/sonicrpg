@@ -434,8 +434,8 @@ function GameState:load(scene, slot)
 	
 	self.flags = data.flags
 
-	-- ep4 save file
-	if self:isFlagSet("ep4_introdone") then
+	-- ep5 save file
+	if self:isFlagSet("ep5_knothole") then
 		-- Add party members, grant items, set flags
 		for k, v in pairs(data.party) do
 			self:addToParty(k, v.level, false)

@@ -137,7 +137,7 @@ return function(player)
 			-- Left shift is down? Increase elevation
 			self.flyOffsetY = self.flyOffsetY + 4
 			self.y = self.y - 4
-			
+
 			if self.flyOffsetY > 200 then
 				self.scene.camPos.y = self.scene.camPos.y - 4
 			end
@@ -146,7 +146,7 @@ return function(player)
 			if self.flyTime <= 0.0 then
 				self.flyOffsetY = self.flyOffsetY - 8
 				self.y = self.y + 8
-				
+
 				if self.scene.camPos.y < 0 then
 					self.scene.camPos.y = self.scene.camPos.y + 8
 				else
@@ -169,9 +169,13 @@ return function(player)
 			if self.scene.currentLayerId ~= 1 then
 				self.scene:swapLayer(1, true)
 			end
+		elseif self.flyOffsetY > 20 then
+			if self.scene.currentLayerId ~= 2 then
+				self.scene:swapLayer(2, true)
+			end
 		else
-			if self.scene.currentLayerId ~= 3 then
-				self.scene:swapLayer(3, true)
+			if self.scene.currentLayerId ~= 4 then
+				self.scene:swapLayer(4, true)
 			end
 		end
 
@@ -190,7 +194,7 @@ return function(player)
 			if self.scene.currentLayerId ~= self.flyLandingLayer then
 				self.scene:swapLayer(self.flyLandingLayer, true)
 
-				if self.flyLandingLayer < 3 then
+				if self.flyLandingLayer < 4 then
 					self.flyOffsetY = self.nextFlyOffsetY or 0
 					self.tempFlyOffsetY = -(self.flyOffsetY - 1)
 					self.flyLandingLayer = self.nextFlyLandingLayer

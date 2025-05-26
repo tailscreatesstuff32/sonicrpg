@@ -70,7 +70,14 @@ return {
 		peekup = {
 			frames = {{6,4}}
 		},
-		
+
+		climb_1 = {
+			frames = {{13,3}}
+		},
+		climb_2 = {
+			frames = {{14,3}}
+		},
+
 		sadright = {
 			frames = {{9,0}}
 		},

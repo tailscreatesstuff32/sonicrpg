@@ -9,6 +9,7 @@ function ThreeDee:construct(scene, layer, object)
 	self.flyLandingLayer = self.object.properties.flyLandingLayer
 	self.nextFlyLandingLayer = self.object.properties.nextFlyLandingLayer
 	self.nextFlyOffsetY = self.object.properties.nextFlyOffsetY
+	self.passThru = self.object.properties.passThru
 
 	NPC.init(self)
 end
@@ -21,11 +22,7 @@ function ThreeDee:whileColliding(player, prevState)
         return
     end
 
-    local playerY = player.y + player.flyOffsetY
-	local objBottomY = self.object.y + self.object.height
-    local onTop = (playerY < objBottomY) and (playerY > (objBottomY - self.depth))
-
-    if onTop then
+    if self:onTop() then
         player.tempFlyOffsetY = -self.object.height + 20
 		player.flyLandingLayer = self.flyLandingLayer
 		player.nextFlyLandingLayer = self.nextFlyLandingLayer
@@ -40,6 +37,13 @@ function ThreeDee:whileColliding(player, prevState)
     end
 
 	player.threeDeeObjects[tostring(self)] = self
+end
+
+function ThreeDee:onTop()
+	local player = self.scene.player
+	local playerY = player.y + player.flyOffsetY
+	local objBottomY = self.object.y + self.object.height
+	return (playerY < objBottomY) and (playerY > (objBottomY - self.depth))
 end
 
 function ThreeDee:notColliding(player, prevState)

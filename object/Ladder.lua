@@ -15,6 +15,7 @@ function Ladder:construct(scene, layer, object)
 	self.ghost = true
 	self.topLayer = self.object.properties.topLayer
 	self.botLayer = self.object.properties.botLayer
+	self.nextFlyOffsetY = self.object.properties.nextFlyOffsetY
 	NPC.init(self)
 	
 	self.updateFun = function(player, dt)
@@ -120,6 +121,7 @@ function Ladder:whileColliding(player)
 
 		if self.topLayer then
 			self.scene:swapLayer(self.topLayer)
+			player.nextFlyOffsetY = self.nextFlyOffsetY
 		end
 	end
 end
