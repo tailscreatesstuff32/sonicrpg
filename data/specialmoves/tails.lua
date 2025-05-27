@@ -21,7 +21,6 @@ return function(player)
 	-- While flying, you can press X to change perspective (Tails' body to his drop spot)
 	player.flyOffsetY = player.flyOffsetY or player.defaultFlyOffsetY
 	player.tempFlyOffsetY = player.tempFlyOffsetY or 0
-	player.prevTempFlyOffsetY = player.tempFlyOffsetY
 	player.threeDeeObjects = {}
 
 	player.flyingHotspots = player.hotspots
@@ -247,8 +246,6 @@ return function(player)
 			self.sprite:setAnimation(self.state)
 			self.sprite.sortOrderY = self.sprite.transform.y + self.flyOffsetY
 		end
-
-		self.prevTempFlyOffsetY = self.tempFlyOffsetY
 	end
 
 	-- Change update method to fly, increase base move speed

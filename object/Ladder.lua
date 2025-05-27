@@ -84,6 +84,10 @@ function Ladder:notColliding(player)
 		if self.botLayer and love.keyboard.isDown("down") then
 			self.scene:swapLayer(self.botLayer)
 		end
+
+		if love.keyboard.isDown("up") then
+			player.flyOffsetY = self.nextFlyOffsetY
+		end
 	end
 end
 
@@ -121,7 +125,6 @@ function Ladder:whileColliding(player)
 
 		if self.topLayer then
 			self.scene:swapLayer(self.topLayer)
-			player.nextFlyOffsetY = self.nextFlyOffsetY
 		end
 	end
 end
