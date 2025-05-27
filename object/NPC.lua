@@ -99,7 +99,19 @@ function NPC:construct(scene, layer, object)
 	end
 	
 	self.hidden = object.properties.hidden
-	
+
+	-- Add to scene swapLayer lists
+	if object.properties.swapLayers then
+		self.swapLayerMapping = {}
+
+		local swapLayers = pack(object.properties.swapLayers:split(','))
+		for _, layertuple in pairs(swapLayers) do
+		    local fromLayer, toLayer = layertuple:trim():split(':')
+			table.insert(self.scene.swapLayerObjects[fromLayer], self)
+			self.swapLayerMapping[fromLayer] = toLayer
+		end
+	end
+
 	self.hotspotOffsets = {
 		right_top = {x = 0, y = 0},
 		right_bot = {x = 0, y = 0},

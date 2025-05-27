@@ -85,6 +85,13 @@ function BasicScene:onEnter(args)
 		self.objectCollisionLayer["objects4"][y] = {}
 	end
 
+	-- Create swap layer objects (Objects that will swap what layer they are in as player swaps layer)
+	self.swapLayerObjects = {}
+	self.swapLayerObjects["objects"] = {}
+	self.swapLayerObjects["objects2"] = {}
+	self.swapLayerObjects["objects3"] = {}
+	self.swapLayerObjects["objects4"] = {}
+
 	-- NOTE: This is how we draw the lua map data
 	-- There is a draw function on the sti map object.
 	-- All our SceneNode drawing interface requires is a
@@ -1027,6 +1034,16 @@ function BasicScene:swapLayer(toLayerNum, ignoreShadow)
 	if not ignoreShadow then
 		if not self.player.dropShadow:isRemoved() then
 			self.player.dropShadow.sprite:swapLayer(objLayer)
+		end
+	end
+
+	-- Swap all layer swappable objects from current layer to be on new layer
+	if self.currentLayer then
+		for _, object in pairs(self.swapLayerObjects[self.currentLayer]) do
+			print("swapping layer for object "..tostring(object.object.name))
+			if object.sprite and object.swapLayerMapping[objLayer] then
+				object.sprite:swapLayer(object.swapLayerMapping[objLayer])
+			end
 		end
 	end
 
