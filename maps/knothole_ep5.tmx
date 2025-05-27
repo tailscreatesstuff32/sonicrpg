@@ -2978,7 +2978,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="736"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
   <object id="400" name="3DBoneBase2" type="ThreeDee" gid="5323" x="4576" y="3424" width="448" height="480">
@@ -2988,7 +2987,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="448"/>
-    <property name="passThru" type="bool" value="true"/>
    </properties>
   </object>
   <object id="401" name="3DBoneBase3" type="ThreeDee" gid="5323" x="5696" y="3424" width="448" height="480">
@@ -2998,7 +2996,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="448"/>
-    <property name="passThru" type="bool" value="true"/>
    </properties>
   </object>
   <object id="403" name="3DBoneBase4" type="ThreeDee" gid="5323" x="6112" y="2528" width="448" height="480">
@@ -3008,7 +3005,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="448"/>
-    <property name="passThru" type="bool" value="true"/>
    </properties>
   </object>
   <object id="406" name="3DBoneBaseMeetingRoom" type="ThreeDee" gid="5323" x="4544" y="2816" width="256" height="448">
@@ -3018,7 +3014,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="448"/>
-    <property name="passThru" type="bool" value="true"/>
    </properties>
   </object>
   <object id="407" name="3DBoneBase5" type="ThreeDee" gid="5323" x="4224" y="2240" width="448" height="480">
@@ -3028,7 +3023,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="448"/>
-    <property name="passThru" type="bool" value="true"/>
    </properties>
   </object>
   <object id="416" name="3DRotorWorkshop" type="ThreeDee" gid="5323" x="7328" y="1792" width="256" height="192">
@@ -3038,7 +3032,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="160"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
   <object id="417" name="3DKnotholeHutAntoine" type="ThreeDee" gid="5323" x="1728" y="2592" width="416" height="192">
@@ -3048,7 +3041,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="160"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
   <object id="418" name="3DKnotholeHutSonic" type="ThreeDee" gid="5323" x="1760" y="1664" width="416" height="192">
@@ -3058,7 +3050,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="160"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
   <object id="419" name="3DKnotholeHutRebellion" type="ThreeDee" gid="5323" x="1664" y="1376" width="416" height="192">
@@ -3068,7 +3059,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="160"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
   <object id="420" name="3DKnotholeHutSally" type="ThreeDee" gid="5323" x="1088" y="1664" width="416" height="192">
@@ -3078,7 +3068,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="160"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
   <object id="421" name="3DKnotholeHutBunnie" type="ThreeDee" gid="5323" x="1152" y="1376" width="416" height="192">
@@ -3088,7 +3077,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="160"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
   <object id="426" name="3DKnotholeHutTails" type="ThreeDee" gid="5323" x="1536" y="1632" width="192" height="128">
@@ -3098,7 +3086,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="96"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
   <object id="433" name="3DTree2" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="1536">
@@ -3108,7 +3095,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="1504"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
   <object id="434" name="3DTreeCanopy" type="ThreeDee" gid="5323" x="6144" y="2816" width="224" height="1536">
@@ -3118,7 +3104,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="4"/>
     <property name="nextFlyOffsetY" type="int" value="1504"/>
-    <property name="passThru" type="bool" value="false"/>
    </properties>
   </object>
  </objectgroup>

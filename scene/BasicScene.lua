@@ -1040,7 +1040,6 @@ function BasicScene:swapLayer(toLayerNum, ignoreShadow)
 	-- Swap all layer swappable objects from current layer to be on new layer
 	if self.currentLayer then
 		for _, object in pairs(self.swapLayerObjects[self.currentLayer]) do
-			print("swapping layer for object "..tostring(object.object.name))
 			if object.sprite and object.swapLayerMapping[objLayer] then
 				object.sprite:swapLayer(object.swapLayerMapping[objLayer])
 			end

@@ -21,6 +21,7 @@ return function(player)
 	-- While flying, you can press X to change perspective (Tails' body to his drop spot)
 	player.flyOffsetY = player.flyOffsetY or player.defaultFlyOffsetY
 	player.tempFlyOffsetY = player.tempFlyOffsetY or 0
+	player.prevTempFlyOffsetY = player.tempFlyOffsetY
 	player.threeDeeObjects = {}
 
 	player.flyingHotspots = player.hotspots
@@ -37,7 +38,7 @@ return function(player)
 			(self.flyingHotspots.left_bot.y + fuzz) >= y and
 			(self.flyingHotspots.right_top.y - fuzz) <= (y + math.max(th*2, h))
 	end
-	
+
 	-- Flying is a toggle, so once you press lshift, you begin flying and stay flying until
 	-- you press lshift again
 	flyingUpdateFun = function(self, dt)
@@ -77,6 +78,10 @@ return function(player)
 		hotspots.left_top.y = hotspots.left_top.y + self.collisionHSOffsets.left_top.y + self.flyOffsetY
 		hotspots.left_bot.x = hotspots.left_bot.x + self.collisionHSOffsets.left_bot.x
 		hotspots.left_bot.y = hotspots.left_bot.y + self.collisionHSOffsets.left_bot.y + self.flyOffsetY
+		
+		-- Play fly sfx
+		local audio = player.scene.audio
+		audio:playSfx("fly", 0.5)
 
 		if love.keyboard.isDown("right") then
 			if  self.scene:canMove(hotspots.right_top.x, hotspots.right_top.y, movespeed, 0) and
@@ -242,6 +247,8 @@ return function(player)
 			self.sprite:setAnimation(self.state)
 			self.sprite.sortOrderY = self.sprite.transform.y + self.flyOffsetY
 		end
+
+		self.prevTempFlyOffsetY = self.tempFlyOffsetY
 	end
 
 	-- Change update method to fly, increase base move speed

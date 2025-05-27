@@ -764,6 +764,11 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/sfx/fly.wav",
+		category = "sfx"
+	},
+	{
+		type = "sound",
 		file = "audio/sfx/error.wav",
 		category = "sfx"
 	},

@@ -4772,8 +4772,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 736,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 736
           }
         },
         {
@@ -4793,8 +4792,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 448,
-            ["passThru"] = true
+            ["nextFlyOffsetY"] = 448
           }
         },
         {
@@ -4814,8 +4812,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 448,
-            ["passThru"] = true
+            ["nextFlyOffsetY"] = 448
           }
         },
         {
@@ -4835,8 +4832,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 448,
-            ["passThru"] = true
+            ["nextFlyOffsetY"] = 448
           }
         },
         {
@@ -4856,8 +4852,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 448,
-            ["passThru"] = true
+            ["nextFlyOffsetY"] = 448
           }
         },
         {
@@ -4877,8 +4872,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 448,
-            ["passThru"] = true
+            ["nextFlyOffsetY"] = 448
           }
         },
         {
@@ -4898,8 +4892,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 160,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 160
           }
         },
         {
@@ -4919,8 +4912,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 160,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 160
           }
         },
         {
@@ -4940,8 +4932,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 160,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 160
           }
         },
         {
@@ -4961,8 +4952,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 160,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 160
           }
         },
         {
@@ -4982,8 +4972,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 160,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 160
           }
         },
         {
@@ -5003,8 +4992,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 160,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 160
           }
         },
         {
@@ -5024,8 +5012,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 96,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 96
           }
         },
         {
@@ -5045,8 +5032,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 1504,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 1504
           }
         },
         {
@@ -5066,8 +5052,7 @@ return {
             ["flyLandingLayer"] = 3,
             ["ghost"] = true,
             ["nextFlyLandingLayer"] = 4,
-            ["nextFlyOffsetY"] = 1504,
-            ["passThru"] = false
+            ["nextFlyOffsetY"] = 1504
           }
         }
       }
