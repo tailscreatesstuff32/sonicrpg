@@ -48,15 +48,8 @@ return function(scene)
 			Ease(subtext.color, 4, 0, 1)
 		}
 	})
-	
-	if hint == "intro" then
-		return BlockPlayer {
-			MessageBox {message="Engarde!"},
-			MessageBox {message="Take that!"}
-		}
-	else
-		scene.audio:playMusic("knothole", 1.0)
 
-		return Action()
-	end
+	scene.audio:playMusic("tailstheme", 1.0)
+
+	return Action()
 end

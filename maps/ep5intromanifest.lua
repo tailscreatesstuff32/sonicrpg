@@ -881,6 +881,12 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/music/tailstheme.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
 		file = "audio/music/knotholehut.ogg",
 		category = "music",
 		looping = true

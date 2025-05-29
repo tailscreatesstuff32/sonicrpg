@@ -22,6 +22,7 @@ return function(player)
 	player.flyOffsetY = player.flyOffsetY or player.defaultFlyOffsetY
 	player.tempFlyOffsetY = player.tempFlyOffsetY or 0
 	player.threeDeeObjects = {}
+	player.moveCam = false
 
 	player.flyingHotspots = player.hotspots
 	player.origIsTouching = player.isTouching
@@ -80,7 +81,7 @@ return function(player)
 		
 		-- Play fly sfx
 		local audio = player.scene.audio
-		audio:playSfx("fly", 0.5)
+		audio:playSfx("fly", 0.2)
 
 		if love.keyboard.isDown("right") then
 			if  self.scene:canMove(hotspots.right_top.x, hotspots.right_top.y, movespeed, 0) and
@@ -148,11 +149,11 @@ return function(player)
 		else
 			-- Start falling out of the sky
 			if self.flyTime <= 0.0 then
-				self.flyOffsetY = self.flyOffsetY - 8
-				self.y = self.y + 8
+				self.flyOffsetY = self.flyOffsetY - 4
+				self.y = self.y + 4
 
 				if self.scene.camPos.y < 0 then
-					self.scene.camPos.y = self.scene.camPos.y + 8
+					self.scene.camPos.y = self.scene.camPos.y + 4
 				else
 					self.scene.camPos.y = 0
 				end
@@ -165,6 +166,14 @@ return function(player)
 				else
 					self.scene.camPos.y = 0
 				end
+			end
+			
+			if (self.flyOffsetY + self.tempFlyOffsetY) > 500 and
+			    self.flyTime < 0.0 and
+				not self.moveCam
+			then
+				self:run(Ease(self.scene.camPos, "y", -self.flyOffsetY + 200, 2))
+				self.moveCam = true
 			end
 		end
 
