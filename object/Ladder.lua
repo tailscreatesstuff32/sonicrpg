@@ -118,7 +118,7 @@ function Ladder:whileColliding(player)
 		player.noChangeChar = true
 		player.state = "climb_1"
 		player.origMoveSpeed = player.movespeed
-		player.movespeed = player.movespeed - 1
+		player.movespeed = player.origMoveSpeed - 1
 		
 		self.climbAnimTime = 0
 		player.basicUpdate = self.updateFun

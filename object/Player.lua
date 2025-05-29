@@ -107,6 +107,9 @@ function Player:construct(scene, layer, object)
 	-- A hashset of things blocking your ladder access
 	self.noLadder = {}
 
+	-- A hashset of simulated drops
+	self.simulatedDrops = {}
+
 	-- A hashset of keyhints we are touching
 	self.keyhints = {}
 

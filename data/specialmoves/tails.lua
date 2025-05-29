@@ -142,7 +142,7 @@ return function(player)
 			self.flyOffsetY = self.flyOffsetY + 4
 			self.y = self.y - 4
 
-			if self.flyOffsetY > 200 then
+			if true then --self.flyOffsetY > 200 then
 				self.scene.camPos.y = self.scene.camPos.y - 4
 			end
 		else
@@ -250,7 +250,7 @@ return function(player)
 
 	-- Change update method to fly, increase base move speed
 	player.basicUpdate = flyingUpdateFun
-	player.flyTime = 2.0
+	player.flyTime = 1.0
 	player.state = "flyright"
 	player.takeOffX = player.x
 	player.takeOffY = player.y

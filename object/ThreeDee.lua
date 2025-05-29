@@ -30,10 +30,6 @@ function ThreeDee:whileColliding(player, prevState)
 		player.nextFlyOffsetY = self.nextFlyOffsetY
 		player.dropShadow.sprite.sortOrderY = 100000
 
-		if not self.lastOnTop and player.flyOffsetY > 500 then
-			player:run(Ease(self.scene.camPos, "y", player.flyOffsetY + player.tempFlyOffsetY, 2, "linear"))
-		end
-
 		self.lastOnTop = true
     else
         player.tempFlyOffsetY = 0
@@ -43,7 +39,7 @@ function ThreeDee:whileColliding(player, prevState)
 		player.dropShadow.sprite.sortOrderY = nil
 
 		if self.lastOnTop and player.flyOffsetY > 500 then
-			player:run(Ease(self.scene.camPos, "y", -player.flyOffsetY, 2, "linear"))
+			--player:run(Ease(self.scene.camPos, "y", -player.flyOffsetY, 2, "linear"))
 		end
 
 		self.lastOnTop = false
@@ -75,7 +71,7 @@ function ThreeDee:notColliding(player, prevState)
 		player.dropShadow.sprite.sortOrderY = nil
 		
 		if self.lastOnTop and player.flyOffsetY > 500 then
-			player:run(Ease(self.scene.camPos, "y", -player.flyOffsetY, 2, "linear"))
+			--player:run(Ease(self.scene.camPos, "y", -player.flyOffsetY, 2, "linear"))
 		end
 		self.lastOnTop = false
 	end
