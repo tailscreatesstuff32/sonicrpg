@@ -68,6 +68,8 @@ function BasicScene:onEnter(args)
 			self.collisionLayer["objects3"] = layer.data
 		elseif layer.name == "Collision4" then
 			self.collisionLayer["objects4"] = layer.data
+		elseif layer.name == "Collision5" then
+			self.collisionLayer["objects5"] = layer.data
 		end
 	end
 
@@ -77,12 +79,14 @@ function BasicScene:onEnter(args)
 	self.objectCollisionLayer["objects2"] = {}
 	self.objectCollisionLayer["objects3"] = {}
 	self.objectCollisionLayer["objects4"] = {}
+	self.objectCollisionLayer["objects5"] = {}
 
 	for y = 0, self.map.height do
 		self.objectCollisionLayer["objects"][y] = {}
 		self.objectCollisionLayer["objects2"][y] = {}
 		self.objectCollisionLayer["objects3"][y] = {}
 		self.objectCollisionLayer["objects4"][y] = {}
+		self.objectCollisionLayer["objects5"][y] = {}
 	end
 
 	-- Create swap layer objects (Objects that will swap what layer they are in as player swaps layer)
@@ -91,6 +95,7 @@ function BasicScene:onEnter(args)
 	self.swapLayerObjects["objects2"] = {}
 	self.swapLayerObjects["objects3"] = {}
 	self.swapLayerObjects["objects4"] = {}
+	self.swapLayerObjects["objects5"] = {}
 
 	-- NOTE: This is how we draw the lua map data
 	-- There is a draw function on the sti map object.
@@ -1040,8 +1045,17 @@ function BasicScene:swapLayer(toLayerNum, ignoreShadow)
 	-- Swap all layer swappable objects from current layer to be on new layer
 	if self.currentLayer then
 		for _, object in pairs(self.swapLayerObjects[self.currentLayer]) do
-			if object.sprite and object.swapLayerMapping[objLayer] then
-				object.sprite:swapLayer(object.swapLayerMapping[objLayer])
+			if object.sprite and
+			   object.swapLayerMapping[objLayer]
+			then
+				if not object.swapLayerLessThanY or
+				   self.player.dropShadow.y <= object.swapLayerLessThanY
+				then
+					object.sprite:swapLayer(object.swapLayerMapping[objLayer])
+				else
+					-- HACK
+					object.sprite:swapLayer("objects5")
+				end
 			end
 		end
 	end

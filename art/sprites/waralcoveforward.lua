@@ -26,6 +26,14 @@ return {
 			frames = {{3,0}}
 		},
 		
+		right_overlay = {
+			frames = {{4,0}}
+		},
+		
+		left_overlay = {
+			frames = {{5,0}}
+		},
+		
 		right_clipped = {
 			frames = {{0,0}},
 			clip = {120,0,330,300}

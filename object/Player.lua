@@ -73,6 +73,7 @@ function Player:construct(scene, layer, object)
 	self.flyLandingLayer = self.flyLayer
 	self.defaultFlyOffsetY = 20
 	self.flyOffsetY = self.defaultFlyOffsetY
+	self.stickyLShift = false
 
 	self.isSwatbot = {}
 	self.lastSwatbotStepSfx = love.timer.getTime()
@@ -827,10 +828,15 @@ function Player:basicUpdate(dt)
 	end
 	
 	if not isSwatbot and
-	   love.keyboard.isDown("lshift")
+	   love.keyboard.isDown("lshift") and
+	   not self.stickyLShift
     then
 		self:onSpecialMove()
 		return
+	elseif self.stickyLShift and
+		not love.keyboard.isDown("lshift")
+	then
+		self.stickyLShift = false
 	end
 	self.doingSpecialMove = false
 	

@@ -10,6 +10,7 @@ local Serial = require "actions/Serial"
 local Parallel = require "actions/Parallel"
 local Repeat = require "actions/Repeat"
 local Wait = require "actions/Wait"
+local While = require "actions/While"
 local Action = require "actions/Action"
 
 local flyingUpdateFun
@@ -22,7 +23,9 @@ return function(player)
 	player.flyOffsetY = player.flyOffsetY or player.defaultFlyOffsetY
 	player.tempFlyOffsetY = player.tempFlyOffsetY or 0
 	player.threeDeeObjects = {}
-	player.moveCam = false
+
+	print("flyOffsetY = "..tostring(player.flyOffsetY)..", tempFlyOffsetY = "..tostring(player.tempFlyOffsetY)..
+	      ", flyLandingLayer: "..tostring(player.flyLandingLayer)..", fly layer: "..tostring(player.scene.currentLayerId))
 
 	player.flyingHotspots = player.hotspots
 	player.origIsTouching = player.isTouching
@@ -138,62 +141,94 @@ return function(player)
 		-- Flytime countdown
 		self.flyTime = self.flyTime - dt
 
-		if self.flyTime > 0.0 and love.keyboard.isDown("lshift") then
-			-- Left shift is down? Increase elevation
-			self.flyOffsetY = self.flyOffsetY + 4
-			self.y = self.y - 4
-
-			if true then --self.flyOffsetY > 200 then
-				self.scene.camPos.y = self.scene.camPos.y - 4
-			end
-		else
-			-- Start falling out of the sky
-			if self.flyTime <= 0.0 then
-				self.flyOffsetY = self.flyOffsetY - 4
-				self.y = self.y + 4
-
-				if self.scene.camPos.y < 0 then
-					self.scene.camPos.y = self.scene.camPos.y + 4
-				else
-					self.scene.camPos.y = 0
-				end
-			else
-				self.flyOffsetY = self.flyOffsetY - 4
-				self.y = self.y + 4
-
-				if self.scene.camPos.y < 0 then
-					self.scene.camPos.y = self.scene.camPos.y + 4
-				else
-					self.scene.camPos.y = 0
-				end
-			end
-			
-			if (self.flyOffsetY + self.tempFlyOffsetY) > 500 and
-			    self.flyTime < 0.0 and
-				not self.moveCam
-			then
-				self:run(Ease(self.scene.camPos, "y", -self.flyOffsetY + 200, 2))
-				self.moveCam = true
-			end
+		if not love.keyboard.isDown("lshift") then
+			self.stopElevating = true
 		end
 
+		if self.flyTime > 0.0 and love.keyboard.isDown("lshift") and not self.stopElevating then
+			-- Left shift is down the whole time? Increase elevation until you run out of fly time
+			self.flyOffsetY = self.flyOffsetY + 4
+			self.y = self.y - 4
+		elseif self.stopElevating and love.keyboard.isDown("lshift") and not self.stickyLShift then
+			-- Rapidly touch ground (pressed lshift a second time)
+			local diff = (self.flyOffsetY + self.tempFlyOffsetY) / 10
+			self:run(While(
+				function() return (self.flyOffsetY + self.tempFlyOffsetY) > 1.0 end,
+				Repeat(Do(function()
+					if (self.flyOffsetY + self.tempFlyOffsetY) > 1 then
+						self.flyOffsetY = self.flyOffsetY - diff
+						self.y = self.y + diff
+					end
+
+					if self.scene.camPos.y < 0 then
+						self.scene.camPos.y = self.scene.camPos.y + diff
+					else
+						self.scene.camPos.y = 0
+					end
+				end)),
+				Do(function()
+					self.scene.camPos.y = 0
+					self.scene.player.y = self.scene.player.y - 5
+				end)
+			))
+			self.stickyLShift = true
+			self.flyTime = 0.0
+		elseif self.flyTime <= 0.0 or not love.keyboard.isDown("lshift") and not self.stickyLShift then
+			-- Start falling out of the sky
+			self.flyOffsetY = self.flyOffsetY - 1
+			self.y = self.y + 1
+
+			--[[if self.scene.camPos.y < 0 then
+				self.scene.camPos.y = self.scene.camPos.y + 1
+			else
+				self.scene.camPos.y = 0
+			end]]
+		end
+
+		-- Adjust camera
+		self.scene.camPos.y = -(self.flyOffsetY + self.tempFlyOffsetY)
+
+		--[[
+		if (self.flyOffsetY + self.tempFlyOffsetY) > 500 then
+			self.intendedCamPosY = (self.flyOffsetY + self.tempFlyOffsetY)
+		else
+			self.intendedCamPosY = -(self.flyOffsetY + self.tempFlyOffsetY)
+		end
+
+		if (self.scene.camPos.y - self.intendedCamPosY) > 1 then
+			self.scene.camPos.y = self.scene.camPos.y - (self.scene.camPos.y - self.intendedCamPosY) * dt
+			if (self.scene.camPos.y - self.intendedCamPosY) < 0 then
+				self.scene.camPos.y = self.intendedCamPosY
+			end
+		elseif (self.scene.camPos.y - self.intendedCamPosY) < 1 then
+			self.scene.camPos.y = self.scene.camPos.y + (self.scene.camPos.y - self.intendedCamPosY) * dt
+			if (self.scene.camPos.y - self.intendedCamPosY) > 0 then
+				self.scene.camPos.y = self.intendedCamPosY
+			end
+		end]]
+
 		-- Update collision layer
-		if self.flyOffsetY > 160 then
+		if self.flyOffsetY > 500 then
 			if self.scene.currentLayerId ~= 1 then
 				self.scene:swapLayer(1, true)
 			end
-		elseif self.flyOffsetY > 20 then
+		elseif self.flyOffsetY > 160 then
 			if self.scene.currentLayerId ~= 2 then
 				self.scene:swapLayer(2, true)
 			end
+		elseif self.flyOffsetY > 20 then
+			if self.scene.currentLayerId ~= 3 then
+				self.scene:swapLayer(3, true)
+			end
 		else
-			if self.scene.currentLayerId ~= 4 then
-				self.scene:swapLayer(4, true)
+			if self.scene.currentLayerId ~= 5 then
+				self.scene:swapLayer(5, true)
 			end
 		end
 
 		if self.flyOffsetY + self.tempFlyOffsetY <= 0 then
 			self.sprite.sortOrderY = nil
+			self.stopElevating = false
 			self.basicUpdate = self.updateFun
 			self.movespeed = self.baseMoveSpeed
 			self.isTouching = self.origIsTouching
@@ -203,11 +238,16 @@ return function(player)
 			else
 				self.state = "idleleft"
 			end
+			
+			if self.flyLandingLayer == nil then
+				print("fly layer = nil????")
+				self.flyLandingLayer = 5
+			end
 
 			if self.scene.currentLayerId ~= self.flyLandingLayer then
 				self.scene:swapLayer(self.flyLandingLayer, true)
 
-				if self.flyLandingLayer < 4 then
+				if self.flyLandingLayer < 5 then
 					self.flyOffsetY = self.nextFlyOffsetY or 0
 					self.tempFlyOffsetY = -(self.flyOffsetY - 1)
 					self.flyLandingLayer = self.nextFlyLandingLayer
@@ -216,6 +256,8 @@ return function(player)
 					self.tempFlyOffsetY = 0
 					self.flyLandingLayer = self.nextFlyLandingLayer
 				end
+			elseif self.flyOffsetY < 0.0 then
+				self.flyOffsetY = 0
 			end
 
 			if self.scene.camPos.y < 0 then

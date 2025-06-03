@@ -78,6 +78,7 @@ function Ladder:notColliding(player)
 		player.ladders[tostring(self)] = nil
 		player.noSpecialMove = false
 		player.noChangeChar = false
+		print("weird ladder stuff 1, layer = "..tostring(self.scene.currentLayerId))
 		--player.movespeed = player.origMoveSpeed
 		player.basicUpdate = player.updateFun
 
@@ -117,6 +118,7 @@ function Ladder:whileColliding(player)
 		player.noSpecialMove = true
 		player.noChangeChar = true
 		player.state = "climb_1"
+		print("weird ladder stuff 2, layer = "..tostring(self.scene.currentLayerId))
 		--player.origMoveSpeed = player.movespeed
 		--player.movespeed = player.origMoveSpeed - 1
 		

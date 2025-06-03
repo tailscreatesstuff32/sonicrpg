@@ -103,6 +103,7 @@ function NPC:construct(scene, layer, object)
 	-- Add to scene swapLayer lists
 	if object.properties.swapLayers then
 		self.swapLayerMapping = {}
+		self.swapLayerLessThanY = object.properties.swapLayerLessThanY
 
 		local swapLayers = pack(object.properties.swapLayers:split(','))
 		for _, layertuple in pairs(swapLayers) do
@@ -550,7 +551,7 @@ function NPC:update(dt)
 	if self.onUpdate then
 		self.onUpdate(self, dt)
 	end
-	
+
 	-- Update hotspots
 	if self.sprite and not self.useObjectCollision then
 		self.hotspots.right_top.x = self.x + self.sprite.w*2 + self.hotspotOffsets.right_top.x
@@ -591,6 +592,8 @@ function NPC:update(dt)
 		}
 		return
 	end
+
+	self:maybeSwapLayer()
 
 	-- Don't interact with player if player doesn't care about your layer
 	if (self.scene.player.onlyInteractWithLayer ~= nil and
@@ -639,6 +642,22 @@ function NPC:update(dt)
 		self.scene.player.keyhints[tostring(self)] = nil
 		self.scene.player.hidekeyhints[tostring(self)] = nil
 		self.scene.player.touching[tostring(self)] = nil
+	end
+end
+
+function NPC:maybeSwapLayer()
+	local wasAbovePlayer = self.abovePlayer
+	if self.swapLayerLessThanY and self.scene.player.dropShadow.y <= self.swapLayerLessThanY then
+		self.abovePlayer = true
+	else
+		self.abovePlayer = false
+	end
+
+	if not wasAbovePlayer and self.abovePlayer then
+		self.sprite:swapLayer(self.swapLayerMapping[self.scene.player.layer.name])
+	elseif wasAbovePlayer and not self.abovePlayer then
+		-- HACK
+		self.sprite:swapLayer("objects5")
 	end
 end
 
