@@ -12,18 +12,20 @@ end
 function SimulatedDrop:whileColliding(player, prevState)
 	if GameState.leader ~= "tails" or
 	   not player.doingSpecialMove or
-	   player.simulatedDrops[tostring(self)] ~= nil
+	   player.simulatedDrops[tostring(self)] ~= nil or
+	   next(player.simulatedDrops) ~= nil
     then
         return
     end
 
 	player.simulatedDrops[tostring(self)] = self
-    player.dropShadow.hidden = true
+	player.dropShadow.hidden = true
 end
 
 function SimulatedDrop:notColliding(player, prevState)
     if GameState.leader ~= "tails" or
-	   player.simulatedDrops[tostring(self)] == nil
+	   player.simulatedDrops[tostring(self)] == nil or
+	   next(player.simulatedDrops) == nil
 	then
         return
     end

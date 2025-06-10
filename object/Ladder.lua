@@ -83,7 +83,7 @@ function Ladder:notColliding(player)
 		player.basicUpdate = player.updateFun
 
 		if self.botLayer and love.keyboard.isDown("down") then
-			self.scene:swapLayer(self.botLayer)
+			self.scene:swapLayer(self.botLayer, true)
 		end
 
 		if love.keyboard.isDown("up") then
@@ -126,7 +126,7 @@ function Ladder:whileColliding(player)
 		player.basicUpdate = self.updateFun
 
 		if self.topLayer then
-			self.scene:swapLayer(self.topLayer)
+			self.scene:swapLayer(self.topLayer, true)
 		end
 	end
 end

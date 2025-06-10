@@ -149,28 +149,14 @@ return function(player)
 			-- Left shift is down the whole time? Increase elevation until you run out of fly time
 			self.flyOffsetY = self.flyOffsetY + 4
 			self.y = self.y - 4
+			self.scene.camPos.y = self.scene.camPos.y - 4
 		elseif self.stopElevating and love.keyboard.isDown("lshift") and not self.stickyLShift then
 			-- Rapidly touch ground (pressed lshift a second time)
-			local diff = (self.flyOffsetY + self.tempFlyOffsetY) / 10
-			self:run(While(
-				function() return (self.flyOffsetY + self.tempFlyOffsetY) > 1.0 end,
-				Repeat(Do(function()
-					if (self.flyOffsetY + self.tempFlyOffsetY) > 1 then
-						self.flyOffsetY = self.flyOffsetY - diff
-						self.y = self.y + diff
-					end
-
-					if self.scene.camPos.y < 0 then
-						self.scene.camPos.y = self.scene.camPos.y + diff
-					else
-						self.scene.camPos.y = 0
-					end
-				end)),
-				Do(function()
-					self.scene.camPos.y = 0
-					self.scene.player.y = self.scene.player.y - 5
-				end)
-			))
+			self:run(Parallel {
+				Ease(self, "flyOffsetY", self.flyOffsetY - (self.flyOffsetY + self.tempFlyOffsetY), 6, "linear"),
+				Ease(self, "y", self.y + (self.flyOffsetY + self.tempFlyOffsetY), 6, "linear"),
+				Ease(self.scene.camPos, "y", 0, 6, "linear")
+			})
 			self.stickyLShift = true
 			self.flyTime = 0.0
 		elseif self.flyTime <= 0.0 or not love.keyboard.isDown("lshift") and not self.stickyLShift then
@@ -178,37 +164,26 @@ return function(player)
 			self.flyOffsetY = self.flyOffsetY - 1
 			self.y = self.y + 1
 
-			--[[if self.scene.camPos.y < 0 then
+			if self.scene.camPos.y < 0 then
 				self.scene.camPos.y = self.scene.camPos.y + 1
 			else
 				self.scene.camPos.y = 0
-			end]]
+			end
 		end
 
 		-- Adjust camera
-		self.scene.camPos.y = -(self.flyOffsetY + self.tempFlyOffsetY)
-
-		--[[
-		if (self.flyOffsetY + self.tempFlyOffsetY) > 500 then
-			self.intendedCamPosY = (self.flyOffsetY + self.tempFlyOffsetY)
-		else
-			self.intendedCamPosY = -(self.flyOffsetY + self.tempFlyOffsetY)
+		if math.abs(self.flyOffsetY + self.tempFlyOffsetY + self.scene.camPos.y) > 300 and not self.camMove then
+			self.camMove = true
+			self:run {
+				Ease(self.scene.camPos, "y", -(self.flyOffsetY + self.tempFlyOffsetY), 2),
+				Do(function()
+					self.camMove = false
+				end)
+			}
 		end
 
-		if (self.scene.camPos.y - self.intendedCamPosY) > 1 then
-			self.scene.camPos.y = self.scene.camPos.y - (self.scene.camPos.y - self.intendedCamPosY) * dt
-			if (self.scene.camPos.y - self.intendedCamPosY) < 0 then
-				self.scene.camPos.y = self.intendedCamPosY
-			end
-		elseif (self.scene.camPos.y - self.intendedCamPosY) < 1 then
-			self.scene.camPos.y = self.scene.camPos.y + (self.scene.camPos.y - self.intendedCamPosY) * dt
-			if (self.scene.camPos.y - self.intendedCamPosY) > 0 then
-				self.scene.camPos.y = self.intendedCamPosY
-			end
-		end]]
-
 		-- Update collision layer
-		if self.flyOffsetY > 500 then
+		if self.flyOffsetY > 400 then
 			if self.scene.currentLayerId ~= 1 then
 				self.scene:swapLayer(1, true)
 			end
