@@ -20,6 +20,8 @@ FontCache = {
 	Techno = love.graphics.newFont("art/fonts/techno.ttf", 72),
 }
 
+GlobalScale = 1.0
+
 CursorSprite = love.graphics.newImage("art/sprites/cursor.png")
 CursorSprite:setFilter("nearest", "nearest")
 
