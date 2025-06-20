@@ -48,6 +48,11 @@ function ThreeDee:whileColliding(player, prevState)
 	player.threeDeeObjects[tostring(self)] = self
 end
 
+function ThreeDee:land()
+	-- noop
+	return false
+end
+
 function ThreeDee:onTop()
 	local player = self.scene.player
 	local playerY = player.y + player.flyOffsetY

@@ -610,7 +610,7 @@ end</property>
     <property name="swapLayers" value="objects:objects5, objects2:objects5, objects3:objects3, objects4:objects5, objects5:objects5"/>
    </properties>
   </object>
-  <object id="110" name="Mushroom" type="BasicNPC" gid="5323" x="320" y="2144" width="64" height="64">
+  <object id="110" name="Mushroom1" type="BasicNPC" gid="5323" x="320" y="2144" width="64" height="64">
    <properties>
     <property name="align" value="bottom_center"/>
     <property name="ghost" type="bool" value="false"/>
@@ -620,7 +620,7 @@ end</property>
  </objectgroup>
  <objectgroup name="objects4"/>
  <objectgroup name="objects3">
-  <object id="115" name="3DMushroom1" type="ThreeDee" gid="5323" x="320" y="2112" width="64" height="96">
+  <object id="115" name="3DMushroom1" type="ThreeDeeMushroom" gid="5323" x="320" y="2112" width="64" height="96">
    <properties>
     <property name="depth" type="int" value="96"/>
     <property name="flyLandingLayer" type="int" value="4"/>
@@ -631,7 +631,7 @@ end</property>
   </object>
  </objectgroup>
  <objectgroup name="objects2">
-  <object id="113" name="3DMushroom1" type="ThreeDee" gid="5323" x="320" y="2112" width="64" height="96">
+  <object id="113" name="3DMushroom1" type="ThreeDeeMushroom" gid="5323" x="320" y="2112" width="64" height="96">
    <properties>
     <property name="depth" type="int" value="96"/>
     <property name="flyLandingLayer" type="int" value="4"/>
@@ -642,7 +642,7 @@ end</property>
   </object>
  </objectgroup>
  <objectgroup name="objects">
-  <object id="114" name="3DMushroom1" type="ThreeDee" gid="5323" x="320" y="2112" width="64" height="96">
+  <object id="114" name="3DMushroom1" type="ThreeDeeMushroom" gid="5323" x="320" y="2112" width="64" height="96">
    <properties>
     <property name="depth" type="int" value="96"/>
     <property name="flyLandingLayer" type="int" value="4"/>

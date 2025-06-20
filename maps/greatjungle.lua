@@ -1128,7 +1128,7 @@ return {
         },
         {
           id = 110,
-          name = "Mushroom",
+          name = "Mushroom1",
           type = "BasicNPC",
           shape = "rectangle",
           x = 320,
@@ -1170,7 +1170,7 @@ return {
         {
           id = 115,
           name = "3DMushroom1",
-          type = "ThreeDee",
+          type = "ThreeDeeMushroom",
           shape = "rectangle",
           x = 320,
           y = 2112,
@@ -1202,7 +1202,7 @@ return {
         {
           id = 113,
           name = "3DMushroom1",
-          type = "ThreeDee",
+          type = "ThreeDeeMushroom",
           shape = "rectangle",
           x = 320,
           y = 2112,
@@ -1234,7 +1234,7 @@ return {
         {
           id = 114,
           name = "3DMushroom1",
-          type = "ThreeDee",
+          type = "ThreeDeeMushroom",
           shape = "rectangle",
           x = 320,
           y = 2112,

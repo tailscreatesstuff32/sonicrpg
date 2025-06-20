@@ -151,12 +151,26 @@ return function(player)
 			self.y = self.y - 4
 			self.scene.camPos.y = self.scene.camPos.y - 4
 		elseif self.stopElevating and love.keyboard.isDown("lshift") and not self.stickyLShift then
+			-- Do not land unless all three dee objects agree
+			self.noLand = true
+
 			-- Rapidly touch ground (pressed lshift a second time)
-			self:run(Parallel {
-				Ease(self, "flyOffsetY", self.flyOffsetY - (self.flyOffsetY + self.tempFlyOffsetY), 6, "linear"),
-				Ease(self, "y", self.y + (self.flyOffsetY + self.tempFlyOffsetY), 6, "linear"),
-				Ease(self.scene.camPos, "y", 0, 6, "linear")
-			})
+			self:run {
+				Parallel {
+					Ease(self, "flyOffsetY", self.flyOffsetY - (self.flyOffsetY + self.tempFlyOffsetY), 6, "linear"),
+					Ease(self, "y", self.y + (self.flyOffsetY + self.tempFlyOffsetY), 6, "linear"),
+					Ease(self.scene.camPos, "y", 0, 6, "linear")
+				},
+				Do(function()
+					-- Landing logic...
+					self.noLand = false
+					for _, threeDee in pairs(self.threeDeeObjects) do
+						if threeDee:onTop() then
+							self.noLand = self.noLand or threeDee:land(self)
+						end
+					end
+				end)
+			}
 			self.stickyLShift = true
 			self.flyTime = 0.0
 		elseif self.flyTime <= 0.0 or not love.keyboard.isDown("lshift") and not self.stickyLShift then
@@ -201,7 +215,7 @@ return function(player)
 			end
 		end
 
-		if self.flyOffsetY + self.tempFlyOffsetY <= 0 then
+		if self.flyOffsetY + self.tempFlyOffsetY <= 0 and not self.noLand then
 			self.sprite.sortOrderY = nil
 			self.stopElevating = false
 			self.basicUpdate = self.updateFun
