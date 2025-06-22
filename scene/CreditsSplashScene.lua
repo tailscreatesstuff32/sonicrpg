@@ -118,6 +118,7 @@ Reggie Meisler/RedG
 Jesse Rose/GreenCauldron08
 F0XShadow
 Michael Tavera
+Fuse Hive
 
 [Sound]
 Anya Stocks/Frostdrop1
@@ -139,6 +140,8 @@ E-122-Psi
 
 [Tiles]
 AmeixaRoxa
+Seliel the Shaper (Boulder Bay)
+SciGho (Great Jungle)
 Lucas Melo (Death Egg)
 Square Enix
 daemoth
@@ -149,6 +152,9 @@ Nz17
 [Background Art]
 Reggie Meisler/RedG
 Nz17
+
+[Storybook Art]
+AmeixaRoxa
 
 [Concept Art]
 AmeixaRoxa

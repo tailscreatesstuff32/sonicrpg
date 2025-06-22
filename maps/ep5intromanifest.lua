@@ -507,6 +507,11 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/sfx/bounce.wav",
+		category = "sfx"
+	},
+	{
+		type = "sound",
 		file = "audio/music/lookout.ogg",
 		category = "music",
 		looping = true

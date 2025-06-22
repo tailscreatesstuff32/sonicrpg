@@ -63,7 +63,7 @@ end
 function ThreeDee:notColliding(player, prevState)
     if GameState.leader ~= "tails" or
 	   not player.doingSpecialMove or
-	   prevState == NPC.STATE_IDLE
+	   next(player.threeDeeObjects) == nil
 	then
         return
     end
