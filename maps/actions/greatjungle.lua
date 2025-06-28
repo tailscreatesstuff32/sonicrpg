@@ -27,7 +27,7 @@ return function(scene, hint)
 		100
 	)
 	
-	scene.audio:playMusic("greatjungle", 1.0)
+	scene.audio:playMusic("greatjungle", 0.5)
 	
 	scene.player.dustColor = Player.FOREST_DUST_COLOR
 

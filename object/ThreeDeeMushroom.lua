@@ -10,6 +10,9 @@ local ThreeDee = require "object/ThreeDee"
 
 local ThreeDeeMushroom = class(ThreeDee)
 
+function ThreeDeeMushroom:construct(scene, layer, object)
+	self.visualObject = self.object.properties.visualObject
+end
 
 function ThreeDeeMushroom:land()
 	-- Bounce up on landing
@@ -21,8 +24,8 @@ function ThreeDeeMushroom:land()
 			Ease(self.scene.player, "flyOffsetY", self.scene.player.flyOffsetY + self.nextFlyOffsetY + 200, 2),
 
 			Serial {
-				Animate(self.scene.objectLookup.Mushroom1.sprite, "bounce"),
-				Animate(self.scene.objectLookup.Mushroom1.sprite, "idle")
+				Animate(self.scene.objectLookup[self.visualObject].sprite, "bounce"),
+				Animate(self.scene.objectLookup[self.visualObject].sprite, "idle")
 			}
 		},
 		Do(function()

@@ -150,9 +150,10 @@ return function(player)
 			self.flyOffsetY = self.flyOffsetY + 4
 			self.y = self.y - 4
 			self.scene.camPos.y = self.scene.camPos.y - 4
-		elseif self.stopElevating and love.keyboard.isDown("lshift") and not self.stickyLShift then
+		elseif self.stopElevating and (love.keyboard.isDown("lshift") or self.forceDrop) and not self.stickyLShift then
 			-- Do not land unless all three dee objects agree
 			self.noLand = true
+			self.forceDrop = false
 
 			-- Rapidly touch ground (pressed lshift a second time)
 			self:run {
@@ -199,22 +200,18 @@ return function(player)
 		-- Update collision layer
 		if self.flyOffsetY > 400 then
 			if self.scene.currentLayerId ~= 1 then
-				print("set layer to ONE")
 				self.scene:swapLayer(1, true)
 			end
 		elseif self.flyOffsetY > 160 then
 			if self.scene.currentLayerId ~= 2 then
-				print("set layer to TWO")
 				self.scene:swapLayer(2, true)
 			end
 		elseif self.flyOffsetY > 20 then
 			if self.scene.currentLayerId ~= 3 then
-				print("set layer to THREE")
 				self.scene:swapLayer(3, true)
 			end
 		else
 			if self.scene.currentLayerId ~= 5 then
-				print("set layer to FIVE")
 				self.scene:swapLayer(5, true)
 			end
 		end
@@ -233,12 +230,10 @@ return function(player)
 			end
 			
 			if self.flyLandingLayer == nil then
-				print("fly layer = nil????")
 				self.flyLandingLayer = 5
 			end
 
 			if self.scene.currentLayerId ~= self.flyLandingLayer then
-				print("XX set layer to "..tostring(self.flyLandingLayer))
 				self.scene:swapLayer(self.flyLandingLayer, true)
 
 				if self.flyLandingLayer < 5 then
