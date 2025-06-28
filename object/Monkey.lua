@@ -1,4 +1,5 @@
 local Ease = require "actions/Ease"
+local Move = require "actions/Move"
 local Serial = require "actions/Serial"
 local Parallel = require "actions/Parallel"
 local Repeat = require "actions/Repeat"
@@ -37,16 +38,6 @@ function Monkey:update(dt)
 		self.viewRange = self.scene.objectLookup[self.object.properties.viewRange]
 	end
 
-	--[[ Don't interact with player if player doesn't care about your layer
-	if (self.scene.player.onlyInteractWithLayer ~= nil and
-		self.scene.player.onlyInteractWithLayer ~= self.layer.name) and
-		self.layer.name ~= "all"
-	then
-		return
-	end]]
-	
-	-- ^^^ We want Monkey to be able to see/interact with you on any layer
-
 	-- If you are colliding with view range, and you are flying, monkey will throw coconut at you
 	local player = self.scene.player
 	if self.viewRange.state == NPC.STATE_TOUCHING and player.doingSpecialMove and not self.throw then
@@ -55,31 +46,34 @@ function Monkey:update(dt)
 		-- Throw a coconut!
 		self.coconut = BasicNPC(
 			self.scene,
-			{name = "objects"},
+			{name = "all"},
 			{
 				name = "Coconut",
 				x = self.x + 22 * 2,
 				y = self.y + 17 * 2,
 				width = 8,
 				height = 8,
-				properties = {nocollision = true, sprite = "art/sprites/snowball.png"}
+				properties = {ghost = true, sprite = "art/sprites/snowball.png"}
 			}
 		)
 		self.coconut.sprite.transform.ox = 4
 		self.coconut.sprite.transform.oy = 4
-		self.coconut.sprite.color = {50, 50, 10, 255}
+		self.coconut.sprite.color = {50, 50, 0, 255}
+		self.coconut.movespeed = 20
 		self.scene:addObject(self.coconut)
 
 		self:run {
+			-- Hold coconut
 			Animate(self.sprite, "hold"),
 			Wait(0.5),
+			-- Throw animation
 			Parallel {
 				Animate(self.sprite, "throw"),
-				Ease(self.coconut, "x", function() return player.x end, 3),
-				Ease(self.coconut, "y", function() return player.y end, 3)
+				Move(self.coconut, player, "idle")
 			},
 			Do(function()
 				player.forceDrop = true
+				player.stopElevating = true
 			end),
 			-- Player flicker
 			Spawn(
@@ -91,20 +85,25 @@ function Monkey:update(dt)
 					12
 				)
 			),
+			PlayAudio("sfx", "poptop", 1.0, true),
+			-- Bounce off
 			Parallel {
-				PlayAudio("sfx", "poptop", 1.0),
-
-				-- Bounce off
-				Ease(self.coconut, "x", function() return self.coconut.x + 50 end, 3),
-				Serial {
-					Ease(self.coconut, "y", function() return self.coconut.y - 50 end, 6),
-					Ease(self.coconut, "y", function() return self.coconut.y + 50 end, 6)
-				}
+				Ease(self.coconut, "x", function() return self.coconut.x + 100 end, 4, "linear"),
+				Ease(self.coconut, "y", function() return self.coconut.y - 60 end, 6, "linear")
 			},
-			Do(function()
-				self.coconut:remove()
-				self.throw = false
-			end)
+			-- Coconut fall to ground, disappear
+			Spawn(
+				Serial {
+					Parallel {
+						Ease(self.coconut, "x", function() return self.coconut.x + 20 end, 5, "linear"),
+						Ease(self.coconut, "y", function() return player.dropShadow.y end, 3)
+					},
+					Do(function()
+						self.coconut:remove()
+						self.throw = false
+					end)
+				}
+			)
 		}
 	end
 end
