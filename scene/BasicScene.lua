@@ -75,6 +75,7 @@ function BasicScene:onEnter(args)
 
 	-- Create object collision maps
 	self.objectCollisionLayer = {}
+	self.objectCollisionLayer["all"] = {}
 	self.objectCollisionLayer["objects"] = {}
 	self.objectCollisionLayer["objects2"] = {}
 	self.objectCollisionLayer["objects3"] = {}
@@ -82,6 +83,7 @@ function BasicScene:onEnter(args)
 	self.objectCollisionLayer["objects5"] = {}
 
 	for y = 0, self.map.height do
+		self.objectCollisionLayer["all"][y] = {}
 		self.objectCollisionLayer["objects"][y] = {}
 		self.objectCollisionLayer["objects2"][y] = {}
 		self.objectCollisionLayer["objects3"][y] = {}

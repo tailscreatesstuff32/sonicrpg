@@ -1,8 +1,12 @@
 local Ease = require "actions/Ease"
+local Serial = require "actions/Serial"
 local Parallel = require "actions/Parallel"
+local Repeat = require "actions/Repeat"
 local Animate = require "actions/Animate"
 local Wait = require "actions/Wait"
+local Spawn = require "actions/Spawn"
 local PlayAudio = require "actions/PlayAudio"
+local Do = require "actions/Do"
 
 local Player = require "object/Player"
 local BasicNPC = require "object/BasicNPC"
@@ -13,13 +17,6 @@ local Monkey = class(NPC)
 function Monkey:construct(scene, layer, object)
 	self.ghost = true
 	self.throw = false
-
-	if self.object.properties.viewRange then
-		self.viewRanges = {}
-		for _, view in pairs(pack((self.object.properties.viewRange):split(','))) do
-			table.insert(self.viewRanges, self.scene.objectLookup[view])
-		end
-	end
 
 	NPC.init(self)
 
@@ -36,6 +33,10 @@ function Monkey:update(dt)
 		return
 	end
 
+	if not self.viewRange then
+		self.viewRange = self.scene.objectLookup[self.object.properties.viewRange]
+	end
+
 	--[[ Don't interact with player if player doesn't care about your layer
 	if (self.scene.player.onlyInteractWithLayer ~= nil and
 		self.scene.player.onlyInteractWithLayer ~= self.layer.name) and
@@ -45,25 +46,10 @@ function Monkey:update(dt)
 	end]]
 	
 	-- ^^^ We want Monkey to be able to see/interact with you on any layer
-	
-	-- If you are colliding with view range, and you are flying, monkey will throw coconut at you
-	local inView = false
-	if self.viewRanges then
-		for _, v in pairs(self.viewRanges) do
-			if v.state == NPC.STATE_TOUCHING and
-			   self:isTouching(v.x, v.y, v.object.width, v.object.height)
-			then
-				inView = true
-				break
-			end
-		end
-		if not inView then
-			return
-		end
-	end
 
+	-- If you are colliding with view range, and you are flying, monkey will throw coconut at you
 	local player = self.scene.player
-	if inView and player.doingSpecialMove and not self.throw then
+	if self.viewRange.state == NPC.STATE_TOUCHING and player.doingSpecialMove and not self.throw then
 		self.throw = true
 
 		-- Throw a coconut!
@@ -81,22 +67,42 @@ function Monkey:update(dt)
 		)
 		self.coconut.sprite.transform.ox = 4
 		self.coconut.sprite.transform.oy = 4
-		self.coconut.sprite.color = {255, 255, 0, 255}
+		self.coconut.sprite.color = {50, 50, 10, 255}
 		self.scene:addObject(self.coconut)
 
 		self:run {
 			Animate(self.sprite, "hold"),
-			Wait(1),
+			Wait(0.5),
 			Parallel {
 				Animate(self.sprite, "throw"),
-				Ease(self.coconut, "x", player.x, 3),
-				Ease(self.coconut, "y", player.y, 3)
+				Ease(self.coconut, "x", function() return player.x end, 3),
+				Ease(self.coconut, "y", function() return player.y end, 3)
 			},
 			Do(function()
 				player.forceDrop = true
 			end),
-			PlayAudio("sfx", "poptop", 1.0),
+			-- Player flicker
+			Spawn(
+				Repeat(
+					Serial {
+						Ease(player.sprite.color, 4, 0, 20, "linear"),
+						Ease(player.sprite.color, 4, 255, 20, "linear")
+					},
+					12
+				)
+			),
+			Parallel {
+				PlayAudio("sfx", "poptop", 1.0),
+
+				-- Bounce off
+				Ease(self.coconut, "x", function() return self.coconut.x + 50 end, 3),
+				Serial {
+					Ease(self.coconut, "y", function() return self.coconut.y - 50 end, 6),
+					Ease(self.coconut, "y", function() return self.coconut.y + 50 end, 6)
+				}
+			},
 			Do(function()
+				self.coconut:remove()
 				self.throw = false
 			end)
 		}
