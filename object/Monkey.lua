@@ -101,6 +101,7 @@ function Monkey:update(dt)
 					Do(function()
 						self.coconut:remove()
 						self.throw = false
+						self.sprite:setAnimation("idle") -- Monkey return to idle animation
 					end)
 				}
 			)
