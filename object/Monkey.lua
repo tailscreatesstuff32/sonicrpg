@@ -24,6 +24,34 @@ function Monkey:construct(scene, layer, object)
 	self:addSceneHandler("update", Monkey.update)
 end
 
+function Monkey:knockDown()
+	self:run {
+		-- Scared anim
+		Animate(self.sprite, "knockdown"),
+		
+		Wait(0.1),
+
+		-- Scream
+		PlayAudio("sfx", "monkey", 1.0, true),
+
+		-- Bounce off
+		Parallel {
+			Ease(self, "x", function() return self.x + 50 end, 4, "linear"),
+			Ease(self, "y", function() return self.y - 60 end, 6, "linear")
+		},
+		-- Fall to ground
+		Ease(self, "y", function() return self.scene.player.dropShadow.y - self.sprite.h*2 end, 3),
+
+		Wait(0.2),
+
+		-- Fade out and disappear
+		Ease(self.sprite.color, 4, 0, 2),
+		Do(function()
+			self:remove()
+		end)
+	}
+end
+
 function Monkey:update(dt)
 	if self:isRemoved() then
 		self:removeSceneHandler("update")
@@ -58,7 +86,7 @@ function Monkey:update(dt)
 		)
 		self.coconut.sprite.transform.ox = 4
 		self.coconut.sprite.transform.oy = 4
-		self.coconut.sprite.color = {50, 50, 0, 255}
+		self.coconut.sprite.color = {60, 60, 0, 255}
 		self.coconut.movespeed = 20
 		self.scene:addObject(self.coconut)
 

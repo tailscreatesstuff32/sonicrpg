@@ -7,7 +7,7 @@ return {
 
 	avatar = "avatar/bavatar",
 	sprite = "sprites/b",
-	battlesprite = "sprites/sonicbattle",
+	battlesprite = "sprites/b",
 
 	startingstats = {
 		startxp = 0,
@@ -67,7 +67,7 @@ return {
 		},]]
 	},
 	
-	specialmove = require "data/specialmoves/sonic",
+	specialmove = require "data/specialmoves/b",
 
 	battle = {
 		require "data/battle/SonicHit",

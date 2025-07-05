@@ -124,20 +124,10 @@ function Player:construct(scene, layer, object)
 	-- Place player
 	self.x = object.x
 	self.y = object.y
-
-    local spriteWidth, spriteHeight = 47,55
-	self.transform = Transform(
-		love.graphics.getWidth()/2 - spriteWidth,
-		love.graphics.getHeight()/2 - spriteHeight,
-		2,
-		2
-	)
 	
 	self.color = {255,255,255,255}
 	
 	self.state = object.properties.orientation and "idle"..object.properties.orientation or Player.STATE_IDLEDOWN
-	self.width,self.height = spriteWidth, spriteHeight
-	self.halfWidth,self.halfHeight = math.floor(spriteWidth/2), math.floor(spriteHeight/2)
 	
 	self:updateSprite()
 	
@@ -170,13 +160,6 @@ function Player:construct(scene, layer, object)
 		right_bot = {x = 0, y = 0},
 		left_top  = {x = 0, y = 0},
 		left_bot  = {x = 0, y = 0}
-	}
-	
-	self.collisionHSOffsets = {
-		right_top = {x = 18, y = 0},
-		right_bot = {x = 18, y = 0},
-		left_top = {x = -15, y = 0},
-		left_bot = {x = -15, y = 0},
 	}
 	
 	self:createVisuals()
@@ -287,6 +270,12 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 				self.transform,
 				Transform(self.sprite.w - 15, -10)
 			)
+		-- HACK: BabyT is too differently shaped for this transform, change it
+		elseif GameState.leader == "babyt" then
+			pressDirXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 60, -10)
+			)
 		end
 		local pressDir = SpriteNode(
 			self.scene,
@@ -311,6 +300,12 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 			pressXXForm = Transform.relative(
 				self.transform,
 				Transform(self.sprite.w - 15, -10)
+			)
+		-- HACK: BabyT is too differently shaped for this transform, change it
+		elseif GameState.leader == "babyt" then
+			pressXXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 60, -10)
 			)
 		end
 		local pressX = SpriteNode(
@@ -338,6 +333,12 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 				self.transform,
 				Transform(self.sprite.w - 17, -10)
 			)
+		-- HACK: BabyT is too differently shaped for this transform, change it
+		elseif GameState.leader == "babyt" then
+			pressLshXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 62, -10)
+			)
 		end
 		local pressLsh = SpriteNode(
 			self.scene,
@@ -363,6 +364,12 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 			pressXXForm = Transform.relative(
 				self.transform,
 				Transform(self.sprite.w - 15, -10)
+			)
+		-- HACK: BabyT is too differently shaped for this transform, change it
+		elseif GameState.leader == "babyt" then
+			pressXXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 60, -10)
 			)
 		end
 		local pressX = SpriteNode(
@@ -668,6 +675,17 @@ function Player:updateSprite()
 		self.sprite.drawWithNight = false
 	end
 
+	local spriteWidth, spriteHeight = self.sprite.w,self.sprite.h
+	self.transform = Transform(
+		love.graphics.getWidth()/2 - spriteWidth,
+		love.graphics.getHeight()/2 - spriteHeight,
+		2,
+		2
+	)
+
+	self.width,self.height = spriteWidth, spriteHeight
+	self.halfWidth,self.halfHeight = math.floor(spriteWidth/2), math.floor(spriteHeight/2)
+
 	-- Debug
 	if self.debugHotspots then
 		local drawFn = self.sprite.draw
@@ -792,10 +810,14 @@ function Player:basicUpdate(dt)
 	self.dropShadow.x = self.x - 22
 	self.dropShadow.y = self.dropShadowOverrideY or self.y + self.sprite.h - 15
 	self.dropShadow.sprite.sortOrderY = self.sprite.transform.y - 1
+	self.dropShadow.sprite.transform.sx = 1.3
 
 	-- HACK: Rotor is big
 	if GameState.leader == "rotor" then
 		self.dropShadow.x = self.x - 5
+	elseif GameState.leader == "babyt" then
+		self.dropShadow.x = self.x - 60
+		self.dropShadow.sprite.transform.sx = 3
 	end
 
 	local prevState = self.state
@@ -805,7 +827,7 @@ function Player:basicUpdate(dt)
 	end
 	
 	local hotspots = self:updateCollisionObj()
-	
+
 	hotspots.right_top.x = hotspots.right_top.x + self.collisionHSOffsets.right_top.x
 	hotspots.right_top.y = hotspots.right_top.y + self.collisionHSOffsets.right_top.y
 	hotspots.right_bot.x = hotspots.right_bot.x + self.collisionHSOffsets.right_bot.x
@@ -1163,6 +1185,13 @@ function Player:updateCollisionObj()
 	if self.doingSpecialMove and GameState.leader == "tails" then
 		flyOffsetY = self.flyOffsetY or 0
 	end
+
+	self.collisionHSOffsets = {
+		right_top = {x = 18, y = 0},
+		right_bot = {x = 18, y = 0},
+		left_top = {x = -15, y = 0},
+		left_bot = {x = -15, y = 0},
+	}
 
 	self.collisionX, self.collisionY = self.scene:worldCoordToCollisionCoord(self.x, self.y + flyOffsetY)
 	return self:updateHotspots()

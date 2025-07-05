@@ -14,7 +14,10 @@ return {
         },
 		throw = {
             frames = {{3,0},{4,0}},
-			speed = 0.05
+			speed = 0.1
+        },
+		knockdown = {
+            frames = {{5,0}}
         }
     }
 }

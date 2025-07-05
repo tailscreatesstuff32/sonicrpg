@@ -155,6 +155,10 @@ return {
 	},
 	{
 		type = "image",
+		file = "art/sprites/babyt.png"
+	},
+	{
+		type = "image",
 		file = "art/sprites/leon.png"
 	},
 	{
@@ -184,6 +188,14 @@ return {
 	{
 		type = "image",
 		file = "art/avatar/tailsavatar.png"
+	},
+	{
+		type = "image",
+		file = "art/avatar/bavatar.png"
+	},
+	{
+		type = "image",
+		file = "art/avatar/babytavatar.png"
 	},
 	{
 		type = "image",
@@ -464,6 +476,11 @@ return {
 	{
 		type = "image",
 		file = "art/sprites/boulder.png"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/monkey.ogg",
+		category = "sfx"
 	},
 	{
 		type = "sound",
