@@ -32,7 +32,7 @@ function SpriteNode:construct(scene, transform, color, imgsrc, w, h, layer)
 		self.animations = {}
 		self:addAnimation("default", {{0,0}}, 1, {0, 0, self.w, self.h})
 	end
-	
+
 	self.drawWithShine = false
 	self.drawWithParallax = false
 	self.drawWithGlow = false
@@ -201,6 +201,31 @@ function SpriteNode:removeGlow()
 	self.drawWithGlow = false
 end
 
+function SpriteNode:setCrop(cropHeight)
+	self.drawWithCrop = true
+
+	if not SpriteNode.cropShader then
+		SpriteNode.cropShader = love.graphics.newCanvas()
+		SpriteNode.cropShader = love.graphics.newShader [[
+			extern number cropY;
+			vec4 effect(vec4 colour, Image tex, vec2 tc, vec2 sc)
+			{
+				if (sc.y < cropY) {
+					return Texel(tex, tc) * colour;
+				} else {
+					discard;
+				}
+			}
+		]]
+	end
+
+	SpriteNode.cropShader:send("cropY", (self.transform.y + self.h*2) - cropHeight)
+end
+
+function SpriteNode:removeCrop()
+	self.drawWithCrop = false
+end
+
 function SpriteNode:setShine(speed)
 	self.drawWithShine = true
 	self.t = 0
@@ -354,6 +379,14 @@ function SpriteNode:draw(override)
 		local prevShader = love.graphics.getShader()
 		
 		love.graphics.setShader(SpriteNode.scanShader[self.drawWithParallax])
+		
+		drawSprite()
+		
+		love.graphics.setShader(prevShader)
+	elseif self.drawWithCrop then
+		local prevShader = love.graphics.getShader()
+		
+		love.graphics.setShader(SpriteNode.cropShader)
 		
 		drawSprite()
 		

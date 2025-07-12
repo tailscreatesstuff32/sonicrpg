@@ -21,7 +21,7 @@ function Chargeable:whileColliding(player, prevState)
 
 	local obj = self.scene.objectLookup[self.objectInTree]
 	if obj and obj.knockDown then
-		obj:knockDown()
+		obj:knockDown(self)
 	end
 	self.objectInTree = nil
 end

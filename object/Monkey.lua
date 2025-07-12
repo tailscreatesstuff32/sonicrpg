@@ -24,7 +24,7 @@ function Monkey:construct(scene, layer, object)
 	self:addSceneHandler("update", Monkey.update)
 end
 
-function Monkey:knockDown()
+function Monkey:knockDown(tree)
 	self:run {
 		-- Scared anim
 		Animate(self.sprite, "knockdown"),
@@ -39,8 +39,14 @@ function Monkey:knockDown()
 			Ease(self, "x", function() return self.x + 50 end, 4, "linear"),
 			Ease(self, "y", function() return self.y - 60 end, 6, "linear")
 		},
+		-- Switch layer
+		Do(function()
+			if self.layer.name ~= self.scene.currentLayer then
+				self.sprite:swapLayer(self.scene.currentLayer)
+			end
+		end),
 		-- Fall to ground
-		Ease(self, "y", function() return self.scene.player.dropShadow.y - self.sprite.h*2 end, 3),
+		Ease(self, "y", function() return tree.object.y - self.sprite.h end, 3),
 
 		Wait(0.2),
 
