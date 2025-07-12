@@ -9,10 +9,15 @@ local NPC = require "object/NPC"
 
 local Quicksand = class(NPC)
 
+
+local MIN_DIST_TO_CENTER = 5
+local DEFAULT_DEPTH = 10
+
+
 function Quicksand:construct(scene, layer, object)
 	self.ghost = true
 	self.exitObject = object.properties.exitObject
-	self.depth = 10
+	self.depth = DEFAULT_DEPTH
 
 	NPC.init(self)
 	
@@ -50,7 +55,7 @@ function Quicksand:update(dt)
 		
 		player.quicksands[tostring(self)] = self
 
-		if mag < 5 then
+		if mag < MIN_DIST_TO_CENTER then
 			self:teleport()
 		else
 			player.x = player.x + stepX
@@ -63,7 +68,7 @@ function Quicksand:update(dt)
 			player.y = player.y - self.depth
 			player.sprite:removeCrop()
 			player.dropShadow.hidden = false
-			self.depth = 10
+			self.depth = DEFAULT_DEPTH
 		end
 	end
 end
@@ -79,8 +84,8 @@ function Quicksand:teleport()
 			player.state = "shock"
 		end),
 		Parallel {
-			Ease(self, "depth", function() return self.depth + player.height + 10 end, 1),
-			Ease(player, "y", function() return player.y + player.height + 10 end, 1),
+			Ease(self, "depth", function() return self.depth + player.height + DEFAULT_DEPTH end, 1),
+			Ease(player, "y", function() return player.y + player.height + DEFAULT_DEPTH end, 1),
 			Do(function()
 				player.sprite:setCrop(self.depth)
 			end)
@@ -96,9 +101,14 @@ function Quicksand:teleport()
 				player.sprite:setCrop(self.depth)
 			end)
 		},
+		Do(function()
+			player.dropShadow.hidden = false
+			player.dropShadowOverrideY = player.y + player.sprite.h + 215
+		end),
 		Ease(player, "y", function() return player.y + 230 end, 5),
 		Do(function()
 			player.teleporting = false
+			player.dropShadowOverrideY = nil
 		end)
     })
 end
