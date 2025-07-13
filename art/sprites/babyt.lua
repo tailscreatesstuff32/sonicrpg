@@ -9,7 +9,7 @@ return {
 			frames = {{0,2}}
 		},
 		shock = {
-			frames = {{11,4}}
+			frames = {{12,2}}
 		},
 		
 		lookdown = {

@@ -43,6 +43,7 @@ function Quicksand:update(dt)
 			player.y = player.y + self.depth
 			player.sprite:setCrop(self.depth)
 			player.dropShadow.hidden = true
+			player.movespeed = player.baseMoveSpeed/2
 		end
 
 		-- Start pulling player toward center of quicksand
@@ -68,6 +69,7 @@ function Quicksand:update(dt)
 			player.y = player.y - self.depth
 			player.sprite:removeCrop()
 			player.dropShadow.hidden = false
+			player.movespeed = player.baseMoveSpeed
 			self.depth = DEFAULT_DEPTH
 		end
 	end
@@ -84,8 +86,8 @@ function Quicksand:teleport()
 			player.state = "shock"
 		end),
 		Parallel {
-			Ease(self, "depth", function() return self.depth + player.height + DEFAULT_DEPTH end, 1),
-			Ease(player, "y", function() return player.y + player.height + DEFAULT_DEPTH end, 1),
+			Ease(self, "depth", function() return self.depth + player.height * 2 end, 1),
+			Ease(player, "y", function() return player.y + player.height * 2 end, 1),
 			Do(function()
 				player.sprite:setCrop(self.depth)
 			end)
@@ -96,7 +98,7 @@ function Quicksand:teleport()
         },
 		Parallel {
 			Ease(self, "depth", 0, 4),
-			Ease(player, "y", function() return player.y - 100 end, 3),
+			Ease(player, "y", function() return player.y - 150 end, 3),
 			Do(function()
 				player.sprite:setCrop(self.depth)
 			end)
@@ -105,10 +107,11 @@ function Quicksand:teleport()
 			player.dropShadow.hidden = false
 			player.dropShadowOverrideY = player.y + player.sprite.h + 215
 		end),
-		Ease(player, "y", function() return player.y + 230 end, 5),
+		Ease(player, "y", function() return player.y + 280 end, 5),
 		Do(function()
 			player.teleporting = false
 			player.dropShadowOverrideY = nil
+			player.state = "idledown"
 		end)
     })
 end
