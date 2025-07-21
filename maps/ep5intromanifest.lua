@@ -899,6 +899,12 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/music/tailstraining.ogg",
+		category = "music",
+		looping = true,
+	},
+	{
+		type = "sound",
 		file = "audio/music/tailssleep.ogg",
 		category = "music"
 	},
