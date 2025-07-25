@@ -661,6 +661,11 @@ function NPC:maybeSwapLayer()
 	end
 end
 
+function NPC:swapLayer(layerName)
+    self.layer = {name = layerName}
+	self.sprite:swapLayer(layerName)
+end
+
 function NPC:isTouching(x, y, w, h)
 	if not self.hotspots then
 		return false

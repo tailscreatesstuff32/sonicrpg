@@ -8,7 +8,7 @@ return {
   height = 135,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 554,
+  nextobjectid = 575,
   properties = {
     ["battlebg"] = "../art/backgrounds/rotorwsbg.png",
     ["currentLayer"] = 5,
@@ -2079,7 +2079,7 @@ return {
           type = "Player",
           shape = "rectangle",
           x = 1600,
-          y = 2016,
+          y = 1792,
           width = 32,
           height = 32,
           rotation = 0,
@@ -3171,8 +3171,8 @@ return {
           name = "B",
           type = "BasicNPC",
           shape = "rectangle",
-          x = 1536,
-          y = 1952,
+          x = 992,
+          y = 2400,
           width = 64,
           height = 64,
           rotation = 0,
@@ -4398,6 +4398,47 @@ return {
             ["sprite"] = "../art/sprites/waralcoveforward.png",
             ["swapLayers"] = "objects:objects5, objects2:objects2, objects3:objects3, objects4:objects5, objects5:objects5"
           }
+        },
+        {
+          id = 555,
+          name = "IntroTrigger",
+          type = "TouchTrigger",
+          shape = "rectangle",
+          x = 1472,
+          y = 1920,
+          width = 288,
+          height = 64,
+          rotation = 0,
+          gid = 5323,
+          visible = true,
+          properties = {
+            ["atMostOnce"] = true,
+            ["script"] = "local MessageBox = require \"actions/MessageBox\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Ease = require \"actions/Ease\"\nlocal Wait = require \"actions/Wait\"\nlocal Do = require \"actions/Do\"\n\nreturn function(self)\n    return BlockPlayer {\n        Ease(self.scene.camPos, \"y\", -100, 1),\n        Wait(1),\n        Do(function()\n            self.scene.player.state = \"joydown\"\n        end),\n        MessageBox{message=\"Tails: Woah, way past! I've never seen a butterfly like that before!\"},\n        Ease(self.scene.camPos, \"y\", 0, 1),\n        Do(function()\n            self.scene.player.state = \"idledown\"\n        end),\n    }\nend"
+          }
+        },
+        {
+          id = 559,
+          name = "Firefly",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 1536,
+          y = 1984,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 5323,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "firefly",
+            ["ghost"] = true,
+            ["ignoreMapCollision"] = true,
+            ["nightbright"] = true,
+            ["nonight"] = true,
+            ["onInit"] = "\n\nreturn function(self)\n    if GameState:isFlagSet(self) then self:remove() end\nend",
+            ["onInteract"] = "local Serial = require \"actions/Serial\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\nlocal Menu = require \"actions/Menu\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal AudioFade = require \"actions/AudioFade\"\nlocal Wait = require \"actions/Wait\"\nlocal Action = require \"actions/Action\"\nlocal Move = require \"actions/Move\"\nlocal Ease = require \"actions/Ease\"\nlocal Parallel = require \"actions/Parallel\"\nlocal Animate = require \"actions/Animate\"\n\nlocal Transform = require \"util/Transform\"\nlocal Layout = require \"util/Layout\"\n\nlocal NPC = require \"object/NPC\"\n\nreturn function(self)\n    if not self.touched then\n        self.touched = -1\n    end\n\n    self.touched = self.touched + 1\n    if self.touched == 0 then\n        self.isInteractable = false\n        self:swapLayer(\"objects4\")\n        return BlockPlayer {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Parallel {\n                Move(self, self.scene.objectLookup.FireflyWP0_1, \"firefly\"),\n                Serial {\n                    Wait(1),\n                    Do(function()\n                        self.scene.player.state = \"saddown\"\n                    end),\n                    MessageBox{message=\"Tails: Wait! {p30}Come back!\"}\n                },\n                AudioFade(\"music\", 1, 0, 1)\n            },\n            Parallel {\n                Ease(self.scene.camPos, \"x\", function() return self.scene.player.x - self.x end, 1),\n                Ease(self.scene.camPos, \"y\", function() return self.scene.player.y - self.y end, 1),\n            },\n            Wait(1),\n            Parallel {\n                Ease(self.scene.camPos, \"x\", 0, 1),\n                Ease(self.scene.camPos, \"y\", 0, 1),\n            },\n            Do(function()\n                self.scene.player.state = \"attitudedown\"\n            end),\n            PlayAudio(\"music\", \"tailstheme\", 1, true, true),\n            MessageBox{message=\"Tails: It's a good thing he's not the only thing that can fly!\"},\n            Do(function()\n                self.scene.player.state = \"idledown\"\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 1 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_2, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 2 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_3, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 3 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_4, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 4 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_5, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 5 then\n        self.isInteractable = false\n        self.hidden = true\n        return Serial {\n            MessageBox{message=\"You received a Yellow Leaf!\", blocking=true, sfx=\"levelup\"},\n            Do(function()\n                GameState:grantItem(require \"data/items/YellowLeaf\", 1)\n                GameState:setFlag(self)\n                self:remove()\n            end)\n        }\n    end\n\n    return Action()\nend",
+            ["sprite"] = "../art/sprites/pest.png"
+          }
         }
       }
     },
@@ -4931,6 +4972,86 @@ return {
             ["orientation"] = "down",
             ["scene"] = "knotholelookout.lua",
             ["spawn_point"] = "Entrance"
+          }
+        },
+        {
+          id = 568,
+          name = "FireflyWP0_2",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 1728,
+          y = 1472,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 5323,
+          visible = true,
+          properties = {
+            ["ghost"] = true
+          }
+        },
+        {
+          id = 569,
+          name = "FireflyWP0_3",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 2080,
+          y = 1472,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 5323,
+          visible = true,
+          properties = {
+            ["ghost"] = true
+          }
+        },
+        {
+          id = 571,
+          name = "FireflyWP0_4",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 1920,
+          y = 2496,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 5323,
+          visible = true,
+          properties = {
+            ["ghost"] = true
+          }
+        },
+        {
+          id = 573,
+          name = "FireflyWP0_1",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 1248,
+          y = 1408,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 5323,
+          visible = true,
+          properties = {
+            ["ghost"] = true
+          }
+        },
+        {
+          id = 574,
+          name = "FireflyWP0_5",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4704,
+          y = 2368,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 5323,
+          visible = true,
+          properties = {
+            ["ghost"] = true
           }
         }
       }

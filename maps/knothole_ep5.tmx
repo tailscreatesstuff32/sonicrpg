@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="554">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="575">
  <properties>
   <property name="battlebg" type="file" value="../art/backgrounds/rotorwsbg.png"/>
   <property name="currentLayer" type="int" value="5"/>
@@ -1605,7 +1605,7 @@
   </object>
  </objectgroup>
  <objectgroup name="objects5">
-  <object id="1" name="Spawn 1" type="Player" gid="5323" x="1600" y="2016" width="32" height="32">
+  <object id="1" name="Spawn 1" type="Player" gid="5323" x="1600" y="1792" width="32" height="32">
    <properties>
     <property name="orientation" value="right"/>
    </properties>
@@ -2060,7 +2060,7 @@
     <property name="swapLayers" value="objects:objects5, objects2:objects5, objects3:objects3, objects4:objects5, objects5:objects5"/>
    </properties>
   </object>
-  <object id="81" name="B" type="BasicNPC" gid="5323" x="1536" y="1952" width="64" height="64">
+  <object id="81" name="B" type="BasicNPC" gid="5323" x="992" y="2400" width="64" height="64">
    <properties>
     <property name="align" value="bottom_left"/>
     <property name="alignOffsetX" type="float" value="-8"/>
@@ -2719,6 +2719,173 @@ end</property>
     <property name="swapLayers" value="objects:objects5, objects2:objects2, objects3:objects3, objects4:objects5, objects5:objects5"/>
    </properties>
   </object>
+  <object id="555" name="IntroTrigger" type="TouchTrigger" gid="5323" x="1472" y="1920" width="288" height="64">
+   <properties>
+    <property name="atMostOnce" type="bool" value="true"/>
+    <property name="script">local MessageBox = require &quot;actions/MessageBox&quot;
+local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+local Ease = require &quot;actions/Ease&quot;
+local Wait = require &quot;actions/Wait&quot;
+local Do = require &quot;actions/Do&quot;
+
+return function(self)
+    return BlockPlayer {
+        Ease(self.scene.camPos, &quot;y&quot;, -100, 1),
+        Wait(1),
+        Do(function()
+            self.scene.player.state = &quot;joydown&quot;
+        end),
+        MessageBox{message=&quot;Tails: Woah, way past! I've never seen a butterfly like that before!&quot;},
+        Ease(self.scene.camPos, &quot;y&quot;, 0, 1),
+        Do(function()
+            self.scene.player.state = &quot;idledown&quot;
+        end),
+    }
+end</property>
+   </properties>
+  </object>
+  <object id="559" name="Firefly" type="BasicNPC" gid="5323" x="1536" y="1984" width="64" height="64">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="firefly"/>
+    <property name="ghost" type="bool" value="true"/>
+    <property name="ignoreMapCollision" type="bool" value="true"/>
+    <property name="nightbright" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="true"/>
+    <property name="onInit">
+
+return function(self)
+    if GameState:isFlagSet(self) then self:remove() end
+end</property>
+    <property name="onInteract">local Serial = require &quot;actions/Serial&quot;
+local Do = require &quot;actions/Do&quot;
+local MessageBox = require &quot;actions/MessageBox&quot;
+local Menu = require &quot;actions/Menu&quot;
+local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+local PlayAudio = require &quot;actions/PlayAudio&quot;
+local AudioFade = require &quot;actions/AudioFade&quot;
+local Wait = require &quot;actions/Wait&quot;
+local Action = require &quot;actions/Action&quot;
+local Move = require &quot;actions/Move&quot;
+local Ease = require &quot;actions/Ease&quot;
+local Parallel = require &quot;actions/Parallel&quot;
+local Animate = require &quot;actions/Animate&quot;
+
+local Transform = require &quot;util/Transform&quot;
+local Layout = require &quot;util/Layout&quot;
+
+local NPC = require &quot;object/NPC&quot;
+
+return function(self)
+    if not self.touched then
+        self.touched = -1
+    end
+
+    self.touched = self.touched + 1
+    if self.touched == 0 then
+        self.isInteractable = false
+        self:swapLayer(&quot;objects4&quot;)
+        return BlockPlayer {
+            PlayAudio(&quot;sfx&quot;, &quot;choose&quot;, 1.0, true),
+            Parallel {
+                Move(self, self.scene.objectLookup.FireflyWP0_1, &quot;firefly&quot;),
+                Serial {
+                    Wait(1),
+                    Do(function()
+                        self.scene.player.state = &quot;saddown&quot;
+                    end),
+                    MessageBox{message=&quot;Tails: Wait! {p30}Come back!&quot;}
+                },
+                AudioFade(&quot;music&quot;, 1, 0, 1)
+            },
+            Parallel {
+                Ease(self.scene.camPos, &quot;x&quot;, function() return self.scene.player.x - self.x end, 1),
+                Ease(self.scene.camPos, &quot;y&quot;, function() return self.scene.player.y - self.y end, 1),
+            },
+            Wait(1),
+            Parallel {
+                Ease(self.scene.camPos, &quot;x&quot;, 0, 1),
+                Ease(self.scene.camPos, &quot;y&quot;, 0, 1),
+            },
+            Do(function()
+                self.scene.player.state = &quot;attitudedown&quot;
+            end),
+            PlayAudio(&quot;music&quot;, &quot;tailstheme&quot;, 1, true, true),
+            MessageBox{message=&quot;Tails: It's a good thing he's not the only thing that can fly!&quot;},
+            Do(function()
+                self.scene.player.state = &quot;idledown&quot;
+                self.isInteractable = true
+                self.object.x = self.x
+                self.object.y = self.y
+                self:updateCollision()
+            end)
+        }
+    elseif self.touched == 1 then
+        self.isInteractable = false
+        return Serial {
+            PlayAudio(&quot;sfx&quot;, &quot;choose&quot;, 1.0, true),
+            Move(self, self.scene.objectLookup.FireflyWP0_2, &quot;firefly&quot;),
+            Do(function()
+                self.isInteractable = true
+                self.object.x = self.x
+                self.object.y = self.y
+                self:updateCollision()
+            end)
+        }
+    elseif self.touched == 2 then
+        self.isInteractable = false
+        return Serial {
+            PlayAudio(&quot;sfx&quot;, &quot;choose&quot;, 1.0, true),
+            Move(self, self.scene.objectLookup.FireflyWP0_3, &quot;firefly&quot;),
+            Do(function()
+                self.isInteractable = true
+                self.object.x = self.x
+                self.object.y = self.y
+                self:updateCollision()
+            end)
+        }
+    elseif self.touched == 3 then
+        self.isInteractable = false
+        return Serial {
+            PlayAudio(&quot;sfx&quot;, &quot;choose&quot;, 1.0, true),
+            Move(self, self.scene.objectLookup.FireflyWP0_4, &quot;firefly&quot;),
+            Do(function()
+                self.isInteractable = true
+                self.object.x = self.x
+                self.object.y = self.y
+                self:updateCollision()
+            end)
+        }
+    elseif self.touched == 4 then
+        self.isInteractable = false
+        return Serial {
+            PlayAudio(&quot;sfx&quot;, &quot;choose&quot;, 1.0, true),
+            Move(self, self.scene.objectLookup.FireflyWP0_5, &quot;firefly&quot;),
+            Do(function()
+                self.isInteractable = true
+                self.object.x = self.x
+                self.object.y = self.y
+                self:updateCollision()
+            end)
+        }
+    elseif self.touched == 5 then
+        self.isInteractable = false
+        self.hidden = true
+        return Serial {
+            MessageBox{message=&quot;You received a Yellow Leaf!&quot;, blocking=true, sfx=&quot;levelup&quot;},
+            Do(function()
+                GameState:grantItem(require &quot;data/items/YellowLeaf&quot;, 1)
+                GameState:setFlag(self)
+                self:remove()
+            end)
+        }
+    end
+
+    return Action()
+end</property>
+    <property name="sprite" type="file" value="../art/sprites/pest.png"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="bridgeoverlay" width="275" height="135">
   <data encoding="csv">
@@ -3159,6 +3326,31 @@ end</property>
     <property name="orientation" value="down"/>
     <property name="scene" type="file" value="knotholelookout.lua"/>
     <property name="spawn_point" value="Entrance"/>
+   </properties>
+  </object>
+  <object id="568" name="FireflyWP0_2" type="BasicNPC" gid="5323" x="1728" y="1472" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="569" name="FireflyWP0_3" type="BasicNPC" gid="5323" x="2080" y="1472" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="571" name="FireflyWP0_4" type="BasicNPC" gid="5323" x="1920" y="2496" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="573" name="FireflyWP0_1" type="BasicNPC" gid="5323" x="1248" y="1408" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="574" name="FireflyWP0_5" type="BasicNPC" gid="5323" x="4704" y="2368" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>

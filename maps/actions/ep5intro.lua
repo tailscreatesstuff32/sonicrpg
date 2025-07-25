@@ -69,18 +69,17 @@ return function(scene, hint)
 		end),
 		Wait(2),
 		PlayAudio("music", "tailssleep", 1.0, true),
-		MessageBox {message="Sally: 'And so, Ben and his trusty companion, the Inventor Knight, made their way through the twisted\nand tangled Great Jungle...'", textSpeed=3},
-		MessageBox {message="Sally: '*Gruff voice* \"What are we looking for, Ben?\",\nthe Knight pressed...'", textSpeed=3},
-		MessageBox {message="Sally: '*Playful voice* \"I will let you know once I've\nfound it!\", Ben retorted...'", textSpeed=3},
-		MessageBox {message="Sally: 'But just as Ben's tried companion was about\nto lash back in frustration{p50}, the brush finally cleared!'", textSpeed=3},
-		MessageBox {message="Sally: 'A bright, warm light enveloped the two\nadventurers...{p50} and as the knight took a step forward\nout of the jungle, what he saw left him speechless!'", textSpeed=3},
-		MessageBox {message="Tails: What did he see, Sally?!", textSpeed=3},
-
+		MessageBox {message="Sally: And so, Ben and his trusty companion, the Inventor Knight, made their way through the twisted\nand tangled Great Jungle...", textSpeed=3},
+		MessageBox {message="Sally: *Gruff voice* \"What are we looking for, Ben?\",\nthe Knight pressed...", textSpeed=3},
+		MessageBox {message="Sally: *Playful voice* \"I will let you know once I've\nfound it!\", Ben retorted...", textSpeed=3},
+		MessageBox {message="Sally: But just as Ben's tried companion was about\nto lash back in frustration{p50}, the brush finally cleared!", textSpeed=3},
+		MessageBox {message="Sally: A bright, warm light enveloped the two\nadventurers...{p50} and as the knight took a step forward\nout of the jungle, what he saw left him speechless!", textSpeed=3},
+		
 		Parallel {
 			Serial {
-				MessageBox {message="Sally: Take a look!", textspeed=3, closeAction=Wait(3)},
-				Wait(3),
-				MessageBox {message="Tails: Wow...", textspeed=3, closeAction=Wait(3)}
+				Wait(2),
+				MessageBox {message="Sally: And there it was. That hallowed realm, untouched by crown or conquest--just beyond the wild...", textspeed=3, closeAction=Wait(4)},
+				MessageBox {message="Sally: \"This is it!\", Ben proclaimed, \"The Light of Mobius is somewhere down there!\"", textspeed=3, closeAction=Wait(4)},
 			},
 			Serial {
 				Wait(2),
@@ -113,9 +112,9 @@ return function(scene, hint)
 		MessageBox {message="Tails: Hey Sally...", textspeed=3},
 		Animate(scene.objectLookup.Sally.sprite, "idledown"),
 		MessageBox {message="Sally: Yeah?", textspeed=3},
-		MessageBox {message="Tails: Do ya think the 'Light of Mobius'...{p40}what they're lookin' for in the story...{p40}is really out there?", textspeed=3},
+		MessageBox {message="Tails: Do ya think the {h Light of Mobius} is really out\nthere?", textspeed=3},
 		Animate(scene.objectLookup.Sally.sprite, "thinking"),
-		MessageBox {message="Sally: Well...{p50} we did find the 'Breath of Mobius',{p60}\nso I wouldn't count it out!", textspeed=3},
+		MessageBox {message="Sally: Well...{p50} we did find the {h Breath of Mobius},{p60}\nso I wouldn't count it out!", textspeed=3},
 		MessageBox {message="Tails: Wow...", textspeed=3},
 		Animate(scene.objectLookup.Sally.sprite, "idledown"),
 		MessageBox {message="Sally: Good night, Tails.", textspeed=3},

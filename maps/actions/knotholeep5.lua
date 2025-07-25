@@ -49,7 +49,14 @@ return function(scene)
 		}
 	})
 
-	scene.audio:playMusic("tailstheme", 1.0)
+	--scene.audio:playMusic("tailstheme", 1.0)
+	
+	if hint == "ep5intro" then
+		
+		
+	else
+		scene.audio:playMusic("knothole", 1.0)
 
-	return Action()
+		return Action()
+	end
 end

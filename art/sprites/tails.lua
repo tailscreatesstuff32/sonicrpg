@@ -84,11 +84,17 @@ return {
 		sadleft = {
 			frames = {{9,1}}
 		},
+		saddown = {
+		    frames = {{10,3}}
+		},
 		joyright = {
 			frames = {{10,0}}
 		},
 		joyleft = {
 			frames = {{10,1}}
+		},
+		joydown = {
+			frames = {{9,3}}
 		},
 		
 		flyright = {
@@ -123,5 +129,9 @@ return {
 			frames = {{13,1},{14,1}},
 			speed = 0.1
 		},
+		
+		attitudedown = {
+		    frames = {{12,3}}
+		}
     }
 }
