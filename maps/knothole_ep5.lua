@@ -8,7 +8,7 @@ return {
   height = 135,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 575,
+  nextobjectid = 625,
   properties = {
     ["battlebg"] = "../art/backgrounds/rotorwsbg.png",
     ["currentLayer"] = 5,
@@ -4436,8 +4436,217 @@ return {
             ["nightbright"] = true,
             ["nonight"] = true,
             ["onInit"] = "\n\nreturn function(self)\n    if GameState:isFlagSet(self) then self:remove() end\nend",
-            ["onInteract"] = "local Serial = require \"actions/Serial\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\nlocal Menu = require \"actions/Menu\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal AudioFade = require \"actions/AudioFade\"\nlocal Wait = require \"actions/Wait\"\nlocal Action = require \"actions/Action\"\nlocal Move = require \"actions/Move\"\nlocal Ease = require \"actions/Ease\"\nlocal Parallel = require \"actions/Parallel\"\nlocal Animate = require \"actions/Animate\"\n\nlocal Transform = require \"util/Transform\"\nlocal Layout = require \"util/Layout\"\n\nlocal NPC = require \"object/NPC\"\n\nreturn function(self)\n    if not self.touched then\n        self.touched = -1\n    end\n\n    self.touched = self.touched + 1\n    if self.touched == 0 then\n        self.isInteractable = false\n        self:swapLayer(\"objects4\")\n        return BlockPlayer {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Parallel {\n                Move(self, self.scene.objectLookup.FireflyWP0_1, \"firefly\"),\n                Serial {\n                    Wait(1),\n                    Do(function()\n                        self.scene.player.state = \"saddown\"\n                    end),\n                    MessageBox{message=\"Tails: Wait! {p30}Come back!\"}\n                },\n                AudioFade(\"music\", 1, 0, 1)\n            },\n            Parallel {\n                Ease(self.scene.camPos, \"x\", function() return self.scene.player.x - self.x end, 1),\n                Ease(self.scene.camPos, \"y\", function() return self.scene.player.y - self.y end, 1),\n            },\n            Wait(1),\n            Parallel {\n                Ease(self.scene.camPos, \"x\", 0, 1),\n                Ease(self.scene.camPos, \"y\", 0, 1),\n            },\n            Do(function()\n                self.scene.player.state = \"attitudedown\"\n            end),\n            PlayAudio(\"music\", \"tailstheme\", 1, true, true),\n            MessageBox{message=\"Tails: It's a good thing he's not the only thing that can fly!\"},\n            Do(function()\n                self.scene.player.state = \"idledown\"\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 1 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_2, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 2 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_3, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 3 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_4, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 4 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_5, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 5 then\n        self.isInteractable = false\n        self.hidden = true\n        return Serial {\n            MessageBox{message=\"You received a Yellow Leaf!\", blocking=true, sfx=\"levelup\"},\n            Do(function()\n                GameState:grantItem(require \"data/items/YellowLeaf\", 1)\n                GameState:setFlag(self)\n                self:remove()\n            end)\n        }\n    end\n\n    return Action()\nend",
+            ["onInteract"] = "local Serial = require \"actions/Serial\"\nlocal Do = require \"actions/Do\"\nlocal MessageBox = require \"actions/MessageBox\"\nlocal Menu = require \"actions/Menu\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal PlayAudio = require \"actions/PlayAudio\"\nlocal AudioFade = require \"actions/AudioFade\"\nlocal Wait = require \"actions/Wait\"\nlocal Action = require \"actions/Action\"\nlocal Move = require \"actions/Move\"\nlocal Ease = require \"actions/Ease\"\nlocal Parallel = require \"actions/Parallel\"\nlocal Animate = require \"actions/Animate\"\n\nlocal Transform = require \"util/Transform\"\nlocal Layout = require \"util/Layout\"\n\nlocal NPC = require \"object/NPC\"\n\nreturn function(self)\n    if not self.touched then\n        self.touched = -1\n    end\n\n    self.touched = self.touched + 1\n    if self.touched == 0 then\n        self.isInteractable = false\n        self:swapLayer(\"objects4\")\n        return BlockPlayer {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Parallel {\n                Move(self, self.scene.objectLookup.FireflyWP0_1, \"firefly\"),\n                Serial {\n                    Wait(1),\n                    Do(function()\n                        self.scene.player.state = \"saddown\"\n                    end),\n                    MessageBox{message=\"Tails: Wait! {p30}Come back!\"}\n                },\n                AudioFade(\"music\", 1, 0, 1)\n            },\n            Parallel {\n                Ease(self.scene.camPos, \"x\", function() return self.scene.player.x - self.x end, 1),\n                Ease(self.scene.camPos, \"y\", function() return self.scene.player.y - self.y end, 1),\n            },\n            Wait(1),\n            Parallel {\n                Ease(self.scene.camPos, \"x\", 0, 1),\n                Ease(self.scene.camPos, \"y\", 0, 1),\n            },\n            Do(function()\n                self.scene.player.state = \"attitudedown\"\n            end),\n            PlayAudio(\"music\", \"tailstheme\", 1, true, true),\n            MessageBox{message=\"Tails: It's a good thing he's not the only thing that can fly!\"},\n            Do(function()\n                self.scene.player.state = \"idledown\"\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 1 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_2, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 2 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_3, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 3 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_4, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 4 then\n        self.isInteractable = false\n        return Serial {\n            PlayAudio(\"sfx\", \"choose\", 1.0, true),\n            Move(self, self.scene.objectLookup.FireflyWP0_5, \"firefly\"),\n            Move(self, self.scene.objectLookup.FireflyWP0_6, \"firefly\"),\n            Move(self, self.scene.objectLookup.FireflyWP0_7, \"firefly\"),\n            Do(function()\n                self.isInteractable = true\n                self.object.x = self.x\n                self.object.y = self.y\n                self:updateCollision()\n            end)\n        }\n    elseif self.touched == 5 then\n        self.isInteractable = false\n        self.hidden = true\n        return Serial {\n            MessageBox{message=\"You received a Yellow Leaf!\", blocking=true, sfx=\"levelup\"},\n            Do(function()\n                GameState:grantItem(require \"data/items/YellowLeaf\", 1)\n                GameState:setFlag(self)\n                self:remove()\n            end)\n        }\n    end\n\n    return Action()\nend",
             ["sprite"] = "../art/sprites/pest.png"
+          }
+        },
+        {
+          id = 597,
+          name = "AntoineMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4885,
+          y = 2699,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "sitlookforward",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/antoine.png"
+          }
+        },
+        {
+          id = 598,
+          name = "BunnieMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4818,
+          y = 2703,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "sitlookforward",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/bunny.png"
+          }
+        },
+        {
+          id = 599,
+          name = "SonicMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4747,
+          y = 2696,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "sitlookforward",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/sonic.png"
+          }
+        },
+        {
+          id = 600,
+          name = "SallyMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4806,
+          y = 2658,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "planning",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/sally.png"
+          }
+        },
+        {
+          id = 601,
+          name = "RotorMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4672,
+          y = 2688,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "sitright",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/rotor.png"
+          }
+        },
+        {
+          id = 602,
+          name = "IvanMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4620,
+          y = 2684,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "idleright",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/ivan.png"
+          }
+        },
+        {
+          id = 603,
+          name = "FleetMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4716,
+          y = 2658,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "meeting_idleright",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/fleet.png"
+          }
+        },
+        {
+          id = 604,
+          name = "LoganMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4762,
+          y = 2658,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "meeting_idledown",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/logan.png"
+          }
+        },
+        {
+          id = 605,
+          name = "NicoleMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4809,
+          y = 2656,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/nicole.png"
+          }
+        },
+        {
+          id = 624,
+          name = "LeonMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4864,
+          y = 2664,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "meeting_idleleft",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/leon.png"
           }
         }
       }
@@ -5039,8 +5248,40 @@ return {
           }
         },
         {
-          id = 574,
+          id = 575,
           name = "FireflyWP0_5",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 2976,
+          y = 2880,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 5323,
+          visible = true,
+          properties = {
+            ["ghost"] = true
+          }
+        },
+        {
+          id = 576,
+          name = "FireflyWP0_6",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 3744,
+          y = 2880,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 5323,
+          visible = true,
+          properties = {
+            ["ghost"] = true
+          }
+        },
+        {
+          id = 574,
+          name = "FireflyWP0_7",
           type = "BasicNPC",
           shape = "rectangle",
           x = 4704,
@@ -5540,7 +5781,7 @@ return {
           height = 448,
           rotation = 0,
           gid = 5323,
-          visible = true,
+          visible = false,
           properties = {
             ["depth"] = 160,
             ["flyLandingLayer"] = 4,

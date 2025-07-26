@@ -3,7 +3,7 @@ local shine = require "lib/shine"
 
 local SpriteNode = class(require "object/DrawableNode")
 
-function SpriteNode:construct(scene, transform, color, imgsrc, w, h, layer)
+function SpriteNode:construct(scene, transform, color, imgsrc, w, h, layerName)
 	self.locationOffsets = {}
 	self.animationOverrideStack = {}
 	if type(imgsrc) == "string" then
@@ -38,11 +38,11 @@ function SpriteNode:construct(scene, transform, color, imgsrc, w, h, layer)
 	self.drawWithGlow = false
 	self.drawWithNight = true
 	self.glowColor = {0,0,0,0}
-	self.layer = layer
+	self.layerName = layerName
 	self.visible = true
 	
-	if self.layer ~= false then
-		self:addSceneNode(self.layer or "sprites")
+	if self.layerName ~= false then
+		self:addSceneNode(self.layerName or "sprites")
 	end
 	self:addSceneHandler("update", SpriteNode.update)
 end

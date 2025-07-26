@@ -29,7 +29,7 @@ function Animate:setScene(scene)
 	if type(self.sprite) == "function" then
 		self.sprite, self.temporary = self.sprite()
 	end
-	self.layer = self.sprite.layer
+	self.layerName = self.sprite.layerName
 	
 	self:reset()
 end
@@ -49,7 +49,7 @@ function Animate:reset()
 	self.done = false
 
 	if self.temporary then
-		self.sprite:addSceneNode(self.layer)
+		self.sprite:addSceneNode(self.layerName)
 	end
 	self.sprite:setAnimation(self.animation)
 	local anim = self.sprite:getAnimation(self.animation)

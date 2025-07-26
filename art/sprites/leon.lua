@@ -15,6 +15,11 @@ return {
             frames = {{0,2}}
         },
 		
+		meeting_idleleft = {
+			frames = {{0,1}},
+			clip = {0,0,47,40}
+		},
+		
 		idlerightsad = {
             frames = {{1,6}}
         },

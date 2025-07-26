@@ -593,7 +593,7 @@ function NPC:update(dt)
 		return
 	end
 
-	self:maybeSwapLayer()
+	--self:maybeSwapLayer()
 
 	-- Don't interact with player if player doesn't care about your layer
 	if (self.scene.player.onlyInteractWithLayer ~= nil and
@@ -662,7 +662,7 @@ function NPC:maybeSwapLayer()
 end
 
 function NPC:swapLayer(layerName)
-    self.layer = {name = layerName}
+    self.layer = self.scene:findLayer(layerName)
 	self.sprite:swapLayer(layerName)
 end
 

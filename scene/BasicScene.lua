@@ -484,6 +484,16 @@ function BasicScene:hasUpperLayer()
 	return false
 end
 
+function BasicScene:findLayer(name)
+	for _, layer in pairs(self.map.layers) do
+		if layer.name == name then
+			return layer
+		end
+	end
+	print("LAYER NOT FOUND "..tostring(name))
+	return nil
+end
+
 function BasicScene:lightningFlash()
 	if not BasicScene.flashShader then
 		local script = [[
@@ -1063,7 +1073,7 @@ function BasicScene:swapLayer(toLayerNum, ignoreShadow)
 	end
 
 	self.player.onlyInteractWithLayer = objLayer
-	self.player.layer = {name = objLayer}
+	self.player.layer = self:findLayer(objLayer)
 	self.currentLayer = objLayer
 	self.currentLayerId = toLayerNum
 

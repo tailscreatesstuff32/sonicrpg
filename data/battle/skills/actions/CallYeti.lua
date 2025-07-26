@@ -27,7 +27,7 @@ return function(self, target)
 		"abominable",
 		nil,
 		nil,
-		self.sprite.layer
+		self.sprite.layerName
 	)
 	yeti.transform.x = 800
 	yeti.transform.y = 150
