@@ -809,7 +809,7 @@ function Player:basicUpdate(dt)
 	-- Update drop shadow position
 	self.dropShadow.x = self.x - 22
 	self.dropShadow.y = self.dropShadowOverrideY or self.y + self.sprite.h - 15
-	self.dropShadow.sprite.sortOrderY = self.sprite.transform.y - 1
+	self.dropShadow.sprite.sortOrderY = self.dropShadowOverrideSortOrderY or self.sprite.transform.y - 1
 	self.dropShadow.sprite.transform.sx = 1.3
 
 	-- HACK: Rotor is big

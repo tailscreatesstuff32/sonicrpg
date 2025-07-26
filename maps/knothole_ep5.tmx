@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="625">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="631">
  <properties>
   <property name="battlebg" type="file" value="../art/backgrounds/rotorwsbg.png"/>
   <property name="currentLayer" type="int" value="5"/>
@@ -2968,15 +2968,6 @@ end</property>
     <property name="sprite" type="file" value="../art/sprites/logan.png"/>
    </properties>
   </object>
-  <object id="605" name="NicoleMtg" type="BasicNPC" gid="7597" x="4809" y="2656" width="32" height="32">
-   <properties>
-    <property name="align" value="bottom_left"/>
-    <property name="hidden" type="bool" value="false"/>
-    <property name="nocollision" type="bool" value="true"/>
-    <property name="nonight" type="bool" value="false"/>
-    <property name="sprite" type="file" value="../art/sprites/nicole.png"/>
-   </properties>
-  </object>
   <object id="624" name="LeonMtg" type="BasicNPC" gid="7597" x="4864" y="2664" width="32" height="32">
    <properties>
     <property name="align" value="bottom_left"/>
@@ -2985,6 +2976,56 @@ end</property>
     <property name="nocollision" type="bool" value="true"/>
     <property name="nonight" type="bool" value="false"/>
     <property name="sprite" type="file" value="../art/sprites/leon.png"/>
+   </properties>
+  </object>
+  <object id="627" name="RotorInteractable" type="BasicNPC" gid="7597" x="4672" y="2688" width="32" height="32">
+   <properties>
+    <property name="onInteract">local MessageBox = require &quot;actions/MessageBox&quot;
+local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+
+return function(self)
+    return BlockPlayer{
+        MessageBox{message=&quot;Rotor: *mumbles* {p40}This is tough...&quot;}
+    }
+end</property>
+   </properties>
+  </object>
+  <object id="628" name="SonicInteractable" type="BasicNPC" gid="7597" x="4778" y="2697" width="32" height="32">
+   <properties>
+    <property name="onInteract">local MessageBox = require &quot;actions/MessageBox&quot;
+local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+
+return function(self)
+    return BlockPlayer{
+        MessageBox{message=&quot;Sonic: Sorry, Tails. {p40}Grown up talk.&quot;}
+    }
+end</property>
+   </properties>
+  </object>
+  <object id="629" name="BunnieInteractable" type="BasicNPC" gid="7597" x="4864" y="2688" width="32" height="32">
+   <properties>
+    <property name="onInteract">local MessageBox = require &quot;actions/MessageBox&quot;
+local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+
+return function(self)
+    return BlockPlayer{
+        MessageBox{message=&quot;Bunnie: Oh my stars, this is a stressful meeting!&quot;}
+    }
+end</property>
+   </properties>
+  </object>
+  <object id="630" name="AntoineInteractable" type="BasicNPC" gid="7597" x="4960" y="2688" width="32" height="32">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+    <property name="onInteract">local MessageBox = require &quot;actions/MessageBox&quot;
+local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+
+return function(self)
+    return BlockPlayer{
+        MessageBox{message=&quot;Antoine: A-hmmm... {p40}Eh-eh-eh-urmmm... {p60}yeh-eh-eh-em!{p40}&quot;},
+        MessageBox{message=&quot;Antoine: I am just thinking...&quot;},
+    }
+end</property>
    </properties>
   </object>
  </objectgroup>
@@ -3696,7 +3737,7 @@ end</property>
   </object>
  </objectgroup>
  <objectgroup name="objects">
-  <object id="528" name="3DTree1" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="768">
+  <object id="528" name="3DTree1" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="768" visible="0">
    <properties>
     <property name="depth" type="int" value="480"/>
     <property name="flyLandingLayer" type="int" value="4"/>
@@ -3750,7 +3791,7 @@ end</property>
     <property name="nextFlyOffsetY" type="int" value="448"/>
    </properties>
   </object>
-  <object id="534" name="3DTree2" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="1536">
+  <object id="534" name="3DTree2" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="1536" visible="0">
    <properties>
     <property name="depth" type="int" value="1248"/>
     <property name="flyLandingLayer" type="int" value="4"/>
@@ -3829,6 +3870,65 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="nextFlyLandingLayer" type="int" value="5"/>
     <property name="nextFlyOffsetY" type="int" value="96"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="all">
+  <object id="626" name="IntroTrigger2" type="TouchTrigger" gid="5323" x="4000" y="3168" width="96" height="288">
+   <properties>
+    <property name="atMostOnce" type="bool" value="true"/>
+    <property name="script">local MessageBox = require &quot;actions/MessageBox&quot;
+local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+local Serial = require &quot;actions/Serial&quot;
+local Parallel = require &quot;actions/Parallel&quot;
+local Ease = require &quot;actions/Ease&quot;
+local Wait = require &quot;actions/Wait&quot;
+local Do = require &quot;actions/Do&quot;
+local AudioFade = require &quot;actions/AudioFade&quot;
+local PlayAudio = require &quot;actions/PlayAudio&quot;
+
+return function(self)
+    return BlockPlayer {
+        Parallel {
+            AudioFade(&quot;music&quot;, 1, 0, 1),
+            Ease(self.scene.camPos, &quot;x&quot;, -(self.scene.objectLookup[&quot;SallyMtg&quot;].x - self.x), 1),
+            Ease(self.scene.camPos, &quot;y&quot;, -(self.scene.objectLookup[&quot;SallyMtg&quot;].y - self.y), 1),
+        },
+        Wait(1),
+        PlayAudio(&quot;music&quot;, &quot;curiosity&quot;, 0.7, true, true),
+        MessageBox{message=&quot;Tails: Looks like a meeting's happenin'...&quot;},
+        Parallel {
+            Ease(self.scene.camPos, &quot;x&quot;, 0, 1),
+            Ease(self.scene.camPos, &quot;y&quot;, 0, 1),
+        },
+        Do(function()
+            self.scene.player.state = &quot;sadright&quot;
+        end),
+        MessageBox{message=&quot;Tails: I wish I could help out with their mission...&quot;},
+        Do(function()
+            self.scene.player.state = &quot;shock&quot;
+        end),
+        Parallel {
+            Serial {
+                Ease(self, &quot;y&quot;, function() return self.y - 50 end, 8),
+                Ease(self, &quot;y&quot;, function() return self.y + 50 end, 8)
+            },
+            MessageBox{message=&quot;Tails: Wait-a-minute!&quot;}
+        },
+        Do(function()
+            self.scene.player.state = &quot;joydown&quot;
+        end),
+        MessageBox{message=&quot;Tails: The {h Light of Mobius}!{p40} Like Sally said, it's\nprobably just sittin' out there in Boulder Bay\nsomewhere!&quot;},
+        MessageBox{message=&quot;Tails: If we can find it, Robotnik is finished! {p60}\nDon't gotta do all this confusing computer virus stuff...&quot;},
+        Do(function()
+            self.scene.player.state = &quot;attitudedown&quot;
+        end),
+        MessageBox{message=&quot;Tails: I better go tell 'em!&quot;},
+        Do(function()
+            self.scene.player.state = &quot;idledown&quot;
+        end),
+    }
+end</property>
    </properties>
   </object>
  </objectgroup>
@@ -4053,7 +4153,7 @@ end</property>
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,3021,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2737,2737,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,0,0,0,3154,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,531,0,1656,1656,1656,1656,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1656,1656,1656,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3153,3153,3153,3153,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3021,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2737,2737,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,0,0,0,3154,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,531,1656,1656,1656,1656,1656,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1656,1656,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3153,3153,3153,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3021,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2737,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,0,0,0,3154,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,531,1656,1656,1656,1656,1656,1656,1656,1656,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1656,1656,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3153,3153,3153,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2737,2737,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,0,0,0,3154,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,2686,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3153,3153,3153,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2737,2737,3154,2737,2737,2737,2737,2737,2737,2737,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,0,0,0,3154,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,2686,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3153,3153,3153,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2737,2737,3154,2737,2737,2737,2737,2737,2737,2737,2737,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,0,0,0,3154,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,2686,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3153,3153,3153,3153,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3021,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2737,2737,2737,2737,3154,2737,2737,2737,2737,2737,2737,2737,531,531,531,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,0,0,0,3154,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,2686,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3153,3153,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,3021,3021,0,0,0,0,0,0,0,0,0,0,0,3021,3021,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3021,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3021,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2737,3154,2737,2737,2737,2737,2737,2737,2737,2737,3154,531,531,531,2084,2084,2084,2084,2084,2084,2084,3154,0,0,0,3154,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,3154,2686,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3153,3153,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,2084,

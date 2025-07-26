@@ -22,6 +22,7 @@ return function(player)
 	-- While flying, you can press X to change perspective (Tails' body to his drop spot)
 	player.flyOffsetY = player.flyOffsetY or player.defaultFlyOffsetY
 	player.tempFlyOffsetY = player.tempFlyOffsetY or 0
+	player.dropShadowOverrideSortOrderY = nil
 	player.threeDeeObjects = {}
 
 	print("flyOffsetY = "..tostring(player.flyOffsetY)..", tempFlyOffsetY = "..tostring(player.tempFlyOffsetY)..
@@ -240,6 +241,7 @@ return function(player)
 					self.flyOffsetY = self.nextFlyOffsetY or 0
 					self.tempFlyOffsetY = -(self.flyOffsetY - 1)
 					self.flyLandingLayer = self.nextFlyLandingLayer
+					self.dropShadowOverrideSortOrderY = 1000000
 				else
 					self.flyOffsetY = 0
 					self.tempFlyOffsetY = 0
