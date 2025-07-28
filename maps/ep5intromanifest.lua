@@ -536,6 +536,17 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/music/bsad.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/sadintrospect.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
 		file = "audio/music/curiosity.ogg",
 		category = "music",
 		looping = true
@@ -928,6 +939,12 @@ return {
 	{
 		type = "sound",
 		file = "audio/music/tailstheme.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/meettherebellion.ogg",
 		category = "music",
 		looping = true
 	},

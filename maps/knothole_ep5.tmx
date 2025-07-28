@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="631">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="633">
  <properties>
   <property name="battlebg" type="file" value="../art/backgrounds/rotorwsbg.png"/>
   <property name="currentLayer" type="int" value="5"/>
@@ -2938,14 +2938,14 @@ end</property>
     <property name="sprite" type="file" value="../art/sprites/rotor.png"/>
    </properties>
   </object>
-  <object id="602" name="IvanMtg" type="BasicNPC" gid="7597" x="4620" y="2684" width="32" height="32">
+  <object id="602" name="BMtg" type="BasicNPC" gid="7597" x="4620" y="2684" width="32" height="32">
    <properties>
     <property name="align" value="bottom_left"/>
     <property name="defaultAnim" value="idleright"/>
     <property name="hidden" type="bool" value="false"/>
     <property name="nocollision" type="bool" value="true"/>
     <property name="nonight" type="bool" value="false"/>
-    <property name="sprite" type="file" value="../art/sprites/ivan.png"/>
+    <property name="sprite" type="file" value="../art/sprites/b.png"/>
    </properties>
   </object>
   <object id="603" name="FleetMtg" type="BasicNPC" gid="7597" x="4716" y="2658" width="32" height="32">
@@ -2982,10 +2982,12 @@ end</property>
    <properties>
     <property name="onInteract">local MessageBox = require &quot;actions/MessageBox&quot;
 local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+local Do = require &quot;actions/Do&quot;
 
 return function(self)
     return BlockPlayer{
-        MessageBox{message=&quot;Rotor: *mumbles* {p40}This is tough...&quot;}
+        MessageBox{message=&quot;Rotor: *mumbles* {p40}This is tough...&quot;},
+        Do(function() GameState:setFlag(self:getFlag()) end)
     }
 end</property>
    </properties>
@@ -2994,10 +2996,12 @@ end</property>
    <properties>
     <property name="onInteract">local MessageBox = require &quot;actions/MessageBox&quot;
 local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+local Do = require &quot;actions/Do&quot;
 
 return function(self)
     return BlockPlayer{
-        MessageBox{message=&quot;Sonic: Sorry, Tails. {p40}Grown up talk.&quot;}
+        MessageBox{message=&quot;Sonic: Sorry, Tails. {p40}Grown up talk.&quot;},
+        Do(function() GameState:setFlag(self:getFlag()) end)
     }
 end</property>
    </properties>
@@ -3006,10 +3010,12 @@ end</property>
    <properties>
     <property name="onInteract">local MessageBox = require &quot;actions/MessageBox&quot;
 local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+local Do = require &quot;actions/Do&quot;
 
 return function(self)
     return BlockPlayer{
-        MessageBox{message=&quot;Bunnie: Oh my stars, this is a stressful meeting!&quot;}
+        MessageBox{message=&quot;Bunnie: Oh my stars, this is a stressful meeting!&quot;},
+        Do(function() GameState:setFlag(self:getFlag()) end)
     }
 end</property>
    </properties>
@@ -3019,13 +3025,101 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
     <property name="onInteract">local MessageBox = require &quot;actions/MessageBox&quot;
 local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+local Do = require &quot;actions/Do&quot;
 
 return function(self)
     return BlockPlayer{
         MessageBox{message=&quot;Antoine: A-hmmm... {p40}Eh-eh-eh-urmmm... {p60}yeh-eh-eh-em!{p40}&quot;},
         MessageBox{message=&quot;Antoine: I am just thinking...&quot;},
+        Do(function() GameState:setFlag(self:getFlag()) end)
     }
 end</property>
+   </properties>
+  </object>
+  <object id="631" name="Ep5Cinematic" type="BasicNPC" gid="7597" x="4800" y="2816" width="32" height="32">
+   <properties>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="onUpdate">local BlockPlayer = require &quot;actions/BlockPlayer&quot;
+local MessageBox = require &quot;actions/MessageBox&quot;
+local Wait = require &quot;actions/Wait&quot;
+local Animate = require &quot;actions/Animate&quot;
+local Parallel = require &quot;actions/Parallel&quot;
+local AudioFade = require &quot;actions/AudioFade&quot;
+local PlayAudio = require &quot;actions/PlayAudio&quot;
+
+return function(self, dt)
+    if GameState:isFlagSet(self:getFlag()) then
+        self.onUpdate = nil
+        return
+    end
+
+    local flagObjects = {AntoineInteractable = true, BunnieInteractable = true, SonicInteractable = true, RotorInteractable = true}
+    for k, _ in pairs(flagObjects) do
+        if GameState:isFlagSet(self.scene.objectLookup[k]:getFlag()) then
+            flagObjects[k] = nil
+        end
+    end
+
+    -- All flags are set
+    if next(flagObjects) == nil then
+        GameState:setFlag(self:getFlag())
+
+        -- Cinematic begins
+        self:run(BlockPlayer {
+            AudioFade(&quot;music&quot;, 1,0,1),
+            PlayAudio(&quot;music&quot;, &quot;meettherebellion&quot;, 1, true, true),
+            MessageBox {message=&quot;Sally: With the computer virus's development on schedule, we should be two days away from being able to launch an assault.&quot;},
+            MessageBox {message=&quot;Sally: Now it's just a matter of figuring out when and where to strike...&quot;},
+            MessageBox {message=&quot;B: Excuse me, Princess. {p40}Before you embark upon this dangerous mission, I would like to make sure that my family is safely migrated to Knothole, as planned.&quot;},
+            MessageBox {message=&quot;Leon: I understand your predicament B, but we can not risk further complications to this operation.&quot;},
+            MessageBox {message=&quot;Leon: Robotnik will soon be dethroned. {p40}Once he is, we will all be able to safely recover our family members trapped in Robotropolis.&quot;},
+            MessageBox {message=&quot;B: And what if Robotnik decides to *scrap* my family members before then, General!&quot;},
+            MessageBox {message=&quot;Leon: What if the Princess is captured trying to get your family back to Knothole? {p40}It will derail our entire operation! {p40}We can't take that risk!&quot;},
+            AudioFade(&quot;music&quot;, 1,0,1),
+            MessageBox {message=&quot;Sally: Please calm down, both of you! {p40}I understand where you're both coming from, and--&quot;, closeAction=Wait(2)},
+            PlayAudio(&quot;music&quot;, &quot;bsad&quot;, 1, true),
+            MessageBox {message=&quot;B: --and I came here on a promise! {p40}A promise that my family would be brought to Knothole...&quot;},
+            -- B walks away
+            MessageBox {message=&quot;Sally: B, wait!&quot;},
+            -- Sally looks sad
+            AudioFade(&quot;music&quot;, 1,0,1),
+            MessageBox {message=&quot;Sonic: He'll be ok, Sal. I'll talk to him.&quot;},
+            Wait(1),
+            MessageBox {message=&quot;Leon: Now that that is settled, I--&quot;, closeAction=Wait(0.7)},
+            Parallel {
+                self.scene.player:hop(),
+                MessageBox {message=&quot;Tails: Wait!&quot;}
+            },
+            MessageBox {message=&quot;Tails: I understand that this computer virus plan is way past cool, but I think I found somethin' even better!&quot;},
+            -- Others look surprised
+            PlayAudio(&quot;music&quot;, &quot;tailstheme&quot;, 1, true, true),
+            MessageBox {message=&quot;Tails: The {h Light of Mobius}! {p60}Located in the deepest part of Boulder Bay, this light grants one wish! {p60}If we find it, we can wish that Robotnik never took over!&quot;},
+            MessageBox {message=&quot;Fleet: Nice idea kid, but there's just one thing you've forgotten... the {h Light of Mobius} is just a myth! {p60}A fiction! {p60}A bedtime story parents read to their young to keep them entertained. {p60}It's not real!&quot;},
+            -- Tails hops in frustration
+            MessageBox {message=&quot;Tails: Is too!&quot;},
+            AudioFade(&quot;music&quot;, 1,0,1),
+            MessageBox {message=&quot;Sally: Tails, sweetie... {p60}I appreciate the suggestion, but for now, we're gonna focus on the virus. It's just a more... {p60}realistic approach.&quot;},
+            MessageBox {message=&quot;Fleet: Emphasis on \&quot;real\&quot;.&quot;},
+            PlayAudio(&quot;music&quot;, &quot;sadintrospect&quot;, 1, true, true),
+            MessageBox {message=&quot;Sonic: Hey little buddy, this is a mondo cool idea, but we gotta focus on what Sal's already got cookin'.&quot;},
+            MessageBox {message=&quot;Tails: But--&quot;, closeAction=Wait(1)},
+            MessageBox {message=&quot;Sonic: Whatcha say you and I play some dirt hockey once this meeting's over!&quot;},
+            MessageBox {message=&quot;Tails: ...ok.&quot;},
+
+            -- Tails walks off
+        })
+    end
+end</property>
+   </properties>
+  </object>
+  <object id="632" name="IvanMtg" type="BasicNPC" gid="7597" x="4910" y="2666" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="meeting_idleleft_shorter"/>
+    <property name="hidden" type="bool" value="false"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="false"/>
+    <property name="sprite" type="file" value="../art/sprites/ivan.png"/>
    </properties>
   </object>
  </objectgroup>
@@ -3737,7 +3831,7 @@ end</property>
   </object>
  </objectgroup>
  <objectgroup name="objects">
-  <object id="528" name="3DTree1" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="768" visible="0">
+  <object id="528" name="3DTree1" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="768">
    <properties>
     <property name="depth" type="int" value="480"/>
     <property name="flyLandingLayer" type="int" value="4"/>
@@ -3791,7 +3885,7 @@ end</property>
     <property name="nextFlyOffsetY" type="int" value="448"/>
    </properties>
   </object>
-  <object id="534" name="3DTree2" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="1536" visible="0">
+  <object id="534" name="3DTree2" type="ThreeDee" gid="5323" x="4896" y="2816" width="992" height="1536">
    <properties>
     <property name="depth" type="int" value="1248"/>
     <property name="flyLandingLayer" type="int" value="4"/>

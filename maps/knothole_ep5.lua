@@ -8,7 +8,7 @@ return {
   height = 135,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 631,
+  nextobjectid = 633,
   properties = {
     ["battlebg"] = "../art/backgrounds/rotorwsbg.png",
     ["currentLayer"] = 5,
@@ -4547,7 +4547,7 @@ return {
         },
         {
           id = 602,
-          name = "IvanMtg",
+          name = "BMtg",
           type = "BasicNPC",
           shape = "rectangle",
           x = 4620,
@@ -4563,7 +4563,7 @@ return {
             ["hidden"] = false,
             ["nocollision"] = true,
             ["nonight"] = false,
-            ["sprite"] = "../art/sprites/ivan.png"
+            ["sprite"] = "../art/sprites/b.png"
           }
         },
         {
@@ -4642,7 +4642,7 @@ return {
           gid = 7597,
           visible = true,
           properties = {
-            ["onInteract"] = "local MessageBox = require \"actions/MessageBox\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\n\nreturn function(self)\n    return BlockPlayer{\n        MessageBox{message=\"Rotor: *mumbles* {p40}This is tough...\"}\n    }\nend"
+            ["onInteract"] = "local MessageBox = require \"actions/MessageBox\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Do = require \"actions/Do\"\n\nreturn function(self)\n    return BlockPlayer{\n        MessageBox{message=\"Rotor: *mumbles* {p40}This is tough...\"},\n        Do(function() GameState:setFlag(self:getFlag()) end)\n    }\nend"
           }
         },
         {
@@ -4658,7 +4658,7 @@ return {
           gid = 7597,
           visible = true,
           properties = {
-            ["onInteract"] = "local MessageBox = require \"actions/MessageBox\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\n\nreturn function(self)\n    return BlockPlayer{\n        MessageBox{message=\"Sonic: Sorry, Tails. {p40}Grown up talk.\"}\n    }\nend"
+            ["onInteract"] = "local MessageBox = require \"actions/MessageBox\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Do = require \"actions/Do\"\n\nreturn function(self)\n    return BlockPlayer{\n        MessageBox{message=\"Sonic: Sorry, Tails. {p40}Grown up talk.\"},\n        Do(function() GameState:setFlag(self:getFlag()) end)\n    }\nend"
           }
         },
         {
@@ -4674,7 +4674,7 @@ return {
           gid = 7597,
           visible = true,
           properties = {
-            ["onInteract"] = "local MessageBox = require \"actions/MessageBox\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\n\nreturn function(self)\n    return BlockPlayer{\n        MessageBox{message=\"Bunnie: Oh my stars, this is a stressful meeting!\"}\n    }\nend"
+            ["onInteract"] = "local MessageBox = require \"actions/MessageBox\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Do = require \"actions/Do\"\n\nreturn function(self)\n    return BlockPlayer{\n        MessageBox{message=\"Bunnie: Oh my stars, this is a stressful meeting!\"},\n        Do(function() GameState:setFlag(self:getFlag()) end)\n    }\nend"
           }
         },
         {
@@ -4691,7 +4691,45 @@ return {
           visible = true,
           properties = {
             ["ghost"] = true,
-            ["onInteract"] = "local MessageBox = require \"actions/MessageBox\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\n\nreturn function(self)\n    return BlockPlayer{\n        MessageBox{message=\"Antoine: A-hmmm... {p40}Eh-eh-eh-urmmm... {p60}yeh-eh-eh-em!{p40}\"},\n        MessageBox{message=\"Antoine: I am just thinking...\"},\n    }\nend"
+            ["onInteract"] = "local MessageBox = require \"actions/MessageBox\"\nlocal BlockPlayer = require \"actions/BlockPlayer\"\nlocal Do = require \"actions/Do\"\n\nreturn function(self)\n    return BlockPlayer{\n        MessageBox{message=\"Antoine: A-hmmm... {p40}Eh-eh-eh-urmmm... {p60}yeh-eh-eh-em!{p40}\"},\n        MessageBox{message=\"Antoine: I am just thinking...\"},\n        Do(function() GameState:setFlag(self:getFlag()) end)\n    }\nend"
+          }
+        },
+        {
+          id = 631,
+          name = "Ep5Cinematic",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4800,
+          y = 2816,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["nocollision"] = true,
+            ["onUpdate"] = "local BlockPlayer = require \"actions/BlockPlayer\"\nlocal MessageBox = require \"actions/MessageBox\"\nlocal Wait = require \"actions/Wait\"\nlocal Animate = require \"actions/Animate\"\nlocal Parallel = require \"actions/Parallel\"\nlocal AudioFade = require \"actions/AudioFade\"\nlocal PlayAudio = require \"actions/PlayAudio\"\n\nreturn function(self, dt)\n    if GameState:isFlagSet(self:getFlag()) then\n        self.onUpdate = nil\n        return\n    end\n\n    local flagObjects = {AntoineInteractable = true, BunnieInteractable = true, SonicInteractable = true, RotorInteractable = true}\n    for k, _ in pairs(flagObjects) do\n        if GameState:isFlagSet(self.scene.objectLookup[k]:getFlag()) then\n            flagObjects[k] = nil\n        end\n    end\n\n    -- All flags are set\n    if next(flagObjects) == nil then\n        GameState:setFlag(self:getFlag())\n\n        -- Cinematic begins\n        self:run(BlockPlayer {\n            AudioFade(\"music\", 1,0,1),\n            PlayAudio(\"music\", \"meettherebellion\", 1, true, true),\n            MessageBox {message=\"Sally: With the computer virus's development on schedule, we should be two days away from being able to launch an assault.\"},\n            MessageBox {message=\"Sally: Now it's just a matter of figuring out when and where to strike...\"},\n            MessageBox {message=\"B: Excuse me, Princess. {p40}Before you embark upon this dangerous mission, I would like to make sure that my family is safely migrated to Knothole, as planned.\"},\n            MessageBox {message=\"Leon: I understand your predicament B, but we can not risk further complications to this operation.\"},\n            MessageBox {message=\"Leon: Robotnik will soon be dethroned. {p40}Once he is, we will all be able to safely recover our family members trapped in Robotropolis.\"},\n            MessageBox {message=\"B: And what if Robotnik decides to *scrap* my family members before then, General!\"},\n            MessageBox {message=\"Leon: What if the Princess is captured trying to get your family back to Knothole? {p40}It will derail our entire operation! {p40}We can't take that risk!\"},\n            AudioFade(\"music\", 1,0,1),\n            MessageBox {message=\"Sally: Please calm down, both of you! {p40}I understand where you're both coming from, and--\", closeAction=Wait(2)},\n            PlayAudio(\"music\", \"bsad\", 1, true),\n            MessageBox {message=\"B: --and I came here on a promise! {p40}A promise that my family would be brought to Knothole...\"},\n            -- B walks away\n            MessageBox {message=\"Sally: B, wait!\"},\n            -- Sally looks sad\n            AudioFade(\"music\", 1,0,1),\n            MessageBox {message=\"Sonic: He'll be ok, Sal. I'll talk to him.\"},\n            Wait(1),\n            MessageBox {message=\"Leon: Now that that is settled, I--\", closeAction=Wait(0.7)},\n            Parallel {\n                self.scene.player:hop(),\n                MessageBox {message=\"Tails: Wait!\"}\n            },\n            MessageBox {message=\"Tails: I understand that this computer virus plan is way past cool, but I think I found somethin' even better!\"},\n            -- Others look surprised\n            PlayAudio(\"music\", \"tailstheme\", 1, true, true),\n            MessageBox {message=\"Tails: The {h Light of Mobius}! {p60}Located in the deepest part of Boulder Bay, this light grants one wish! {p60}If we find it, we can wish that Robotnik never took over!\"},\n            MessageBox {message=\"Fleet: Nice idea kid, but there's just one thing you've forgotten... the {h Light of Mobius} is just a myth! {p60}A fiction! {p60}A bedtime story parents read to their young to keep them entertained. {p60}It's not real!\"},\n            -- Tails hops in frustration\n            MessageBox {message=\"Tails: Is too!\"},\n            AudioFade(\"music\", 1,0,1),\n            MessageBox {message=\"Sally: Tails, sweetie... {p60}I appreciate the suggestion, but for now, we're gonna focus on the virus. It's just a more... {p60}realistic approach.\"},\n            MessageBox {message=\"Fleet: Emphasis on \\\"real\\\".\"},\n            PlayAudio(\"music\", \"sadintrospect\", 1, true, true),\n            MessageBox {message=\"Sonic: Hey little buddy, this is a mondo cool idea, but we gotta focus on what Sal's already got cookin'.\"},\n            MessageBox {message=\"Tails: But--\", closeAction=Wait(1)},\n            MessageBox {message=\"Sonic: Whatcha say you and I play some dirt hockey once this meeting's over!\"},\n            MessageBox {message=\"Tails: ...ok.\"},\n\n            -- Tails walks off\n        })\n    end\nend"
+          }
+        },
+        {
+          id = 632,
+          name = "IvanMtg",
+          type = "BasicNPC",
+          shape = "rectangle",
+          x = 4910,
+          y = 2666,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          gid = 7597,
+          visible = true,
+          properties = {
+            ["align"] = "bottom_left",
+            ["defaultAnim"] = "meeting_idleleft_shorter",
+            ["hidden"] = false,
+            ["nocollision"] = true,
+            ["nonight"] = false,
+            ["sprite"] = "../art/sprites/ivan.png"
           }
         }
       }
@@ -5746,7 +5784,7 @@ return {
           height = 768,
           rotation = 0,
           gid = 5323,
-          visible = false,
+          visible = true,
           properties = {
             ["depth"] = 480,
             ["flyLandingLayer"] = 4,
@@ -5866,7 +5904,7 @@ return {
           height = 1536,
           rotation = 0,
           gid = 5323,
-          visible = false,
+          visible = true,
           properties = {
             ["depth"] = 1248,
             ["flyLandingLayer"] = 4,

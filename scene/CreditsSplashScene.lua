@@ -132,6 +132,7 @@ Deebs
 Racoon Ninja
 Joey "The Plokman" Tripp Nimmo
 Ibeh Dubem/Flame the Teen
+Picnik
 Reggie Meisler/RedG
 Unstoppable Thombo
 Damien
