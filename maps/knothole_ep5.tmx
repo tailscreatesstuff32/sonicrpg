@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="636">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="637">
  <properties>
   <property name="battlebg" type="file" value="../art/backgrounds/rotorwsbg.png"/>
   <property name="currentLayer" type="int" value="5"/>
@@ -2592,52 +2592,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="343" name="Rotor" type="BasicNPC" gid="5323" x="7296" y="2848" width="64" height="96">
-   <properties>
-    <property name="align" value="bottom_left"/>
-    <property name="alignOffsetX" type="float" value="-8"/>
-    <property name="alignOffsetY" type="float" value="-16"/>
-    <property name="defaultAnim" value="idleright"/>
-    <property name="ghost" type="bool" value="false"/>
-    <property name="nonight" type="bool" value="true"/>
-    <property name="onInteract">local Serial = require &quot;actions/Serial&quot;
-local Do = require &quot;actions/Do&quot;
-local MessageBox = require &quot;actions/MessageBox&quot;
-local Menu = require &quot;actions/Menu&quot;
-local BlockPlayer = require &quot;actions/BlockPlayer&quot;
-local PlayAudio = require &quot;actions/PlayAudio&quot;
-local Wait = require &quot;actions/Wait&quot;
-local Ease = require &quot;actions/Ease&quot;
-local Parallel = require &quot;actions/Parallel&quot;
-local Animate = require &quot;actions/Animate&quot;
-
-local Transform = require &quot;util/Transform&quot;
-local Layout = require &quot;util/Layout&quot;
-
-local NPC = require &quot;object/NPC&quot;
-
-return function(self)
-    if GameState:isFlagSet(self:getFlag()) then
-        return BlockPlayer {
-            Do(function() self:facePlayer() end),
-            MessageBox {message = &quot;Rotor: ...Logan is kinda...{p60} {h interesting}...{p60} \ndon't ya think?&quot;},
-            Animate(self.sprite, &quot;idleright&quot;),
-            Do(function() self:refreshKeyHint() end)
-        }
-    else
-        GameState:setFlag(self:getFlag())
-        return BlockPlayer {
-            Do(function() self:facePlayer() end),
-            MessageBox {message = &quot;Rotor: Oh!{p40} Hey, Sally.&quot;},
-            MessageBox {message = &quot;Rotor: Have you ever noticed how beautiful Knothole is at night, under the stars?&quot;},
-            Animate(self.sprite, &quot;idleright&quot;),
-            Do(function() self:refreshKeyHint() end)
-        }
-    end
-end</property>
-    <property name="sprite" type="file" value="../art/sprites/rotor.png"/>
-   </properties>
-  </object>
   <object id="386" name="Ladder1" type="Ladder" gid="5323" x="5440" y="2720" width="32" height="576">
    <properties>
     <property name="botLayer" type="int" value="5"/>
@@ -3132,7 +3086,7 @@ return function(self, dt)
                 Ease(storybook.color, 4, 255, 1, &quot;linear&quot;),
                 Serial {
                     MessageBox {message=&quot;Tails: Check it out!&quot;},
-                    MessageBox {message=&quot;Tails: The {h Light of Mobius}! {p60}Located in the deepest part of Boulder Bay, this light grants one wish! {p60}If we find it, we can wish that Robotnik never took over!&quot;},
+                    MessageBox {message=&quot;Tails: The {h Light of Mobius}! {p60}Located in the deepest\npart of Boulder Bay, this light grants one wish! {p60}\nIf we find it, we can wish that Robotnik never\ntook over!&quot;},
                     Wait(1),
                     MessageBox {message=&quot;Fleet: Nice idea kid{p60}, but there's just one thing you've forgotten...&quot;}
                 }
@@ -3143,7 +3097,7 @@ return function(self, dt)
             },
             Wait(1),
             Animate(self.scene.objectLookup.FleetMtg.sprite, &quot;meeting_smirk&quot;),
-            MessageBox {message=&quot;Fleet: The {h Light of Mobius} is just a myth! {p60}A fiction! {p60}A bedtime story parents read to their young to keep them entertained. {p80}It's not real!&quot;},
+            MessageBox {message=&quot;Fleet: The {h Light of Mobius} is just a myth! {p60}\nA fiction! {p60}A bedtime story parents read to their young\nto keep them entertained. {p80}It's not real!&quot;},
             -- Tails hops in frustration
             Do(function()
                 self.scene.player.state = &quot;saddown&quot;
@@ -3152,6 +3106,7 @@ return function(self, dt)
             Wait(1),
             Animate(self.scene.objectLookup.SallyMtg.sprite, &quot;meeting_thinking&quot;),
             MessageBox {message=&quot;Sally: Tails, sweetie... {p60}I appreciate the suggestion, but for now, we're gonna focus on the virus. It's just a more... {p60}realistic approach.&quot;},
+            Animate(self.scene.objectLookup.FleetMtg.sprite, &quot;meeting_lookright&quot;),
             MessageBox {message=&quot;Fleet: Emphasis on \&quot;real\&quot;.&quot;},
             Wait(1),
             MessageBox {message=&quot;Sonic: Hey little buddy, this is a mondo cool idea, but we gotta focus on what Sal's already got cookin'.&quot;},
@@ -3164,21 +3119,20 @@ return function(self, dt)
             MessageBox {message=&quot;Tails: ...ok.&quot;},
 
             -- Fade out, place player below cart, fade in, more dialogue, end of scene
-            Parallel {
-                self.scene:fadeOut(0.2),
-                AudioFade(&quot;music&quot;, 1,0,1)
-            },
+            self.scene:fadeOut(0.2),
             Do(function()
                 self.scene.player.x = self.scene.objectLookup.Cart.x + 60
                 self.scene.player.y = self.scene.objectLookup.Cart.y + 120
                 self.scene.player.state = &quot;idleup&quot;
             end),
             Wait(1),
-            self.scene:fadeIn(0.2),
-            
-            MessageBox {message=&quot;Tails: Ben Windom wouldn't give up...&quot;},
+            Parallel {
+                self.scene:fadeIn(0.2),
+                AudioFade(&quot;music&quot;, 1,0,1)
+            },
+            MessageBox {message=&quot;Tails: ... {p80}Ben Windom wouldn't give up...&quot;},
             self.scene.player:hop(),
-            MessageBox {message=&quot;Tails: Yeah! {p60}I'll show them that the Light of Mobius 'is' real{p60}, and with this book, I'll be the one to find it!&quot;},
+            MessageBox {message=&quot;Tails: I'll show them! {p80}The Light of Mobius 'is'\nreal{p60}, and with this book, I'll be the one to find it!&quot;},
             Move(self.scene.player, self.scene.objectLookup.TailsWP_1, &quot;walkup&quot;),
             Do(function() self.scene.player.state = &quot;attitudedown&quot; end),
             Parallel {
@@ -3190,6 +3144,13 @@ return function(self, dt)
                 Move(self.scene.objectLookup.CartBG, self.scene.objectLookup.CartWaypoint),
                 Move(self.scene.objectLookup.Cart, self.scene.objectLookup.CartWaypoint)
             },
+            Do(function()
+                self.scene.objectLookup.BWatch.hidden = false
+            end),
+            Wait(0.5),
+            Ease(self.scene.camPos, &quot;y&quot;, -800, 1),
+            Wait(0.5),
+            MessageBox{message=&quot;B: Hmmm{p80}, what's that kid up to?&quot;}
         })
     end
 end</property>
@@ -3218,6 +3179,16 @@ end</property>
   <object id="635" name="TailsWP_1" type="BasicNPC" gid="5323" x="8064" y="1472" width="32" height="32">
    <properties>
     <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="636" name="BWatch" type="BasicNPC" gid="7597" x="8064" y="1696" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="idleup"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="false"/>
+    <property name="sprite" type="file" value="../art/sprites/b.png"/>
    </properties>
   </object>
  </objectgroup>
@@ -4081,6 +4052,11 @@ local PlayAudio = require &quot;actions/PlayAudio&quot;
 
 return function(self)
     return BlockPlayer {
+        Do(function()
+            if self.scene.player.doingSpecialMove then
+                self.scene.player.forceDrop = true
+            end
+        end),
         Parallel {
             AudioFade(&quot;music&quot;, 1, 0, 1),
             Ease(self.scene.camPos, &quot;x&quot;, -(self.scene.objectLookup[&quot;SallyMtg&quot;].x - self.x), 1),

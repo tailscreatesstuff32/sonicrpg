@@ -891,6 +891,12 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/music/doittoit2.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
 		file = "audio/music/battle.ogg",
 		category = "music",
 		volume = 0.3,
