@@ -929,9 +929,7 @@ function BasicScene:update(dt)
 	Scene.update(self, dt)
 
 	-- Cannot move while subscreen is up
-	if (not self.player or not self:playerMovable()) and
-		not self.pausePlayer
-	then
+	if (not self.player or not self:playerMovable()) then
 		return
 	end
 	

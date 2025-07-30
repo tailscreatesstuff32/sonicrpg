@@ -48,15 +48,15 @@ return {
 	
 		meeting_idledown = {
 			frames = {{0,2}},
-			clip = {0,0,47,44}
+			clip = {0,0,47,42}
 		},
 		meeting_idleup = {
 			frames = {{0,3}},
-			clip = {0,0,47,44}
+			clip = {0,0,47,42}
 		},
 		meeting_idleleft = {
 			frames = {{0,1}},
-			clip = {0,0,47,44}
+			clip = {0,0,47,42}
 		},
 		meeting_idleleft_shorter = {
 			frames = {{0,1}},

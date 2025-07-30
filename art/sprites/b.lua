@@ -126,6 +126,10 @@ return {
 		},
 		kneelright_worry = {
 			frames = {{14,0}}
+		},
+		
+		questionright = {
+			frames = {{14,2}}
 		}
     }
 }

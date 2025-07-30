@@ -15,6 +15,9 @@ return {
 			frames = {{9,4}}
 		},
 
+		sitright_lookdown = {
+			frames = {{10,4}}
+		},
 		sitright = {
 			frames = {{1,5}}
 		},

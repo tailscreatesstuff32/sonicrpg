@@ -1344,8 +1344,16 @@ end
 
 function Player:hop()
 	return Serial {
+	    Do(function()
+		    self.scene.pausePlayer = true
+			self.sprite.sortOrderY = self.sprite.transform.y
+        end),
 		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y - 50 end, 8),
-		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y + 50 end, 8)
+		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y + 50 end, 8),
+		Do(function()
+		    self.scene.pausePlayer = false
+			self.sprite.sortOrderY = nil
+		end),
 	}
 end
 
