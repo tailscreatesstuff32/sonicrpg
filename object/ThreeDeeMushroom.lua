@@ -12,6 +12,7 @@ local ThreeDeeMushroom = class(ThreeDee)
 
 function ThreeDeeMushroom:construct(scene, layer, object)
 	self.visualObject = self.object.properties.visualObject
+	self.flyHeight = self.object.properties.flyHeight
 end
 
 function ThreeDeeMushroom:land()
@@ -19,9 +20,9 @@ function ThreeDeeMushroom:land()
 	self:run {
 		Parallel {
 			PlayAudio("sfx", "bounce", 0.5),
-			Ease(self.scene.player, "y", self.scene.player.y - self.nextFlyOffsetY - 200, 2),
-			Ease(self.scene.camPos, "y", self.scene.camPos.y - self.nextFlyOffsetY - 200, 2),
-			Ease(self.scene.player, "flyOffsetY", self.scene.player.flyOffsetY + self.nextFlyOffsetY + 200, 2),
+			Ease(self.scene.player, "y", self.scene.player.y - self.nextFlyOffsetY - self.flyHeight, 2),
+			Ease(self.scene.camPos, "y", self.scene.camPos.y - self.nextFlyOffsetY - self.flyHeight, 2),
+			Ease(self.scene.player, "flyOffsetY", self.scene.player.flyOffsetY + self.nextFlyOffsetY + self.flyHeight, 2),
 
 			Serial {
 				Animate(self.scene.objectLookup[self.visualObject].sprite, "bounce"),

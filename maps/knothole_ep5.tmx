@@ -3132,6 +3132,7 @@ return function(self, dt)
             },
             MessageBox {message=&quot;Tails: ... {p80}Ben Windom wouldn't give up...&quot;},
             self.scene.player:hop(),
+            PlayAudio(&quot;music&quot;, &quot;doittoit2&quot;, 1, true, true),
             MessageBox {message=&quot;Tails: I'll show them! {p80}The Light of Mobius 'is'\nreal{p60}, and with this book, I'll be the one to find it!&quot;},
             Move(self.scene.player, self.scene.objectLookup.TailsWP_1, &quot;walkup&quot;),
             Do(function() self.scene.player.state = &quot;attitudedown&quot; end),
@@ -3936,7 +3937,7 @@ end</property>
     <property name="nextFlyOffsetY" type="int" value="448"/>
    </properties>
   </object>
-  <object id="532" name="3DBoneBaseMeetingRoom" type="ThreeDee" gid="5323" x="4544" y="2816" width="256" height="448" visible="0">
+  <object id="532" name="3DBoneBaseMeetingRoom" type="ThreeDee" gid="5323" x="4544" y="2816" width="256" height="448">
    <properties>
     <property name="depth" type="int" value="160"/>
     <property name="flyLandingLayer" type="int" value="4"/>
