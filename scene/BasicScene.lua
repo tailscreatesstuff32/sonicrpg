@@ -146,7 +146,7 @@ function BasicScene:onEnter(args)
 				drawFun()
 				self:sortedDraw(layer.name)
 			end
-			
+
 			for _,object in pairs(layer.objects) do
 				if not classCache[object.type] then
 					-- Dynamically load classes at most once

@@ -10,6 +10,7 @@ function ThreeDee:construct(scene, layer, object)
 	self.flyLandingLayer = self.object.properties.flyLandingLayer
 	self.nextFlyLandingLayer = self.object.properties.nextFlyLandingLayer
 	self.nextFlyOffsetY = self.object.properties.nextFlyOffsetY
+	self.priorityLayer = self.object.properties.priorityLayer
 	self.lastOnTop = false
 
 	NPC.init(self)
@@ -22,6 +23,17 @@ function ThreeDee:whileColliding(player, prevState)
 	then
         return
     end
+
+	-- Check if our priority layer is not the current layer,
+	-- if not, see if there is another object with that priority
+	--[[ layer and if so, return
+	if self.scene.currentLayer ~= self.priorityLayer then
+		for _, other in pairs(player.threeDeeObjects) do
+			if self.scene.currentLayer == other.priorityLayer then
+				return
+			end
+		end
+	end]]
 
     if self:onTop() then
 		player.tempFlyOffsetY = -self.object.height + 20
