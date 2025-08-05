@@ -40,6 +40,7 @@ function ThreeDee:whileColliding(player, prevState)
 		player.flyLandingLayer = self.flyLandingLayer
 		player.nextFlyLandingLayer = self.nextFlyLandingLayer
 		player.nextFlyOffsetY = self.nextFlyOffsetY
+		player.sprite.sortOrderY = 100000
 		player.dropShadow.sprite.sortOrderY = 100000
 
 		self.lastOnTop = true
@@ -48,6 +49,7 @@ function ThreeDee:whileColliding(player, prevState)
 		player.flyLandingLayer = self.nextFlyLandingLayer
 		player.nextFlyLandingLayer = self.nextFlyLandingLayer
 		player.nextFlyOffsetY = 0
+		player.sprite.sortOrderY = nil
 		player.dropShadow.sprite.sortOrderY = nil
 
 		if self.lastOnTop and player.flyOffsetY > 500 then
@@ -85,6 +87,7 @@ function ThreeDee:notColliding(player, prevState)
 	if next(player.threeDeeObjects) == nil then
 		player.tempFlyOffsetY = 0
 		player.flyLandingLayer = self.nextFlyLandingLayer
+		player.sprite.sortOrderY = nil
 		player.dropShadow.sprite.sortOrderY = nil
 		
 		if self.lastOnTop and player.flyOffsetY > 500 then

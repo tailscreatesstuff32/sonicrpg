@@ -199,7 +199,7 @@ return function(player)
 		end
 
 		-- Update collision layer
-		if self.flyOffsetY > 400 then
+		if self.flyOffsetY > 272 then
 			if self.scene.currentLayerId ~= 1 then
 				self.scene:swapLayer(1, true)
 			end
@@ -207,7 +207,7 @@ return function(player)
 			if self.scene.currentLayerId ~= 2 then
 				self.scene:swapLayer(2, true)
 			end
-		elseif self.flyOffsetY > 20 then
+		elseif self.flyOffsetY > 96 then
 			if self.scene.currentLayerId ~= 3 then
 				self.scene:swapLayer(3, true)
 			end

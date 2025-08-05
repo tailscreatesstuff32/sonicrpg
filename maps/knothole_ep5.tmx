@@ -3,6 +3,7 @@
  <properties>
   <property name="battlebg" type="file" value="../art/backgrounds/rotorwsbg.png"/>
   <property name="currentLayer" type="int" value="5"/>
+  <property name="layerHeightMap" value="objects:448,objects2:160,objects3:20"/>
   <property name="layered" type="bool" value="true"/>
   <property name="nighttime" type="bool" value="false"/>
   <property name="onload" type="file" value="actions/knotholeep5.lua"/>
