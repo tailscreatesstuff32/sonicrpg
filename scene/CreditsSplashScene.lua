@@ -132,7 +132,7 @@ Deebs
 Racoon Ninja
 Joey "The Plokman" Tripp Nimmo
 Ibeh Dubem/Flame the Teen
-Picnik
+Ilya Rappu/Picnik
 Reggie Meisler/RedG
 Unstoppable Thombo
 Damien
@@ -202,6 +202,9 @@ Jonathon Dobbs/InkPants
 
 [2023 Box Art]
 Leon Nalić/RingMasterLeon
+
+[2025 Box Art]
+Gwen Longcriercat
 
 [Framework]
 Reggie Meisler/RedG

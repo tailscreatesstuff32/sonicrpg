@@ -70,6 +70,10 @@ function BasicScene:onEnter(args)
 			self.collisionLayer["objects4"] = layer.data
 		elseif layer.name == "Collision5" then
 			self.collisionLayer["objects5"] = layer.data
+		elseif layer.name == "Collision6" then
+			self.collisionLayer["objects6"] = layer.data
+		elseif layer.name == "Collision7" then
+			self.collisionLayer["objects7"] = layer.data
 		end
 	end
 
@@ -81,6 +85,8 @@ function BasicScene:onEnter(args)
 	self.objectCollisionLayer["objects3"] = {}
 	self.objectCollisionLayer["objects4"] = {}
 	self.objectCollisionLayer["objects5"] = {}
+	self.objectCollisionLayer["objects6"] = {}
+	self.objectCollisionLayer["objects7"] = {}
 
 	for y = 0, self.map.height do
 		self.objectCollisionLayer["all"][y] = {}
@@ -89,6 +95,8 @@ function BasicScene:onEnter(args)
 		self.objectCollisionLayer["objects3"][y] = {}
 		self.objectCollisionLayer["objects4"][y] = {}
 		self.objectCollisionLayer["objects5"][y] = {}
+		self.objectCollisionLayer["objects6"][y] = {}
+		self.objectCollisionLayer["objects7"][y] = {}
 	end
 
 	-- Create swap layer objects (Objects that will swap what layer they are in as player swaps layer)
@@ -98,6 +106,8 @@ function BasicScene:onEnter(args)
 	self.swapLayerObjects["objects3"] = {}
 	self.swapLayerObjects["objects4"] = {}
 	self.swapLayerObjects["objects5"] = {}
+	self.swapLayerObjects["objects6"] = {}
+	self.swapLayerObjects["objects7"] = {}
 
 	-- NOTE: This is how we draw the lua map data
 	-- There is a draw function on the sti map object.

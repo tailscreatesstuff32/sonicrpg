@@ -199,21 +199,29 @@ return function(player)
 		end
 
 		-- Update collision layer
-		if self.flyOffsetY > 272 then
+		if self.flyOffsetY > 1504 then
 			if self.scene.currentLayerId ~= 1 then
 				self.scene:swapLayer(1, true)
 			end
-		elseif self.flyOffsetY > 160 then
+		elseif self.flyOffsetY > 448 then
 			if self.scene.currentLayerId ~= 2 then
 				self.scene:swapLayer(2, true)
 			end
-		elseif self.flyOffsetY > 96 then
+		elseif self.flyOffsetY > 272 then
 			if self.scene.currentLayerId ~= 3 then
 				self.scene:swapLayer(3, true)
 			end
-		else
+		elseif self.flyOffsetY > 160 then
+			if self.scene.currentLayerId ~= 4 then
+				self.scene:swapLayer(4, true)
+			end
+		elseif self.flyOffsetY > 20 then
 			if self.scene.currentLayerId ~= 5 then
 				self.scene:swapLayer(5, true)
+			end
+		else
+			if self.scene.currentLayerId ~= 7 then
+				self.scene:swapLayer(7, true)
 			end
 		end
 
@@ -231,13 +239,13 @@ return function(player)
 			end
 			
 			if self.flyLandingLayer == nil then
-				self.flyLandingLayer = 5
+				self.flyLandingLayer = 7
 			end
 
 			if self.scene.currentLayerId ~= self.flyLandingLayer then
 				self.scene:swapLayer(self.flyLandingLayer, true)
 
-				if self.flyLandingLayer < 5 then
+				if self.flyLandingLayer < 7 then
 					self.flyOffsetY = self.nextFlyOffsetY or 0
 					self.tempFlyOffsetY = -(self.flyOffsetY - 1)
 					self.flyLandingLayer = self.nextFlyLandingLayer
