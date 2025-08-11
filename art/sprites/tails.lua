@@ -11,7 +11,24 @@ return {
 		shock = {
 			frames = {{13,2}}
 		},
-		
+
+		victory = {
+			frames = {{11,2}}
+		},
+		idle = {
+			frames = {{0,1}}
+		},
+		crouch = {
+			frames = {{13,4}}
+		},
+		leap = {
+			frames = {{14,4}}
+		},
+		swing = {
+			frames = {{15,4},{16,4}},
+			speed = 0.2
+		},
+
 		leapdown = {
 			frames = {{5,2}}
 		},

@@ -65,7 +65,7 @@ return {
 	specialmove = require "data/specialmoves/tails",
 
 	battle = {
-		require "data/battle/SonicHit",
+		require "data/battle/TailsHit",
 		require "data/battle/Skills",
 		require "data/battle/Items"
 	}
