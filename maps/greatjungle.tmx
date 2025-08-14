@@ -825,8 +825,9 @@
     <property name="visualObject" value="Mushroom1"/>
    </properties>
   </object>
-  <object id="231" name="Weeds" type="Brush" gid="5323" x="992" y="3072" width="64" height="64">
+  <object id="231" name="Weeds" type="BasicNPC" gid="5323" x="992" y="3072" width="64" height="64">
    <properties>
+    <property name="align" value="bottom_left"/>
     <property name="battle" type="file" value="../data/monsters/brush.lua"/>
     <property name="battleOnCollide" type="bool" value="true"/>
     <property name="defaultAnim" value="idle"/>
@@ -835,8 +836,9 @@
     <property name="sprite" type="file" value="../art/sprites/brush.png"/>
    </properties>
   </object>
-  <object id="232" name="Weeds" type="Brush" gid="5323" x="800" y="3072" width="64" height="64">
+  <object id="232" name="Weeds" type="BasicNPC" gid="5323" x="800" y="3072" width="64" height="64">
    <properties>
+    <property name="align" value="bottom_left"/>
     <property name="battle" type="file" value="../data/monsters/brush.lua"/>
     <property name="battleOnCollide" type="bool" value="true"/>
     <property name="defaultAnim" value="idle"/>
@@ -845,8 +847,9 @@
     <property name="sprite" type="file" value="../art/sprites/brush.png"/>
    </properties>
   </object>
-  <object id="233" name="Weeds" type="Brush" gid="5323" x="608" y="3072" width="64" height="64">
+  <object id="233" name="Weeds" type="BasicNPC" gid="5323" x="608" y="3072" width="64" height="64">
    <properties>
+    <property name="align" value="bottom_left"/>
     <property name="battle" type="file" value="../data/monsters/brush.lua"/>
     <property name="battleOnCollide" type="bool" value="true"/>
     <property name="defaultAnim" value="idle"/>

@@ -1456,7 +1456,7 @@ return {
         {
           id = 231,
           name = "Weeds",
-          type = "Brush",
+          type = "BasicNPC",
           shape = "rectangle",
           x = 992,
           y = 3072,
@@ -1466,6 +1466,7 @@ return {
           gid = 5323,
           visible = true,
           properties = {
+            ["align"] = "bottom_left",
             ["battle"] = "../data/monsters/brush.lua",
             ["battleOnCollide"] = true,
             ["defaultAnim"] = "idle",
@@ -1477,7 +1478,7 @@ return {
         {
           id = 232,
           name = "Weeds",
-          type = "Brush",
+          type = "BasicNPC",
           shape = "rectangle",
           x = 800,
           y = 3072,
@@ -1487,6 +1488,7 @@ return {
           gid = 5323,
           visible = true,
           properties = {
+            ["align"] = "bottom_left",
             ["battle"] = "../data/monsters/brush.lua",
             ["battleOnCollide"] = true,
             ["defaultAnim"] = "idle",
@@ -1498,7 +1500,7 @@ return {
         {
           id = 233,
           name = "Weeds",
-          type = "Brush",
+          type = "BasicNPC",
           shape = "rectangle",
           x = 608,
           y = 3072,
@@ -1508,6 +1510,7 @@ return {
           gid = 5323,
           visible = true,
           properties = {
+            ["align"] = "bottom_left",
             ["battle"] = "../data/monsters/brush.lua",
             ["battleOnCollide"] = true,
             ["defaultAnim"] = "idle",
