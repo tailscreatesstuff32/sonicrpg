@@ -1468,6 +1468,7 @@ return {
           properties = {
             ["battle"] = "../data/monsters/brush.lua",
             ["battleOnCollide"] = true,
+            ["defaultAnim"] = "idle",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
             ["sprite"] = "../art/sprites/brush.png"
@@ -1488,6 +1489,7 @@ return {
           properties = {
             ["battle"] = "../data/monsters/brush.lua",
             ["battleOnCollide"] = true,
+            ["defaultAnim"] = "idle",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
             ["sprite"] = "../art/sprites/brush.png"
@@ -1508,6 +1510,7 @@ return {
           properties = {
             ["battle"] = "../data/monsters/brush.lua",
             ["battleOnCollide"] = true,
+            ["defaultAnim"] = "idle",
             ["disappearAfterBattle"] = true,
             ["ghost"] = true,
             ["sprite"] = "../art/sprites/brush.png"

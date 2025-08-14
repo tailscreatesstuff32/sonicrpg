@@ -15,19 +15,10 @@ local Transform = require "util/Transform"
 
 local LeapBackward = function(self, target)
 	return Serial {
-		--[[ Bounce off target
-		Parallel {
-			Ease(self.sprite.transform, "y", target.sprite.transform.y - self.sprite.h*2.5, 4, "linear"),
-			Ease(self.sprite.transform, "x", target.sprite.transform.x + self.sprite.w*2, 4, "linear"),
-		},]]
-		Parallel {
-			Ease(self.sprite.transform, "y", target.sprite.transform.y + target.sprite.h - self.sprite.h, 4, "linear"),
-			Ease(self.sprite.transform, "x", target.sprite.transform.x + self.sprite.w*3, 4, "linear")
-		},
-		
 		-- Land on ground
+		Wait(0.6),
 		Animate(self.sprite, "crouch"),
-		Wait(0.1),
+		Wait(0.15),
 		Animate(self.sprite, "idle"),
 		Wait(0.15),
 
@@ -58,35 +49,37 @@ return function(self, target)
 		Animate(self.sprite, "leap", true),
 		Parallel {
 			Ease(self.sprite.transform, "x", target.sprite.transform.x + math.abs(target.sprite.transform.x - self.sprite.transform.x)/2, 4, "linear"),
-			Ease(self.sprite.transform, "y", self.sprite.transform.y - self.sprite.h*3, 6, "linear"),
+			Ease(self.sprite.transform, "y", self.sprite.transform.y - self.sprite.h*3, 4, "linear"),
 		},
 
 		Parallel {
-			Ease(self.sprite.transform, "x", target.sprite.transform.x + target.sprite.w, 4, "linear"),
+			Ease(self.sprite.transform, "x", target.sprite.transform.x + target.sprite.w, 3, "linear"),
 			Serial {
 				Wait(0.09),
 				Animate(self.sprite, "swing", true),
-				Ease(self.sprite.transform, "y", target.sprite.transform.y - self.sprite.h, 6, "linear")
+				Ease(self.sprite.transform, "y", target.sprite.transform.y + target.sprite.h - self.sprite.h, 4, "linear")
+			},
+			Serial {
+				Wait(0.18),
+				Parallel {
+					Animate(function()
+						local xform = Transform(
+							target.sprite.transform.x,
+							target.sprite.transform.y,
+							3,
+							3
+						)
+						return SpriteNode(target.scene, xform, nil, "smack", nil, nil, "ui"), true
+					end, "idle"),
+					
+					-- Smack and bounce off
+					OnHitEvent(
+						self,
+						target,
+						LeapBackward(self, target)
+					)
+				}
 			}
-		},
-		
-		Parallel {
-			Animate(function()
-				local xform = Transform(
-					target.sprite.transform.x,
-					target.sprite.transform.y,
-					3,
-					3
-				)
-				return SpriteNode(target.scene, xform, nil, "smack", nil, nil, "ui"), true
-			end, "idle"),
-			
-			-- Smack and bounce off
-			OnHitEvent(
-				self,
-				target,
-				LeapBackward(self, target)
-			)
 		}
 	}
 end

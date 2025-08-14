@@ -1,6 +1,6 @@
 return {
     image = "tails.png",
-    starting = "idleleft",
+    starting = "idle",
     w = 47,
     h = 55,
 
@@ -16,7 +16,7 @@ return {
 			frames = {{11,2}}
 		},
 		idle = {
-			frames = {{0,1}}
+			frames = {{14,2}}
 		},
 		crouch = {
 			frames = {{13,4}}
@@ -26,7 +26,7 @@ return {
 		},
 		swing = {
 			frames = {{15,4},{16,4}},
-			speed = 0.2
+			speed = 0.15
 		},
 
 		leapdown = {

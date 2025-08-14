@@ -536,6 +536,12 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/music/trouble.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
 		file = "audio/music/bsad.ogg",
 		category = "music",
 		looping = true

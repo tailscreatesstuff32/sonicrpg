@@ -662,6 +662,7 @@ function Player:updateSprite()
 	if self.spriteOverride[GameState.leader] then
 		spriteName = self.spriteOverride[GameState.leader]
 	end
+	self.transform = Transform(0, 0, 2, 2)
 	self.sprite = SpriteNode(
 		self.scene,
 		self.transform,

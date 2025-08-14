@@ -829,6 +829,7 @@
    <properties>
     <property name="battle" type="file" value="../data/monsters/brush.lua"/>
     <property name="battleOnCollide" type="bool" value="true"/>
+    <property name="defaultAnim" value="idle"/>
     <property name="disappearAfterBattle" type="bool" value="true"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="sprite" type="file" value="../art/sprites/brush.png"/>
@@ -838,6 +839,7 @@
    <properties>
     <property name="battle" type="file" value="../data/monsters/brush.lua"/>
     <property name="battleOnCollide" type="bool" value="true"/>
+    <property name="defaultAnim" value="idle"/>
     <property name="disappearAfterBattle" type="bool" value="true"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="sprite" type="file" value="../art/sprites/brush.png"/>
@@ -847,6 +849,7 @@
    <properties>
     <property name="battle" type="file" value="../data/monsters/brush.lua"/>
     <property name="battleOnCollide" type="bool" value="true"/>
+    <property name="defaultAnim" value="idle"/>
     <property name="disappearAfterBattle" type="bool" value="true"/>
     <property name="ghost" type="bool" value="true"/>
     <property name="sprite" type="file" value="../art/sprites/brush.png"/>
