@@ -99,7 +99,7 @@ function Monkey:update(dt)
 		self:run {
 			-- Hold coconut
 			Animate(self.sprite, "hold"),
-			Wait(0.5),
+			Wait(0.2),
 			-- Throw animation
 			Parallel {
 				Animate(self.sprite, "throw"),

@@ -1558,6 +1558,7 @@ return {
             ["alignOffsetX"] = 32,
             ["ghost"] = true,
             ["sprite"] = "../art/sprites/monkey.png",
+            ["swapLayers"] = "objects:objects5, objects2:objects5, objects3:objects5, objects4:objects5, objects5:objects4, objects6:objects5, objects7:objects5",
             ["viewRange"] = "Monkey1_VR1"
           }
         }

@@ -49,11 +49,6 @@ return {
 	hasDropShadow = true,
 	skipAnimation = true,
 	
-	onInit = function(self)
-		self.scene:addMonster("brush_spawn")
-		self.scene:addMonster("brush_spawn")
-	end,
-	
 	behavior = function (self, target)
 		return Action()
 	end
