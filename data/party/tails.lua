@@ -55,8 +55,7 @@ return {
 		[3] = {
 			messages = {},
 			skills = {
-				GameState:getEarnedSkill("nicole_upgrade_scan", "Scan"),
-				--require "data/battle/skills/Slap",
+				require "data/battle/skills/SlapShot",
 				--require "data/battle/skills/Fly",
 			}
 		}

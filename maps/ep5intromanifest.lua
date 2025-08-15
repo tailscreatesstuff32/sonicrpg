@@ -80,6 +80,10 @@ return {
 	},
 	{
 		type = "image",
+		file = "art/sprites/puck.png"
+	},
+	{
+		type = "image",
 		file = "art/sprites/rotorpad.png"
 	},
 	{

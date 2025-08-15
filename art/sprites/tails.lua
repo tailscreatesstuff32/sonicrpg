@@ -28,6 +28,13 @@ return {
 			frames = {{15,4},{16,4}},
 			speed = 0.15
 		},
+		slap_idle = {
+			frames = {{15,0}}
+		},
+		slap = {
+			frames = {{15,1},{15,2},{15,3}},
+			speed = 0.15
+		},
 
 		leapdown = {
 			frames = {{5,2}}
