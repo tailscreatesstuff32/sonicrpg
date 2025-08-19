@@ -12,11 +12,20 @@ return {
 			frames = {{13,2}}
 		},
 
+		hurt = {
+			frames = {{9,2}}
+		},
+		dead = {
+			frames = {{16,0}}
+		},
 		victory = {
 			frames = {{11,2}}
 		},
 		idle = {
 			frames = {{14,2}}
+		},
+		block = {
+			frames = {{16,2}}
 		},
 		crouch = {
 			frames = {{13,4}}
@@ -32,7 +41,7 @@ return {
 			frames = {{15,0}}
 		},
 		slap = {
-			frames = {{15,1},{15,2},{15,3}},
+			frames = {{15,0},{15,1},{15,2},{15,3}},
 			speed = 0.15
 		},
 

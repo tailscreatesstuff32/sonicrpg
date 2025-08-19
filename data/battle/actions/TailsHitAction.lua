@@ -6,6 +6,7 @@ local Animate = require "actions/Animate"
 local PlayAudio = require "actions/PlayAudio"
 local WaitForFrame = require "actions/WaitForFrame"
 local Do = require "actions/Do"
+local Spawn = require "actions/Spawn"
 
 local PressX = require "data/battle/actions/PressX"
 local OnHitEvent = require "data/battle/actions/OnHitEvent"
@@ -53,11 +54,8 @@ return function(self, target)
 			Serial {
 				Wait(0.09),
 				Animate(self.sprite, "swing", true),
-				Ease(self.sprite.transform, "y", target.sprite.transform.y + target.sprite.h - self.sprite.h, 4, "linear")
-			},
-			Serial {
-				Wait(0.18),
-				Parallel {
+				Ease(self.sprite.transform, "y", target.sprite.transform.y + target.sprite.h - self.sprite.h, 4, "linear"),
+				Spawn(
 					Animate(function()
 						local xform = Transform(
 							target.sprite.transform.x,
@@ -66,15 +64,17 @@ return function(self, target)
 							3
 						)
 						return SpriteNode(target.scene, xform, nil, "smack", nil, nil, "ui"), true
-					end, "idle"),
-					
-					-- Smack and bounce off
-					OnHitEvent(
-						self,
-						target,
-						LeapBackward(self, target)
-					)
-				}
+					end, "idle")
+				)
+			},
+			Serial {
+				Wait(0.02),
+				-- Smack and bounce off
+				OnHitEvent(
+					self,
+					target,
+					LeapBackward(self, target)
+				)
 			}
 		}
 	}

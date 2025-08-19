@@ -5,6 +5,6 @@ return {
 	target = TargetType.None,
 	unusable = function(target) return false end,
 	cost = 5,
-	desc = "Slap a puck at opponent",
+	desc = "Slap a puck at opponent.",
 	action = require "data/battle/skills/actions/SlapShot"
 }

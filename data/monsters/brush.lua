@@ -51,7 +51,15 @@ return {
 	
 	onInit = function(self)
 		self.scene:addMonster("brush_spawn")
-		self.scene:addMonster("brush_spawn")
+		local flower = self.scene:addMonster("flower")
+		local infrontOfFlower = self.scene:addMonster("brush_spawn")
+
+		flower.untargetable = true
+		infrontOfFlower.onDead = function(self)
+			return Do(function()
+				flower.untargetable = false
+			end)
+		end
 	end,
 	
 	behavior = function (self, target)

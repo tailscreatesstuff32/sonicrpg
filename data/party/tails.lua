@@ -45,7 +45,8 @@ return {
 	},
 
 	equip = {
-		--weapon = require "data/weapons/HockeyStick",
+		weapon = require "data/weapons/HockeyStick",
+		accessory = require "data/accessories/LuckyCoin",
 	},
 
 	items = {

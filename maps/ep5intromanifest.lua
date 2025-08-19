@@ -244,6 +244,10 @@ return {
 	},
 	{
 		type = "image",
+		file = "art/sprites/flower.png"
+	},
+	{
+		type = "image",
 		file = "art/sprites/swatbotwhite.png"
 	},
 	{

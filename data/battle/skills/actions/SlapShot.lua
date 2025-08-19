@@ -149,7 +149,7 @@ return function(self)
 							oppo.hurtBySlam = true
 							Executor(self.scene):act(Serial {
 								Parallel {
-									oppo:takeDamage({attack=self.stats.attack, speed=100, luck=0}, false, oppo.slamKnockbackFn),
+									oppo:takeDamage({attack=self.stats.attack*2.5, speed=100, luck=0}, false, oppo.slamKnockbackFn),
 									self.reflectPuck and Stars(self, oppo) or Action()
 								},
 
