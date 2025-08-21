@@ -27,16 +27,18 @@ local Heal = require "data/items/actions/Heal"
 local Telegraph = require "data/monsters/actions/Telegraph"
 local Smack = require "data/monsters/actions/Smack"
 
+local BattleScene = require "scene/BattleScene"
+
 return {
 	name = "Flower",
 	altName = "Flower",
 	sprite = "sprites/flower",
 
 	stats = {
-		xp    = 0,
+		xp    = 10,
 		maxhp = 250,
-		attack = 20,
-		defense = 20,
+		attack = 15,
+		defense = 15,
 		speed = 10,
 		focus = 10,
 		luck = 10,
@@ -44,11 +46,12 @@ return {
 	
 	run_chance = 1.0,
 	coin = 0,
-	drops = {},
+	drops = {
+		{item = require "data/items/GreenLeaf", count = 1, chance = 1.0},
+	},
 	
 	scan = "You can dodge this flower's attacks if you're nimble!",
 
-	hasDropShadow = true,
 	skipAnimation = true,
 	
 	onInit = function(self)
@@ -64,6 +67,13 @@ return {
 		self.bullet.transform.ox = self.bullet.w/2
 		self.bullet.transform.oy = self.bullet.h/2
 		self.bullet.transform.angle = math.pi / 6
+	end,
+	
+	onDead = function(self)
+		return Do(function()
+			self.scene.state = BattleScene.STATE_PLAYERWIN
+			self.scene:cleanMonsters()
+		end)
 	end,
 	
 	behavior = function (self, target)

@@ -188,7 +188,7 @@ return function(player)
 		end
 
 		-- Adjust camera
-		if math.abs(self.flyOffsetY + self.tempFlyOffsetY + self.scene.camPos.y) > 300 and not self.camMove then
+		if math.abs(self.flyOffsetY + self.tempFlyOffsetY + self.scene.camPos.y) > 250 and not self.camMove then
 			self.camMove = true
 			self:run {
 				Ease(self.scene.camPos, "y", -(self.flyOffsetY + self.tempFlyOffsetY), 2),

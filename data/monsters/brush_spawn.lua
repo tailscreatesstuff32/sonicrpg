@@ -45,8 +45,7 @@ return {
 	drops = {},
 	
 	scan = "This a weed, Sally",
-	
-	hasDropShadow = true,
+
 	skipAnimation = true,
 	
 	behavior = function (self, target)
