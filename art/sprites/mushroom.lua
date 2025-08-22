@@ -2,7 +2,7 @@ return {
     image = "mushroom.png",
     starting = "idle",
     w = 80,
-    h = 84,
+    h = 116,
 
     animations = {
 		idle = {

@@ -17,7 +17,7 @@ local Transform = require "util/Transform"
 local LeapBackward = function(self, target)
 	return Serial {
 		-- Land on ground
-		Wait(0.72),
+		Wait(1.5),
 
 		-- Leap backward
 		Animate(self.sprite, "crouch"),

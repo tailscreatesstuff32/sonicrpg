@@ -1281,7 +1281,7 @@ function Player:isMoving()
 end
 
 function Player:isTouching(x, y, w, h)
-	if not self.hotspots then
+	if not self.hotspots or self.nocollision then
 		return false
 	end
 	

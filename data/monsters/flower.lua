@@ -36,14 +36,14 @@ return {
 
 	stats = {
 		xp    = 10,
-		maxhp = 250,
+		maxhp = 180,
 		attack = 15,
 		defense = 15,
 		speed = 10,
 		focus = 10,
 		luck = 10,
 	},
-	
+
 	run_chance = 1.0,
 	coin = 0,
 	drops = {
@@ -77,6 +77,10 @@ return {
 	end,
 	
 	behavior = function (self, target)
+		if self.hp <= 0 then
+			return Action()
+		end
+	
 		self.bullet.transform.x = self.sprite.transform.x + 84
 		self.bullet.transform.y = self.sprite.transform.y + 10
 		

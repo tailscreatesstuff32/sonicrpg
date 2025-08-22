@@ -80,6 +80,7 @@ function Quicksand:teleport()
 	local exitObject = self.scene.objectLookup[self.exitObject]
 
     player.teleporting = true
+	player.nocollision = true
 
 	self:run(BlockPlayer {
 		Do(function()
@@ -110,6 +111,7 @@ function Quicksand:teleport()
 		Ease(player, "y", function() return player.y + 280 end, 5),
 		Do(function()
 			player.teleporting = false
+			player.nocollision = false
 			player.dropShadowOverrideY = nil
 			player.state = "idledown"
 		end)
