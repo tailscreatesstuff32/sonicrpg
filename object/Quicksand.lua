@@ -18,6 +18,8 @@ function Quicksand:construct(scene, layer, object)
 	self.ghost = true
 	self.exitObject = object.properties.exitObject
 	self.depth = DEFAULT_DEPTH
+	self.active = object.properties.active or false
+	self.image = object.properties.image
 
 	NPC.init(self)
 	
@@ -27,7 +29,7 @@ end
 function Quicksand:update(dt)
 	local player = self.scene.player
 
-	if player.teleporting then
+	if player.teleporting or not self.active then
 		return
 	end
 

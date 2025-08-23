@@ -2,6 +2,7 @@ local Transform = require "util/Transform"
 local Layout = require "util/Layout"
 
 local Action = require "actions/Action"
+local IfElse = require "actions/IfElse"
 local MessageBox = require "actions/MessageBox"
 local Menu = require "actions/Menu"
 local Ease = require "actions/Ease"
@@ -899,10 +900,16 @@ function BasicScene:pan(worldOffsetX, worldOffsetY)
 				local originalOpacity = layer.opacity
 				Executor(self):act(
 					Repeat(
-						Serial {
-							Ease(layer, "opacity", originalOpacity/1.5, 3, "quad"),
-							Ease(layer, "opacity", originalOpacity, 3, "quad")
-						}
+						IfElse(
+							function()
+								return not layer.noshimmer
+							end,
+							Serial {
+								Ease(layer, "opacity", originalOpacity/1.5, 3, "quad"),
+								Ease(layer, "opacity", originalOpacity, 3, "quad")
+							},
+							Action()
+						)
 					)
 				)
 				layer.properties.shimmer = nil

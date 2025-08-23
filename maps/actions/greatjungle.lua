@@ -14,6 +14,7 @@ return function(scene, hint)
 	local Executor = require "actions/Executor"
 	local Wait = require "actions/Wait"
 	local Do = require "actions/Do"
+	local Spawn = require "actions/Spawn"
 	local shine = require "lib/shine"
 	local SpriteNode = require "object/SpriteNode"
 	local NameScreen = require "actions/NameScreen"
@@ -27,9 +28,9 @@ return function(scene, hint)
 		100
 	)
 	
-	scene.audio:playMusic("greatjungle", 1.0)
+	scene.audio:playMusic("greatjungle", 0.5)
 	
 	scene.player.dustColor = Player.FOREST_DUST_COLOR
 
-	return Action()
+	return Spawn(text)
 end
