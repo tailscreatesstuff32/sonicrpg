@@ -10,6 +10,9 @@ return {
 		},
 		right_snow = {
 			frames = {{1,0}}
+		},
+		right_overlay = {
+			frames = {{2,0}}
 		}
     }
 }

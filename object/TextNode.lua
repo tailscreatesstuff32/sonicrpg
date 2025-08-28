@@ -1,14 +1,14 @@
 local TextNode = class(require "object/DrawableNode")
 
 -- [text] Could be either string or table (e.g. {color1, text1, color2, text2, ..., colorN, textN})
-function TextNode:construct(scene, transform, color, text, font, layer, outline)
+function TextNode:construct(scene, transform, color, text, font, layerName, outline)
 	self.text = love.graphics.newText(font or FontCache.Consolas, text)
 	self.w = self.text:getWidth()
 	self.h = self.text:getHeight()
 	self.outline = outline or false
 	
-	if layer ~= false then
-		self:addSceneNode(layer or "ui")
+	if layerName ~= false then
+		self:addSceneNode(layerName or "ui")
 	end
 end
 

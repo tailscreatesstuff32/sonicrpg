@@ -84,16 +84,21 @@ return function(scene, hint)
 		scene.objectLookup.Door.object.properties.scene = "knotholesnowday.lua"
 		return Action()
 	elseif not scene.nighttime then
-		if GameState:isFlagSet("ep4_introdone") then
+		if GameState:isFlagSet("ep5_knothole") then
 			scene.audio:playMusic("knotholehut", 0.8)
-		elseif GameState:isFlagSet("ep3_ffmeeting") or
-		   not GameState:isFlagSet("ep3_knotholerun")
-		then
-			scene.audio:playMusic("knotholehut", 0.8)
-		elseif not GameState:isFlagSet("ep3_ffmeeting") then
-			scene.audio:playMusic("awkward", 1.0)
+			scene.objectLookup.Door.object.properties.scene = "knothole_ep5.lua"
+		else
+			if GameState:isFlagSet("ep4_introdone") then
+				scene.audio:playMusic("knotholehut", 0.8)
+			elseif GameState:isFlagSet("ep3_ffmeeting") or
+			   not GameState:isFlagSet("ep3_knotholerun")
+			then
+				scene.audio:playMusic("knotholehut", 0.8)
+			elseif not GameState:isFlagSet("ep3_ffmeeting") then
+				scene.audio:playMusic("awkward", 1.0)
+			end
+			scene.objectLookup.Door.object.properties.scene = "knothole.lua"
 		end
-		scene.objectLookup.Door.object.properties.scene = "knothole.lua"
 	else
 		scene.objectLookup.Door.object.properties.scene = "knotholeatnight.lua"
 	end

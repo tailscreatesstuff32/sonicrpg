@@ -118,6 +118,7 @@ Reggie Meisler/RedG
 Jesse Rose/GreenCauldron08
 F0XShadow
 Michael Tavera
+Fuse Hive
 
 [Sound]
 Anya Stocks/Frostdrop1
@@ -131,6 +132,7 @@ Deebs
 Racoon Ninja
 Joey "The Plokman" Tripp Nimmo
 Ibeh Dubem/Flame the Teen
+Ilya Rappu/Picnik
 Reggie Meisler/RedG
 Unstoppable Thombo
 Damien
@@ -139,6 +141,8 @@ E-122-Psi
 
 [Tiles]
 AmeixaRoxa
+Seliel the Shaper (Boulder Bay)
+SciGho (Great Jungle)
 Lucas Melo (Death Egg)
 Square Enix
 daemoth
@@ -149,6 +153,9 @@ Nz17
 [Background Art]
 Reggie Meisler/RedG
 Nz17
+
+[Storybook Art]
+AmeixaRoxa
 
 [Concept Art]
 AmeixaRoxa
@@ -195,6 +202,9 @@ Jonathon Dobbs/InkPants
 
 [2023 Box Art]
 Leon Nalić/RingMasterLeon
+
+[2025 Box Art]
+Gwen Longcriercat
 
 [Framework]
 Reggie Meisler/RedG

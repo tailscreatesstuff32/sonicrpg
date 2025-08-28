@@ -112,5 +112,11 @@ function Door:interact()
 	end
 end
 
+function Door:close()
+	self:run({
+		Animate(self.sprite, "closing"),
+		Animate(self.sprite, "closed")
+	})
+end
 
 return Door

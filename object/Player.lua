@@ -69,7 +69,12 @@ function Player:construct(scene, layer, object)
 	self.cinematicStack = 0
 	self.spriteOverride = {}
 	self.dustColor = Player.DEFAULT_DUST_COLOR
-	
+	self.flyLayer = self.scene.currentLayerId
+	self.flyLandingLayer = self.flyLayer
+	self.defaultFlyOffsetY = 20
+	self.flyOffsetY = self.defaultFlyOffsetY
+	self.stickyLShift = false
+
 	self.isSwatbot = {}
 	self.lastSwatbotStepSfx = love.timer.getTime()
 
@@ -103,6 +108,9 @@ function Player:construct(scene, layer, object)
 	-- A hashset of things blocking your ladder access
 	self.noLadder = {}
 
+	-- A hashset of simulated drops
+	self.simulatedDrops = {}
+
 	-- A hashset of keyhints we are touching
 	self.keyhints = {}
 
@@ -116,20 +124,10 @@ function Player:construct(scene, layer, object)
 	-- Place player
 	self.x = object.x
 	self.y = object.y
-
-    local spriteWidth, spriteHeight = 47,55
-	self.transform = Transform(
-		love.graphics.getWidth()/2 - spriteWidth,
-		love.graphics.getHeight()/2 - spriteHeight,
-		2,
-		2
-	)
 	
 	self.color = {255,255,255,255}
 	
 	self.state = object.properties.orientation and "idle"..object.properties.orientation or Player.STATE_IDLEDOWN
-	self.width,self.height = spriteWidth, spriteHeight
-	self.halfWidth,self.halfHeight = math.floor(spriteWidth/2), math.floor(spriteHeight/2)
 	
 	self:updateSprite()
 	
@@ -152,7 +150,7 @@ function Player:construct(scene, layer, object)
 		}
 	)
 	self.dropShadow.sprite.transform.sx = 1.3
-	self.dropShadow.sprite.sortOrderY = -1
+	self.dropShadow.sprite.sortOrderY = self.sprite.transform.y - 1
 	self.scene:addObject(self.dropShadow)
 	
 	self:updateHotspots()
@@ -162,13 +160,6 @@ function Player:construct(scene, layer, object)
 		right_bot = {x = 0, y = 0},
 		left_top  = {x = 0, y = 0},
 		left_bot  = {x = 0, y = 0}
-	}
-	
-	self.collisionHSOffsets = {
-		right_top = {x = 18, y = 0},
-		right_bot = {x = 18, y = 0},
-		left_top = {x = -15, y = 0},
-		left_bot = {x = -15, y = 0},
 	}
 	
 	self:createVisuals()
@@ -279,6 +270,12 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 				self.transform,
 				Transform(self.sprite.w - 15, -10)
 			)
+		-- HACK: BabyT is too differently shaped for this transform, change it
+		elseif GameState.leader == "babyt" then
+			pressDirXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 60, -10)
+			)
 		end
 		local pressDir = SpriteNode(
 			self.scene,
@@ -303,6 +300,12 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 			pressXXForm = Transform.relative(
 				self.transform,
 				Transform(self.sprite.w - 15, -10)
+			)
+		-- HACK: BabyT is too differently shaped for this transform, change it
+		elseif GameState.leader == "babyt" then
+			pressXXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 60, -10)
 			)
 		end
 		local pressX = SpriteNode(
@@ -330,6 +333,12 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 				self.transform,
 				Transform(self.sprite.w - 17, -10)
 			)
+		-- HACK: BabyT is too differently shaped for this transform, change it
+		elseif GameState.leader == "babyt" then
+			pressLshXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 62, -10)
+			)
 		end
 		local pressLsh = SpriteNode(
 			self.scene,
@@ -355,6 +364,12 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 			pressXXForm = Transform.relative(
 				self.transform,
 				Transform(self.sprite.w - 15, -10)
+			)
+		-- HACK: BabyT is too differently shaped for this transform, change it
+		elseif GameState.leader == "babyt" then
+			pressXXForm = Transform.relative(
+				self.transform,
+				Transform(self.sprite.w - 60, -10)
 			)
 		end
 		local pressX = SpriteNode(
@@ -647,6 +662,7 @@ function Player:updateSprite()
 	if self.spriteOverride[GameState.leader] then
 		spriteName = self.spriteOverride[GameState.leader]
 	end
+	self.transform = Transform(0, 0, 2, 2)
 	self.sprite = SpriteNode(
 		self.scene,
 		self.transform,
@@ -659,6 +675,17 @@ function Player:updateSprite()
 	if self.scene.nighttime then
 		self.sprite.drawWithNight = false
 	end
+
+	local spriteWidth, spriteHeight = self.sprite.w,self.sprite.h
+	self.transform = Transform(
+		love.graphics.getWidth()/2 - spriteWidth,
+		love.graphics.getHeight()/2 - spriteHeight,
+		2,
+		2
+	)
+
+	self.width,self.height = spriteWidth, spriteHeight
+	self.halfWidth,self.halfHeight = math.floor(spriteWidth/2), math.floor(spriteHeight/2)
 
 	-- Debug
 	if self.debugHotspots then
@@ -783,10 +810,15 @@ function Player:basicUpdate(dt)
 	-- Update drop shadow position
 	self.dropShadow.x = self.x - 22
 	self.dropShadow.y = self.dropShadowOverrideY or self.y + self.sprite.h - 15
+	self.dropShadow.sprite.sortOrderY = self.dropShadowOverrideSortOrderY or self.sprite.transform.y - 1
+	self.dropShadow.sprite.transform.sx = 1.3
 
 	-- HACK: Rotor is big
 	if GameState.leader == "rotor" then
 		self.dropShadow.x = self.x - 5
+	elseif GameState.leader == "babyt" then
+		self.dropShadow.x = self.x - 60
+		self.dropShadow.sprite.transform.sx = 3
 	end
 
 	local prevState = self.state
@@ -796,7 +828,7 @@ function Player:basicUpdate(dt)
 	end
 	
 	local hotspots = self:updateCollisionObj()
-	
+
 	hotspots.right_top.x = hotspots.right_top.x + self.collisionHSOffsets.right_top.x
 	hotspots.right_top.y = hotspots.right_top.y + self.collisionHSOffsets.right_top.y
 	hotspots.right_bot.x = hotspots.right_bot.x + self.collisionHSOffsets.right_bot.x
@@ -818,9 +850,16 @@ function Player:basicUpdate(dt)
 		return
 	end
 	
-	if not isSwatbot and love.keyboard.isDown("lshift") then
+	if not isSwatbot and
+	   love.keyboard.isDown("lshift") and
+	   not self.stickyLShift
+    then
 		self:onSpecialMove()
 		return
+	elseif self.stickyLShift and
+		not love.keyboard.isDown("lshift")
+	then
+		self.stickyLShift = false
 	end
 	self.doingSpecialMove = false
 	
@@ -1143,7 +1182,19 @@ function Player:basicUpdate(dt)
 end
 
 function Player:updateCollisionObj()
-	self.collisionX, self.collisionY = self.scene:worldCoordToCollisionCoord(self.x, self.y)
+	local flyOffsetY = 0
+	if self.doingSpecialMove and GameState.leader == "tails" then
+		flyOffsetY = self.flyOffsetY or 0
+	end
+
+	self.collisionHSOffsets = {
+		right_top = {x = 18, y = 0},
+		right_bot = {x = 18, y = 0},
+		left_top = {x = -15, y = 0},
+		left_bot = {x = -15, y = 0},
+	}
+
+	self.collisionX, self.collisionY = self.scene:worldCoordToCollisionCoord(self.x, self.y + flyOffsetY)
 	return self:updateHotspots()
 end
 
@@ -1230,7 +1281,7 @@ function Player:isMoving()
 end
 
 function Player:isTouching(x, y, w, h)
-	if not self.hotspots then
+	if not self.hotspots or self.nocollision then
 		return false
 	end
 	
@@ -1294,8 +1345,16 @@ end
 
 function Player:hop()
 	return Serial {
+	    Do(function()
+		    self.scene.pausePlayer = true
+			self.sprite.sortOrderY = self.sprite.transform.y
+        end),
 		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y - 50 end, 8),
-		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y + 50 end, 8)
+		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y + 50 end, 8),
+		Do(function()
+		    self.scene.pausePlayer = false
+			self.sprite.sortOrderY = nil
+		end),
 	}
 end
 

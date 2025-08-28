@@ -216,7 +216,12 @@ return function(scene, hint)
 				layer.opacity = 0.0
 			end
 		end
-		scene.objectLookup.Door.object.properties.scene = "knothole.lua"
+		
+		if GameState:isFlagSet("ep5_knothole") then
+			scene.objectLookup.Door.object.properties.scene = "knothole_ep5.lua"
+		else
+			scene.objectLookup.Door.object.properties.scene = "knothole.lua"
+		end
 	end
 
 	return Action()

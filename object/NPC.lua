@@ -99,7 +99,20 @@ function NPC:construct(scene, layer, object)
 	end
 	
 	self.hidden = object.properties.hidden
-	
+
+	-- Add to scene swapLayer lists
+	if object.properties.swapLayers then
+		self.swapLayerMapping = {}
+		self.swapLayerLessThanY = object.properties.swapLayerLessThanY
+
+		local swapLayers = pack(object.properties.swapLayers:split(','))
+		for _, layertuple in pairs(swapLayers) do
+		    local fromLayer, toLayer = layertuple:trim():split(':')
+			table.insert(self.scene.swapLayerObjects[fromLayer], self)
+			self.swapLayerMapping[fromLayer] = toLayer
+		end
+	end
+
 	self.hotspotOffsets = {
 		right_top = {x = 0, y = 0},
 		right_bot = {x = 0, y = 0},
@@ -181,20 +194,15 @@ end
 
 function NPC:updateCollision()
 	self.collision = {}
-    if self.scene.map.properties.layered and
-	   self.scene.currentLayer ~= self.layer.name and
-	   self.layer.name ~= "all"
-	then
-		return
-	end
 
-	if not self.object.properties.nocollision then
+	local collisionLayer = self.scene.objectCollisionLayer[self.layer.name]
+	if not self.object.properties.nocollision and collisionLayer then
 		local sx,sy = self.scene:worldCoordToCollisionCoord(self.object.x, self.object.y)
 		local dx,dy = self.scene:worldCoordToCollisionCoord(self.object.x + self.object.width, self.object.y + self.object.height)
 		for y=sy, dy-1 do
 			for x=sx, dx-1 do
 				if not self.ghost then
-					self.scene.map.collisionMap[y][x] = 1
+					collisionLayer[y][x] = 1
 				end
 				table.insert(self.collision, {x,y})
 			end
@@ -213,9 +221,12 @@ function NPC:onPuzzleSolve()
 end
 
 function NPC:removeCollision()
-	for _, pair in pairs(self.collision or {}) do
-		if self.scene.map.collisionMap[pair[2]] then
-			self.scene.map.collisionMap[pair[2]][pair[1]] = nil
+    local collisionLayer = self.scene.objectCollisionLayer[self.layer.name]
+	if collisionLayer then
+		for _, pair in pairs(self.collision or {}) do
+			if collisionLayer[pair[2]] then
+				collisionLayer[pair[2]][pair[1]] = nil
+			end
 		end
 	end
 	self.collision = {}
@@ -540,7 +551,7 @@ function NPC:update(dt)
 	if self.onUpdate then
 		self.onUpdate(self, dt)
 	end
-	
+
 	-- Update hotspots
 	if self.sprite and not self.useObjectCollision then
 		self.hotspots.right_top.x = self.x + self.sprite.w*2 + self.hotspotOffsets.right_top.x
@@ -582,6 +593,8 @@ function NPC:update(dt)
 		return
 	end
 
+	--self:maybeSwapLayer()
+
 	-- Don't interact with player if player doesn't care about your layer
 	if (self.scene.player.onlyInteractWithLayer ~= nil and
 		self.scene.player.onlyInteractWithLayer ~= self.layer.name) and
@@ -603,7 +616,6 @@ function NPC:update(dt)
 				self.state = NPC.STATE_TOUCHING
 				self:invoke("collision", prevState)
 				self:onCollision(prevState)
-				
 				if  prevState ~= NPC.STATE_TOUCHING and
 					not self.disabled and
 					self.scene.player:isFacingObj(self)
@@ -624,13 +636,34 @@ function NPC:update(dt)
 	
 	if self.state ~= NPC.STATE_TOUCHING then
 		if self.notColliding then
-			self.notColliding(self, self.scene.player)
+			self.notColliding(self, self.scene.player, prevState)
 		end
 
 		self.scene.player.keyhints[tostring(self)] = nil
 		self.scene.player.hidekeyhints[tostring(self)] = nil
 		self.scene.player.touching[tostring(self)] = nil
 	end
+end
+
+function NPC:maybeSwapLayer()
+	local wasAbovePlayer = self.abovePlayer
+	if self.swapLayerLessThanY and self.scene.player.dropShadow.y <= self.swapLayerLessThanY then
+		self.abovePlayer = true
+	else
+		self.abovePlayer = false
+	end
+
+	if not wasAbovePlayer and self.abovePlayer then
+		self.sprite:swapLayer(self.swapLayerMapping[self.scene.player.layer.name])
+	elseif wasAbovePlayer and not self.abovePlayer then
+		-- HACK
+		self.sprite:swapLayer("objects5")
+	end
+end
+
+function NPC:swapLayer(layerName)
+    self.layer = self.scene:findLayer(layerName)
+	self.sprite:swapLayer(layerName)
 end
 
 function NPC:isTouching(x, y, w, h)
@@ -727,10 +760,11 @@ end
 
 function NPC:remove()
 	-- Remove from collision map
-	if not self.ghost and not self.object.properties.ghost then
+	local collisionLayer = self.scene.objectCollisionLayer[self.layer.name]
+	if not self.ghost and not self.object.properties.ghost and collisionLayer then
 		for _, pair in pairs(self.collision or {}) do
-			if self.scene.map.collisionMap[pair[2]] then
-				self.scene.map.collisionMap[pair[2]][pair[1]] = nil
+			if collisionLayer[pair[2]] then
+				collisionLayer[pair[2]][pair[1]] = nil
 			end
 		end
 	end

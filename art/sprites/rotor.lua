@@ -15,6 +15,9 @@ return {
 			frames = {{9,4}}
 		},
 
+		sitright_lookdown = {
+			frames = {{10,4}}
+		},
 		sitright = {
 			frames = {{1,5}}
 		},
@@ -54,6 +57,31 @@ return {
 			frames = {{1,3}, {2,3}, {3,3}, {4,3},{5,3}, {6,3}, {7,3}, {8,3}},
 			speed = 0.09
 		},
+		
+		hideright = {
+			frames = {{7,5}}
+		},
+		hideleft = {
+			frames = {{5,5}}
+		},
+		hideup = {
+			frames = {{9,5}}
+		},
+		hidedown = {
+			frames = {{11,5}}
+		},
+		
+		peekright = {
+			frames = {{8,5}}
+		},
+		peekleft = {
+			frames = {{6,5}}
+		},
+		peekup = {
+			frames = {{10,5}}
+		},
+		
+		
 		dead = {
 			frames = {{9,3}}
 		},

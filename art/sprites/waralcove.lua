@@ -10,6 +10,9 @@ return {
         },
 		snow = {
             frames = {{1,0}}
-        }
+        },
+		idle_overlay = {
+            frames = {{2,0}}
+        },
     }
 }

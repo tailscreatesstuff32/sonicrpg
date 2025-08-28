@@ -290,5 +290,12 @@ return {
 		noright = {
 			frames = {{13,0}}
 		},
+		sadleft = {
+			frames = {{16,0}}
+		},
+		meeting_verysadleft = {
+			frames = {{16,0}},
+			clip = {0,0,47,44}
+		},
     }
 }

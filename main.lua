@@ -20,6 +20,8 @@ FontCache = {
 	Techno = love.graphics.newFont("art/fonts/techno.ttf", 72),
 }
 
+GlobalScale = 1.0
+
 CursorSprite = love.graphics.newImage("art/sprites/cursor.png")
 CursorSprite:setFilter("nearest", "nearest")
 
@@ -47,7 +49,7 @@ function love.load()
 	
 	math.randomseed(os.time())
 	
-	sceneMgr:pushScene {class = "SageSplashScene"}
+	sceneMgr:pushScene {class = "TitleSplashScene"} -- "SageSplashScene"}
 end
 
 function love.update(dt)

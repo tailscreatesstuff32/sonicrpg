@@ -1,6 +1,6 @@
 return {
     image = "tails.png",
-    starting = "idleleft",
+    starting = "idle",
     w = 47,
     h = 55,
 
@@ -11,7 +11,40 @@ return {
 		shock = {
 			frames = {{13,2}}
 		},
-		
+
+		hurt = {
+			frames = {{9,2}}
+		},
+		dead = {
+			frames = {{16,0}}
+		},
+		victory = {
+			frames = {{11,2}}
+		},
+		idle = {
+			frames = {{14,2}}
+		},
+		block = {
+			frames = {{16,2}}
+		},
+		crouch = {
+			frames = {{13,4}}
+		},
+		leap = {
+			frames = {{14,4}}
+		},
+		swing = {
+			frames = {{15,4},{16,4}},
+			speed = 0.15
+		},
+		slap_idle = {
+			frames = {{15,0}}
+		},
+		slap = {
+			frames = {{15,0},{15,1},{15,2},{15,3}},
+			speed = 0.15
+		},
+
 		leapdown = {
 			frames = {{5,2}}
 		},
@@ -70,18 +103,31 @@ return {
 		peekup = {
 			frames = {{6,4}}
 		},
-		
+
+		climb_1 = {
+			frames = {{13,3}}
+		},
+		climb_2 = {
+			frames = {{14,3}}
+		},
+
 		sadright = {
 			frames = {{9,0}}
 		},
 		sadleft = {
 			frames = {{9,1}}
 		},
+		saddown = {
+		    frames = {{10,3}}
+		},
 		joyright = {
 			frames = {{10,0}}
 		},
 		joyleft = {
 			frames = {{10,1}}
+		},
+		joydown = {
+			frames = {{9,3}}
 		},
 		
 		flyright = {
@@ -90,6 +136,14 @@ return {
 		},
 		flyleft = {
 			frames = {{11,1},{12,1}},
+			speed = 0.1
+		},
+		flydown = {
+			frames = {{9,4},{10,4}},
+			speed = 0.1
+		},
+		flyup = {
+			frames = {{11,4},{12,4}},
 			speed = 0.1
 		},
 
@@ -116,5 +170,9 @@ return {
 			frames = {{13,1},{14,1}},
 			speed = 0.1
 		},
+		
+		attitudedown = {
+		    frames = {{12,3}}
+		}
     }
 }

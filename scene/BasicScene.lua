@@ -2,6 +2,7 @@ local Transform = require "util/Transform"
 local Layout = require "util/Layout"
 
 local Action = require "actions/Action"
+local IfElse = require "actions/IfElse"
 local MessageBox = require "actions/MessageBox"
 local Menu = require "actions/Menu"
 local Ease = require "actions/Ease"
@@ -52,6 +53,7 @@ function BasicScene:onEnter(args)
 	self.layered = self.map.properties.layered
 	self.currentLayerId = self.map.properties.currentLayer or 1
 	self.currentLayer = "objects"..(self.currentLayerId > 1 and tostring(self.currentLayerId) or "")
+	self.hint = args.hint
 
 	self.args = args
 	self.cacheSceneData = args.cache
@@ -67,9 +69,47 @@ function BasicScene:onEnter(args)
 			self.collisionLayer["objects3"] = layer.data
 		elseif layer.name == "Collision4" then
 			self.collisionLayer["objects4"] = layer.data
+		elseif layer.name == "Collision5" then
+			self.collisionLayer["objects5"] = layer.data
+		elseif layer.name == "Collision6" then
+			self.collisionLayer["objects6"] = layer.data
+		elseif layer.name == "Collision7" then
+			self.collisionLayer["objects7"] = layer.data
 		end
 	end
-	
+
+	-- Create object collision maps
+	self.objectCollisionLayer = {}
+	self.objectCollisionLayer["all"] = {}
+	self.objectCollisionLayer["objects"] = {}
+	self.objectCollisionLayer["objects2"] = {}
+	self.objectCollisionLayer["objects3"] = {}
+	self.objectCollisionLayer["objects4"] = {}
+	self.objectCollisionLayer["objects5"] = {}
+	self.objectCollisionLayer["objects6"] = {}
+	self.objectCollisionLayer["objects7"] = {}
+
+	for y = 0, self.map.height do
+		self.objectCollisionLayer["all"][y] = {}
+		self.objectCollisionLayer["objects"][y] = {}
+		self.objectCollisionLayer["objects2"][y] = {}
+		self.objectCollisionLayer["objects3"][y] = {}
+		self.objectCollisionLayer["objects4"][y] = {}
+		self.objectCollisionLayer["objects5"][y] = {}
+		self.objectCollisionLayer["objects6"][y] = {}
+		self.objectCollisionLayer["objects7"][y] = {}
+	end
+
+	-- Create swap layer objects (Objects that will swap what layer they are in as player swaps layer)
+	self.swapLayerObjects = {}
+	self.swapLayerObjects["objects"] = {}
+	self.swapLayerObjects["objects2"] = {}
+	self.swapLayerObjects["objects3"] = {}
+	self.swapLayerObjects["objects4"] = {}
+	self.swapLayerObjects["objects5"] = {}
+	self.swapLayerObjects["objects6"] = {}
+	self.swapLayerObjects["objects7"] = {}
+
 	-- NOTE: This is how we draw the lua map data
 	-- There is a draw function on the sti map object.
 	-- All our SceneNode drawing interface requires is a
@@ -117,7 +157,7 @@ function BasicScene:onEnter(args)
 				drawFun()
 				self:sortedDraw(layer.name)
 			end
-			
+
 			for _,object in pairs(layer.objects) do
 				if not classCache[object.type] then
 					-- Dynamically load classes at most once
@@ -237,15 +277,6 @@ function BasicScene:onEnter(args)
 	for _, obj in pairs(self.map.objects) do
 		obj:postInit()
 	end
-	
-	--[[ Create nodes for collision map
-	self.pathingNodes = {}
-	for y=1,self.map.height do
-		for x=1,self.map.width do
-			local px,py = self:collisionCoordToWorldCoord(x, y)
-			table.insert(self.pathingNodes, {x=px, y=py, canMove=not self.map["collisionMap"][y][x]})
-		end
-	end]]
 
 	-- Fade in scene
 	local fadeInSpeed = args.fadeInSpeed or 1.0
@@ -264,6 +295,8 @@ function BasicScene:onEnter(args)
 			if self.layered and toLayer then
 				local layerId = toLayer:gsub("objects", "")
 				self:swapLayer(layerId ~= "" and tonumber(layerId) or 1)
+			else
+				self.map.objectCollisionMap = self.objectCollisionLayer["objects"]
 			end
 		end),
 		Spawn(
@@ -460,6 +493,16 @@ function BasicScene:hasUpperLayer()
 		end
 	end
 	return false
+end
+
+function BasicScene:findLayer(name)
+	for _, layer in pairs(self.map.layers) do
+		if layer.name == name then
+			return layer
+		end
+	end
+	print("LAYER NOT FOUND "..tostring(name))
+	return nil
 end
 
 function BasicScene:lightningFlash()
@@ -719,7 +762,8 @@ function BasicScene:enterBattle(args)
 				color = args.color,
 				practice = args.practice,
 				onEnter = args.onEnter,
-				arrowColor = args.arrowColor
+				arrowColor = args.arrowColor,
+				hint = args.hint or self.hint
 			}
 		end),
 		
@@ -756,7 +800,7 @@ function BasicScene:keytriggered(key, uni)
 						menu:close()
 						self:run {
 							menu,
-							Do(function() self.sceneMgr:popScene{} end),
+							Do(function() self.sceneMgr:popScene{hint=self.hint} end),
 							Do(function() end)
 						}
 					end},
@@ -856,10 +900,16 @@ function BasicScene:pan(worldOffsetX, worldOffsetY)
 				local originalOpacity = layer.opacity
 				Executor(self):act(
 					Repeat(
-						Serial {
-							Ease(layer, "opacity", originalOpacity/1.5, 3, "quad"),
-							Ease(layer, "opacity", originalOpacity, 3, "quad")
-						}
+						IfElse(
+							function()
+								return not layer.noshimmer
+							end,
+							Serial {
+								Ease(layer, "opacity", originalOpacity/1.5, 3, "quad"),
+								Ease(layer, "opacity", originalOpacity, 3, "quad")
+							},
+							Action()
+						)
 					)
 				)
 				layer.properties.shimmer = nil
@@ -896,9 +946,7 @@ function BasicScene:update(dt)
 	Scene.update(self, dt)
 
 	-- Cannot move while subscreen is up
-	if (not self.player or not self:playerMovable()) and
-		not self.pausePlayer
-	then
+	if (not self.player or not self:playerMovable()) then
 		return
 	end
 	
@@ -991,7 +1039,7 @@ function BasicScene:canMove(x, y, dx, dy, mapName)
 		return false
 	end
 	local mapx, mapy = self:worldCoordToCollisionCoord(x + dx, y + dy)
-	return not self.map[mapName][mapy][mapx]
+	return (not self.map[mapName][mapy][mapx] and not self.map.objectCollisionMap[mapy][mapx])
 end
 
 function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList, collisionLayer)
@@ -1005,31 +1053,48 @@ function BasicScene:canMoveWhitelist(x, y, dx, dy, whiteList, collisionLayer)
 		return false
 	end
 	local mapx, mapy = self:worldCoordToCollisionCoord(x + dx, y + dy)
-	return not collisionLayer[mapy][mapx] or (whiteList and whiteList[mapy] and whiteList[mapy][mapx])
+	return (not collisionLayer[mapy][mapx] and not self.map.objectCollisionMap[mapy][mapx]) or
+	  (whiteList and whiteList[mapy] and whiteList[mapy][mapx])
 end
 
-function BasicScene:swapLayer(toLayerNum)
+function BasicScene:swapLayer(toLayerNum, ignoreShadow)
 	-- Swap object layer (assumes naming convention of "objects" or "objectsN"
 	local layerStr = tostring(toLayerNum)
 	local objLayer = toLayerNum == 1 and "objects" or ("objects"..layerStr)
+
 	self.player.sprite:swapLayer(objLayer)
-	if not self.player.dropShadow:isRemoved() then
-		self.player.dropShadow.sprite:swapLayer(objLayer)
+	if not ignoreShadow then
+		if not self.player.dropShadow:isRemoved() then
+			self.player.dropShadow.sprite:swapLayer(objLayer)
+		end
 	end
+
+	-- Swap all layer swappable objects from current layer to be on new layer
+	if self.currentLayer then
+		for _, object in pairs(self.swapLayerObjects[self.currentLayer]) do
+			if object.sprite and
+			   object.swapLayerMapping[objLayer]
+			then
+				if not object.swapLayerLessThanY or
+				   self.player.dropShadow.y <= object.swapLayerLessThanY
+				then
+					object.sprite:swapLayer(object.swapLayerMapping[objLayer])
+				else
+					-- HACK
+					object.sprite:swapLayer("objects5")
+				end
+			end
+		end
+	end
+
 	self.player.onlyInteractWithLayer = objLayer
-	self.player.layer = {name = objLayer}
+	self.player.layer = self:findLayer(objLayer)
 	self.currentLayer = objLayer
 	self.currentLayerId = toLayerNum
 
 	-- Swap collision layer (assumes naming convention of "Collision" or "CollisionN"
 	self.map.collisionMap = self.collisionLayer[objLayer]
-
-	-- Update collision map with objects on same layer
-	for _, obj in pairs(self.map.objects) do
-		if obj.layer.name == objLayer then
-			obj:updateCollision()
-		end
-	end
+	self.map.objectCollisionMap = self.objectCollisionLayer[objLayer]
 end
 
 function BasicScene:draw()

@@ -14,6 +14,24 @@ return {
 		idledown = {
             frames = {{0,2}}
         },
+
+		meeting_idledown = {
+			frames = {{0,2}},
+			clip = {0,0,47,40}
+		},
+		meeting_idleleft = {
+			frames = {{0,1}},
+			clip = {0,0,47,40}
+		},
+		meeting_idleleftshakehead = {
+            frames = {{2,7},{3,7},{2,7},{3,7},{1,7}},
+			speed = 0.3,
+			clip = {0,0,47,40}
+        },
+		meeting_idleleft_lookdown = {
+            frames = {{1,7}},
+			clip = {0,0,47,40}
+        },
 		
 		idlerightsad = {
             frames = {{1,6}}

@@ -87,7 +87,7 @@ return {
 		
 		meeting_idledown = {
 			frames = {{0,2}},
-			clip = {0,0,47,44}
+			clip = {0,0,47,42}
 		},
 		meeting_idleup = {
 			frames = {{0,6}},
@@ -107,12 +107,12 @@ return {
 		},
 		meeting_smirk = {
 			frames = {{1,6}},
-			clip = {0,0,47,44}
+			clip = {0,0,47,42}
 		},
 		meeting_laugh = {
 			frames = {{2,6},{3,6}},
 			speed = 0.2,
-			clip = {0,0,47,44}
+			clip = {0,0,47,42}
 		},
 		meeting_idleright = {
 			frames = {{0,0}},

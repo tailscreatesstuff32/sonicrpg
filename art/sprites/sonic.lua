@@ -279,6 +279,9 @@ return {
 		earnestleft = {
 			frames = {{7,7}}
 		},
+		earnestright = {
+			frames = {{11,10}}
+		},
 		smileright = {
 			frames = {{1,4}}
 		},

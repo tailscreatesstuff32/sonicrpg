@@ -3,6 +3,20 @@ local Transform = require "util/Transform"
 local Action = require "actions/Action"
 local Move = class(Action)
 
+function Move.targetFromPos(x, y)
+	return {
+		x = x,
+		y = y,
+		hotspots = {
+			left_top  = {x = x - 15, y = y + 27},
+			left_bot  = {x = x - 15, y = y + 55},
+			right_top = {x = x + 12, y = y + 27},
+			right_bot = {x = x + 12, y = y + 55}
+		},
+		isRemoved = function() return false end
+	}
+end
+
 function Move:construct(obj, target, anim, ttl, earlyExitFun, overlap)
 	self.obj = obj
 	self.target = target
@@ -45,36 +59,42 @@ end
 function Move:stepToward(target, speed)
 	local objHS = self.obj.hotspots
 	local targetHS = target.hotspots
-	
-	if objHS.left_bot.x - targetHS.left_bot.x > speed then
+
+	-- Target in air
+	if target.flyOffsetY then
+		targetHS.left_top.y = targetHS.left_top.y - (target.flyOffsetY + target.tempFlyOffsetY)
+		targetHS.left_bot.y = targetHS.left_bot.y - (target.flyOffsetY + target.tempFlyOffsetY)
+	end
+
+	if objHS.left_bot.x - targetHS.left_bot.x > 0 then
 		if  self.obj.object.properties.ignoreMapCollision or
 			(self.obj.scene:canMoveWhitelist(objHS.left_top.x, objHS.left_top.y, -speed, 0, self.obj.ignoreCollision, self.collisionMap) and
 			 self.obj.scene:canMoveWhitelist(objHS.left_bot.x, objHS.left_bot.y, -speed, 0, self.obj.ignoreCollision, self.collisionMap))
 		then
-			self.obj.x = self.obj.x - speed
+			self.obj.x = self.obj.x - math.min(speed, objHS.left_bot.x - targetHS.left_bot.x)
 		end
-	elseif targetHS.right_bot.x - objHS.right_bot.x > speed then
+	elseif targetHS.right_bot.x - objHS.right_bot.x > 0 then
 		if  self.obj.object.properties.ignoreMapCollision or
 			(self.obj.scene:canMoveWhitelist(objHS.right_top.x, objHS.right_top.y, speed, 0, self.obj.ignoreCollision, self.collisionMap) and
 		 	 self.obj.scene:canMoveWhitelist(objHS.right_bot.x, objHS.right_bot.y, speed, 0, self.obj.ignoreCollision, self.collisionMap))
 		then
-			self.obj.x = self.obj.x + speed
+			self.obj.x = self.obj.x + math.min(speed, targetHS.right_bot.x - objHS.right_bot.x)
 		end 
 	end
 
-	if objHS.left_top.y - targetHS.left_top.y > speed then
+	if objHS.left_top.y - targetHS.left_top.y > 0 then
 		if  self.obj.object.properties.ignoreMapCollision or
 			(self.obj.scene:canMoveWhitelist(objHS.left_top.x, objHS.left_top.y, 0, -speed, self.obj.ignoreCollision, self.collisionMap) and
 			 self.obj.scene:canMoveWhitelist(objHS.right_top.x, objHS.right_top.y, 0, -speed, self.obj.ignoreCollision, self.collisionMap))
 		then
-			self.obj.y = self.obj.y - speed
+			self.obj.y = self.obj.y - math.min(speed, objHS.left_top.y - targetHS.left_top.y)
 		end
 	elseif targetHS.left_bot.y - objHS.left_bot.y > speed then
 		if  self.obj.object.properties.ignoreMapCollision or
 			(self.obj.scene:canMoveWhitelist(objHS.left_bot.x, objHS.left_bot.y, 0, speed, self.obj.ignoreCollision, self.collisionMap) and
 			 self.obj.scene:canMoveWhitelist(objHS.right_bot.x, objHS.right_bot.y, 0, speed, self.obj.ignoreCollision, self.collisionMap))
 		then
-			self.obj.y = self.obj.y + speed
+			self.obj.y = self.obj.y + math.min(speed, targetHS.left_bot.y - objHS.left_bot.y)
 		end
 	end 
 	
