@@ -138,6 +138,14 @@ return {
 			frames = {{11,1},{12,1}},
 			speed = 0.1
 		},
+		flydown = {
+			frames = {{9,4},{10,4}},
+			speed = 0.1
+		},
+		flyup = {
+			frames = {{11,4},{12,4}},
+			speed = 0.1
+		},
 
 		hockeypose = {
 			frames = {{11,2}}

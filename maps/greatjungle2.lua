@@ -1244,7 +1244,7 @@ return {
             ["key"] = "up",
             ["no_run"] = true,
             ["orientation"] = "down",
-            ["scene"] = "worldmap.lua"
+            ["scene"] = "greatjungle.lua"
           }
         },
         {
@@ -2854,22 +2854,20 @@ return {
         },
         {
           id = 360,
-          name = "Entrance",
-          type = "SceneEdge",
+          name = "BabyT",
+          type = "BasicNPC",
           shape = "rectangle",
-          x = 1888,
-          y = 5056,
-          width = 384,
+          x = 768,
+          y = 736,
+          width = 64,
           height = 64,
           rotation = 0,
-          gid = 7660,
+          gid = 5323,
           visible = true,
           properties = {
-            ["ghost"] = true,
-            ["key"] = "down",
-            ["no_run"] = true,
-            ["orientation"] = "up",
-            ["scene"] = "greatjungle2.lua"
+            ["align"] = "bottom_center",
+            ["defaultAnim"] = "idledown",
+            ["sprite"] = "../art/sprites/babyt.png"
           }
         }
       }

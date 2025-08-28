@@ -129,6 +129,7 @@ return function(player)
 				self.scene:canMove(hotspots.right_bot.x, hotspots.right_bot.y, 0, movespeed)
 			then
 				self.y = self.y + movespeed
+				self.state = "flydown"
 			end
 
 		elseif love.keyboard.isDown("up") then
@@ -136,6 +137,7 @@ return function(player)
 				self.scene:canMove(hotspots.right_top.x, hotspots.right_top.y, 0, -movespeed)
 			then
 				self.y = self.y - movespeed
+				self.state = "flyup"
 			end
 		end
 
@@ -232,12 +234,15 @@ return function(player)
 			self.movespeed = self.baseMoveSpeed
 			self.isTouching = self.origIsTouching
 
-			if self:isFacing("right") then
-				self.state = "idleright"
-			else
-				self.state = "idleleft"
-			end
-			
+			local state_from_fly = {
+				flyleft = "idleleft",
+				flyright = "idleright",
+				flyup = "idleup",
+				flydown = "idledown"
+			}
+
+			self.state = state_from_fly[self.state] or "idledown"
+
 			if self.flyLandingLayer == nil then
 				self.flyLandingLayer = 7
 			end
@@ -301,7 +306,19 @@ return function(player)
 	-- Change update method to fly, increase base move speed
 	player.basicUpdate = flyingUpdateFun
 	player.flyTime = 1.0
-	player.state = "flyright"
+
+	local state_to_fly = {
+		idleleft = "flyleft",
+		idleright = "flyright",
+		idleup = "flyup",
+		idledown = "flydown",
+		walkleft = "flyleft",
+		walkright = "flyright",
+		walkup = "flyup",
+		walkdown = "flydown",
+	}
+
+	player.state = state_to_fly[player.state] or "flyright"
 	player.takeOffX = player.x
 	player.takeOffY = player.y
 end

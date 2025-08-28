@@ -11,6 +11,11 @@ return {
     },
 	{
         type = "map",
+        file = "maps/greatjungle2.lua",
+		--primary = true
+    },
+	{
+        type = "map",
         file = "maps/knothole_ep5.lua",
 		--primary = true
     },

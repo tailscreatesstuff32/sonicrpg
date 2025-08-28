@@ -32,5 +32,13 @@ return function(scene, hint)
 	
 	scene.player.dustColor = Player.FOREST_DUST_COLOR
 
-	return Spawn(text)
+	Executor(scene):act(Serial {
+		Wait(0.5),
+		text,
+		Ease(text.color, 4, 255, 1),
+		Wait(2),
+		Ease(text.color, 4, 0, 1)
+	})
+	
+	return Action()
 end
