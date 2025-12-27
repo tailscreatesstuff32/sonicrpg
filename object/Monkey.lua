@@ -53,6 +53,7 @@ function Monkey:knockDown(tree)
 		-- Fade out and disappear
 		Ease(self.sprite.color, 4, 0, 2),
 		Do(function()
+			GameState:setFlag(self:getFlag())
 			self:remove()
 		end)
 	}
@@ -87,7 +88,7 @@ function Monkey:update(dt)
 				y = self.y + 17 * 2,
 				width = 8,
 				height = 8,
-				properties = {ghost = true, sprite = "art/sprites/snowball.png"}
+				properties = {ghost = true, sprite = "art/sprites/snowball.png", ignoreMapCollision = true}
 			}
 		)
 		self.coconut.sprite.transform.ox = 4

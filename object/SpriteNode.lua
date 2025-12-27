@@ -15,6 +15,7 @@ function SpriteNode:construct(scene, transform, color, imgsrc, w, h, layerName)
 		local meta = scene.animations[imgsrc]
 		if not meta then
 			meta = {w=self.img:getWidth(), h=self.img:getHeight(), animations={idle={frames={{0,0}}}}, starting="idle"}
+			--print("sprite animations not found for "..imgsrc)
 		end
 		self.w = meta.w --Ignore passed in w/h
 		self.h = meta.h
@@ -33,6 +34,7 @@ function SpriteNode:construct(scene, transform, color, imgsrc, w, h, layerName)
 		self:addAnimation("default", {{0,0}}, 1, {0, 0, self.w, self.h})
 	end
 
+	self.drawWithFadeWhite = false
 	self.drawWithShine = false
 	self.drawWithParallax = false
 	self.drawWithGlow = false
@@ -165,6 +167,13 @@ function SpriteNode:update(dt)
 	if self.drawWithShine then
 		self.t = self.t + dt * self.shineSpeed
 		SpriteNode.shineShader:send("time", self.t)
+		SpriteNode.shineShader:send("color", {self.color[1]/255, self.color[2]/255, self.color[3]/255, self.color[4]/255})
+	end
+	
+	if self.drawWithFadeWhite then
+		self.t = math.max(0, self.t + dt * self.fadeWhiteSpeed)
+		SpriteNode.fadeWhiteShader:send("time", self.t)
+		SpriteNode.fadeWhiteShader:send("color", {self.color[1]/255, self.color[2]/255, self.color[3]/255, self.color[4]/255})
 	end
 	
     self.animations[self.selected]:update(dt)
@@ -226,6 +235,30 @@ function SpriteNode:removeCrop()
 	self.drawWithCrop = false
 end
 
+function SpriteNode:setFadeWhite(speed, startingt)
+	self.drawWithFadeWhite = true
+	self.t = startingt or 0
+	self.fadeWhiteSpeed = speed or 1.0
+	
+	if not SpriteNode.fadeWhiteMap then
+		SpriteNode.fadeWhiteMap = love.graphics.newCanvas()
+		SpriteNode.fadeWhiteShader = love.graphics.newShader [[
+			extern number time;
+			extern vec4 color;
+			vec4 effect(vec4 colour, Image tex, vec2 tc, vec2 sc)
+			{
+			    return vec4(time, time, time, 0) + color * Texel(tex, tc);
+			}
+		]]
+		SpriteNode.fadeWhiteShader:send("time", 0)
+		SpriteNode.fadeWhiteShader:send("color", {self.color[1]/255, self.color[2]/255, self.color[3]/255, self.color[4]/255})
+	end
+end
+
+function SpriteNode:removeFadeWhite()
+	self.drawWithFadeWhite = false
+end
+
 function SpriteNode:setShine(speed)
 	self.drawWithShine = true
 	self.t = 0
@@ -235,17 +268,18 @@ function SpriteNode:setShine(speed)
 		SpriteNode.shineMap = love.graphics.newCanvas()
 		SpriteNode.shineShader = love.graphics.newShader [[
 			extern number time;
+			extern vec4 color;
 			vec4 effect(vec4 colour, Image tex, vec2 tc, vec2 sc)
 			{
 				if (time < 1.0) {
 					if (tc.x < time) {
 						return vec4(1,1,1,0) + Texel(tex, tc);
 					} else {
-						return Texel(tex, tc);
+						return color * Texel(tex, tc);
 					}
 				} else {
 					if ((tc.x + 1.0) < time) {
-						return Texel(tex, tc);
+						return color * Texel(tex, tc);
 					} else {
 						return vec4(1,1,1,0) + Texel(tex, tc);
 					}
@@ -253,6 +287,7 @@ function SpriteNode:setShine(speed)
 			}
 		]]
 		SpriteNode.shineShader:send("time", 0)
+		SpriteNode.shineShader:send("color", {self.color[1]/255, self.color[2]/255, self.color[3]/255, self.color[4]/255})
 	end
 end
 
@@ -367,6 +402,14 @@ function SpriteNode:draw(override)
 		drawSprite()
 		
 		love.graphics.setShader(prevShader)
+	elseif self.drawWithFadeWhite then
+		local prevShader = love.graphics.getShader()
+		
+		love.graphics.setShader(SpriteNode.fadeWhiteShader)
+		
+		drawSprite()
+		
+		love.graphics.setShader(prevShader)
 	elseif self.drawWithShine then
 		local prevShader = love.graphics.getShader()
 		
@@ -391,7 +434,7 @@ function SpriteNode:draw(override)
 		drawSprite()
 		
 		love.graphics.setShader(prevShader)
-	elseif self.scene.nighttime and
+	elseif (self.scene.nighttime or self.scene.sepia) and
 		   not self.scene.map.properties.ignorenight and
 		   self.drawWithNight
 	then

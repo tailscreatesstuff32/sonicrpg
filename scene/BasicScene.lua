@@ -49,6 +49,7 @@ function BasicScene:onEnter(args)
 	self.camPos = Transform()
 	self.tutorial = args.tutorial
 	self.nighttime = args.nighttime or self.map.properties.nighttime
+	self.sepia = args.sepia or self.map.properties.sepia
 	self.noBattleMusic = self.map.properties.noBattleMusic
 	self.layered = self.map.properties.layered
 	self.currentLayerId = self.map.properties.currentLayer or 1
@@ -116,12 +117,16 @@ function BasicScene:onEnter(args)
 	-- draw function, so this works out fine.
 	self:addNode(self.map, "tiles")
 
-	if self.nighttime and not self.map.properties.ignorenight then
+	if (self.nighttime or self.sepia) and not self.map.properties.ignorenight then
 		self.originalMapDraw = self.map.drawTileLayer
 		self.originalImgDraw = self.map.drawImageLayer
 		self.map.drawTileLayer = function(map, layer)
 			if not self.night then
-				self.night = shine.nightcolor()
+				if self.sepia then
+					self.night = shine.sepiatone()
+				else
+					self.night = shine.nightcolor()
+				end
 			end
 			self.night:draw(function()
 				self.night.shader:send("opacity", layer.opacity or 1)
@@ -179,7 +184,8 @@ function BasicScene:onEnter(args)
 					object.type == "SavePoint" or
 					object.type == "SceneEdge" or
 					object.type == "Door" or
-					object.type == "SpawnPoint"
+					object.type == "SpawnPoint" or
+					object.type == "Quicksand"
 				then
 					self.spawnPoints[object.name] = object
 				end
@@ -213,10 +219,12 @@ function BasicScene:onEnter(args)
 	if self.map.music then
 		self.audio:setMusicVolume(1.0)
 		self.audio:playMusic(self.map.music)
+		self.map.music = nil
 	end
 	
 	if self.map.ambient then
 		self.audio:playAmbient(self.map.ambient)
+		self.map.ambient = nil
 	end
 	
 	local onLoadAction = Action()
@@ -232,6 +240,9 @@ function BasicScene:onEnter(args)
 			local spawn = self.spawnPoints[self.lastSpawnPoint]
 			local spawnNpc = self.objectLookup[spawn.name]
 			toLayer = spawnNpc.layer.name
+			if toLayer == "all" then
+				toLayer = "objects"..tostring(spawnNpc.object.properties.layerOverride or 1)
+			end
 
 			local spawnOffset = args.spawn_point_offset or
 				Transform(spawn.width/2, spawn.height/2)
@@ -474,7 +485,7 @@ function BasicScene:onExit(args)
 	return BlockPlayer {
 		fadeAction,
 		Do(function()
-			if not self.enteringBattle and not args.tutorial then
+			if not self.enteringBattle and not args.tutorial and not args.cinematic then
 				if args.manifest then
 					self.sceneMgr:cleanup()
 					print("done with cleanup")
@@ -638,6 +649,7 @@ function BasicScene:changeScene(args)
 			animations = self.animations,
 			hint = args.hint,
 			tutorial = args.tutorial,
+			cinematic = args.cinematic,
 			fadeOutSpeed = args.fadeOutSpeed,
 			fadeInSpeed = args.fadeInSpeed,
 			fadeOutMusic = args.fadeOutMusic,
@@ -659,6 +671,7 @@ function BasicScene:changeScene(args)
 			spawn_point = args.spawnPoint,
 			hint = args.hint,
 			tutorial = args.tutorial,
+			cinematic = args.cinematic,
 			fadeOutSpeed = args.fadeOutSpeed,
 			fadeInSpeed = args.fadeInSpeed,
 			fadeOutMusic = args.fadeOutMusic,
@@ -752,6 +765,7 @@ function BasicScene:enterBattle(args)
 				images = self.images,
 				animations = self.animations,
 				background = self.map.properties.battlebg,
+				quiet = args.quiet,
 				nextMusic = self.noBattleMusic and self.audio:getCurrentMusic() or args.music,
 				prevMusic = args.prevMusic or self.audio:getCurrentMusic(),
 				noBattleMusic = self.noBattleMusic,
@@ -870,7 +884,7 @@ function BasicScene:pan(worldOffsetX, worldOffsetY)
 	end
 
 	if worldOffsetY > 0 then
-		worldOffsetY = self.camPos.y
+		worldOffsetY = self.camPos.y + (self.player.flyOffsetY + self.player.tempFlyOffsetY)
 	elseif worldOffsetY < -(self:getMapHeight() - love.graphics.getHeight()) then
 		worldOffsetY = -(self:getMapHeight() - love.graphics.getHeight())-- + self.camPos.y
 	end
@@ -897,16 +911,17 @@ function BasicScene:pan(worldOffsetX, worldOffsetY)
 			
 			-- If image layer is configured to shimmer, setup a shimmer cycle and remove config
 			if layer.properties.shimmer then
-				local originalOpacity = layer.opacity
+				local maxOpacity = layer.properties.max_shimmer or layer.opacity
+				local minOpacity = layer.properties.min_shimmer or (maxOpacity/1.5)
 				Executor(self):act(
 					Repeat(
 						IfElse(
 							function()
-								return not layer.noshimmer
+								return layer.properties.active
 							end,
 							Serial {
-								Ease(layer, "opacity", originalOpacity/1.5, 3, "quad"),
-								Ease(layer, "opacity", originalOpacity, 3, "quad")
+								Ease(layer, "opacity", minOpacity, 3, "quad"),
+								Ease(layer, "opacity", maxOpacity, 3, "quad")
 							},
 							Action()
 						)
@@ -921,8 +936,10 @@ end
 function BasicScene:updatePlayerPos()
 	local xCap = love.graphics.getWidth()/2
 	local yCap = love.graphics.getHeight()/2
-	if self.player.doingSpecialMove then
-		--xCap = self.player.sprite.w*4
+	if self.noPlayerPanning then
+		self.player.sprite.transform.x = math.floor(self.player.x - self.player.width + self.camPos.x)
+		self.player.sprite.transform.y = math.floor(self.player.y - self.player.height + self.camPos.y)
+		return
 	end
 
 	if  self.player.x < xCap then
@@ -933,10 +950,14 @@ function BasicScene:updatePlayerPos()
 		self.player.sprite.transform.x = math.floor(xCap - self.player.width + self.camPos.x)
 	end
 	
-	if  self.player.y < yCap then
-		self.player.sprite.transform.y = math.floor(self.player.y - self.player.height + self.camPos.y)
-	elseif self.player.y > self:getMapHeight() - yCap then
-		self.player.sprite.transform.y = math.floor(self.player.y - (self:getMapHeight() - love.graphics.getHeight()) - self.player.height + self.camPos.y)
+	local flyHeight = self.player.flyOffsetY + self.player.tempFlyOffsetY
+	local playerY = (GameState.leader == "tails" and self.player.doingSpecialMove) and
+		self.player.y + (self.player.flyOffsetY + self.player.tempFlyOffsetY) or
+		self.player.y
+	if  playerY < yCap then
+		self.player.sprite.transform.y = math.floor(playerY - self.player.height + self.camPos.y)
+	elseif playerY > self:getMapHeight() - yCap then
+		self.player.sprite.transform.y = math.floor(playerY - (self:getMapHeight() - love.graphics.getHeight()) - self.player.height + self.camPos.y)
 	else
 		self.player.sprite.transform.y = math.floor(yCap - self.player.height + self.camPos.y)
 	end
@@ -961,7 +982,7 @@ function BasicScene:update(dt)
 
 	local panX = self.panX or self.player.x
 	local panY = self.panY or self.player.y
-	
+
 	-- Shift tiles based on player position
 	local worldOffsetX = math.floor((-panX + love.graphics.getWidth()/2))
 	local worldOffsetY = math.floor((-panY + love.graphics.getHeight()/2))
@@ -970,6 +991,7 @@ function BasicScene:update(dt)
 		math.floor((worldOffsetY + self.camPos.y))
 	)
 
+	-- NOTE: This is where flying bug is
 	if not self.panX and not self.panY then
 		self:updatePlayerPos()
 	end
@@ -1039,6 +1061,9 @@ function BasicScene:canMove(x, y, dx, dy, mapName)
 		return false
 	end
 	local mapx, mapy = self:worldCoordToCollisionCoord(x + dx, y + dy)
+	if not self.map.objectCollisionMap then
+		return true
+	end
 	return (not self.map[mapName][mapy][mapx] and not self.map.objectCollisionMap[mapy][mapx])
 end
 
@@ -1081,7 +1106,7 @@ function BasicScene:swapLayer(toLayerNum, ignoreShadow)
 					object.sprite:swapLayer(object.swapLayerMapping[objLayer])
 				else
 					-- HACK
-					object.sprite:swapLayer("objects5")
+					object.sprite:swapLayer("objects7")
 				end
 			end
 		end

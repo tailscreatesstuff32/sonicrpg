@@ -5,7 +5,6 @@ local TextNode    = require "object/TextNode"
 local BattleActor = require "object/BattleActor"
 local PartyMember = require "object/PartyMember"
 local OpposingPartyMember = require "object/OpposingPartyMember"
-local Parallax    = require "object/Parallax"
 local Arrow       = require "object/Arrow"
 
 local Rect       = unpack(require "util/Shapes")
@@ -70,6 +69,7 @@ function BattleScene:onEnter(args)
 	self.noBattleMusic = args.noBattleMusic
 	self.arrowColor = args.arrowColor
 	self.hint = args.hint
+	self.quiet = args.quiet
 	
 	local onEnterCallback = args.onEnter or function(scene) return Action() end
 
@@ -213,10 +213,10 @@ function BattleScene:onEnter(args)
 			end
 		end
 	end
-	
+
 	self.musicVolume = 1.0
 	return Serial {
-		PlayAudio("music", self.nextMusic, self.musicVolume, true, true),
+		not self.quiet and PlayAudio("music", self.nextMusic, self.musicVolume, true, true) or Action(),
 		Parallel {
 			-- Unblur + fade in
 			Ease(self.blur, "radius_h", 0, 2),
@@ -292,7 +292,7 @@ function BattleScene:update(dt)
 		local playerId = self.currentPlayer.id
 		self.topSprite = sprite
 
-		if playerId == "rotor" then
+		if playerId == "rotor" or playerId == "babyt" then
 			self.arrow = Arrow(self, Transform.relative(sprite.transform, Transform(0, -sprite.h * 1.3)), self.arrowColor)
 		else
 			self.arrow = Arrow(self, Transform.relative(sprite.transform, Transform(0, -sprite.h)), self.arrowColor)
@@ -349,22 +349,26 @@ function BattleScene:update(dt)
 		end
 
 	elseif self.state == BattleScene.STATE_MONSTERTURN_COMPLETE then
-		if self:cleanMonsters() then
-			if not next(self.opponentTurns) then
-				-- Add turns for non-dead party members
-				for _, mem in pairs(self.party) do
-					if mem.state ~= BattleActor.STATE_DEAD and not mem.isHologram then
-						table.insert(self.partyTurns, mem)
-					elseif mem.extraLives > 0 then
-						mem.extraLives = mem.extraLives - 1
-						mem.state = BattleActor.STATE_IDLE
-						table.insert(self.partyTurns, mem)
+		if self.specialLoseAction then
+			self.state = BattleScene.STATE_MONSTERWIN
+		else
+			if self:cleanMonsters() then
+				if not next(self.opponentTurns) then
+					-- Add turns for non-dead party members
+					for _, mem in pairs(self.party) do
+						if mem.state ~= BattleActor.STATE_DEAD and not mem.isHologram then
+							table.insert(self.partyTurns, mem)
+						elseif mem.extraLives > 0 then
+							mem.extraLives = mem.extraLives - 1
+							mem.state = BattleActor.STATE_IDLE
+							table.insert(self.partyTurns, mem)
+						end
 					end
-				end
 
-				self.state = BattleScene.STATE_PLAYERTURN
-			else
-				self.state = BattleScene.STATE_MONSTERTURN
+					self.state = BattleScene.STATE_PLAYERTURN
+				else
+					self.state = BattleScene.STATE_MONSTERTURN
+				end
 			end
 		end
 		
@@ -431,6 +435,13 @@ function BattleScene:update(dt)
 		for _,mem in ipairs(self.party) do
 			if not mem.isHologram then
 				local partyMember = GameState.party[mem.id]
+
+				if mem.state == BattleActor.STATE_DEAD and
+					GameState:isEquipped(mem.id, ItemType.Accessory, "Opal Pendant")
+				then
+					mem.hp = 1
+				end
+
 				partyMember.hp = mem.hp
 				partyMember.sp = mem.sp
 				
@@ -547,8 +558,21 @@ function BattleScene:earlyExit()
 				partyMember.hp = mem.hp
 				partyMember.sp = mem.sp
 			end
-			
+
 			self.sceneMgr:popScene{hint=self.hint}
+		end)
+	}
+end
+
+function BattleScene:fadeOut(speed)
+	speed = speed or 1
+	return Parallel {
+		-- Fade to black
+		Ease(self.bgColor, 1, 0, 2 * speed, "linear"),
+		Ease(self.bgColor, 2, 0, 2 * speed, "linear"),
+		Ease(self.bgColor, 3, 0, 2 * speed, "linear"),
+		Do(function()
+			ScreenShader:sendColor("multColor", self.bgColor)
 		end)
 	}
 end
@@ -557,6 +581,7 @@ function BattleScene:onExit(args)
 	if args.toTitle then
 		return Serial {
 			AudioFade("music", self.audio:getMusicVolume(), 0, 2),
+			self.specialLoseAction or Action(),
 			PlayAudio("music", "nomore", 1.0, true),
 			MessageBox {
 				message="The Freedom Fighters are no more...",
@@ -718,6 +743,8 @@ end
 function BattleScene:cleanMonsters()
 	-- Check if all monsters dead (This can happen due to counter attack or reflection)
 	local toremove = {}
+	local transientAliveCount = 0
+	local remainingAliveCount = 0
 	for index,oppo in pairs(self.opponents) do
 		if oppo.state == BattleActor.STATE_DEAD or oppo.hp == 0 then
 			oppo.state = BattleActor.STATE_DEAD
@@ -731,12 +758,15 @@ function BattleScene:cleanMonsters()
 			table.insert(self.opponentSlots, oppo.slot)
 			
 			self.selectedTarget = 1
+		else
+			transientAliveCount = transientAliveCount + (oppo.transient and 1 or 0)
 		end
+		remainingAliveCount = remainingAliveCount + 1
 	end
 	for _,index in pairs(toremove) do
 		table.remove(self.opponents, index)
 	end
-	if next(self.opponents) == nil then
+	if next(self.opponents) == nil or transientAliveCount == remainingAliveCount then
 		self.state = BattleScene.STATE_PLAYERWIN
 		return false -- Return whether battle should continue
 	else

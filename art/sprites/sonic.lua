@@ -270,6 +270,9 @@ return {
 		holdring = {
 			frames = {{4,7}}
 		},
+		sadright = {
+			frames = {{2,10}}
+		},
 		sadleft = {
 			frames = {{5,7}}
 		},
@@ -338,19 +341,33 @@ return {
 			frames = {{12,9}}
 		},
 		
+		younghug1 = {
+			frames = {{0,10}}
+		},
+		younghug2 = {
+			frames = {{1,10}}
+		},
+		youngsmile = {
+			frames = {{13,10}}
+		},
+		youngnice = {
+			frames = {{14,10}}
+		},
+		youngsurprise = {
+			frames = {{15,10}}
+		},
+		attitude = {
+			frames = {{12,10}}
+		},
+		worrieddown = {
+			frames = {{10,10}}
+		},
+		
 		prepare_race = {
 			frames = {{14,9}}
 		},
 		prepare_race2 = {
 			frames = {{13,9}}
-		},
-		snowboard_left = {
-			frames = {{0,10},{1,10}},
-			speed = 0.02
-		},
-		snowboard = {
-			frames = {{2,10},{3,10}},
-			speed = 0.02
 		},
 		snowboard_ramp = {
 			frames = {{4,10}}

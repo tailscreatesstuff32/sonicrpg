@@ -15,7 +15,7 @@ return {
 		maxsp   = 10,
 		attack  = 8,
 		defense = 7,
-		speed   = 10,
+		speed   = 7,
 		focus   = 5,
 		luck    = 4,
 	},
@@ -26,7 +26,7 @@ return {
 		maxsp   = 100,
 		attack  = 80,
 		defense = 70,
-		speed   = 100,
+		speed   = 70,
 		focus   = 80,
 		luck    = 40,
 	},
@@ -45,32 +45,29 @@ return {
 	},
 
 	equip = {
+		weapon    = require "data/weapons/ReflectorMecha",
 	},
 
 	items = {
+		{count = 10, item = require "data/items/CrystalWater"},
+		{count = 10, item = require "data/items/BlueLeaf"}
 	},
 	
 	levelup = {
-		[1] = {
+		[5] = {
 			messages = {},
 			skills = {
-				require "data/battle/skills/Spindash",
-				--require "data/battle/skills/PowerRing"
+				require "data/battle/skills/Protect",
+				require "data/battle/skills/Encourage",
+				require "data/battle/skills/EMP"
 			}
 		},
-		--[[[3] = {
-			messages = {"Sonic learned \"Bounce\"!"},
-			skills = {
-				require "data/battle/skills/Spindash",
-				require "data/battle/skills/Bounce",
-			}
-		},]]
 	},
 	
 	specialmove = require "data/specialmoves/b",
 
 	battle = {
-		require "data/battle/SonicHit",
+		require "data/battle/BHit",
 		require "data/battle/Skills",
 		require "data/battle/Items",
 	}

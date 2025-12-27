@@ -2,16 +2,111 @@ return {
 	{
         type = "map",
         file = "maps/ep5intro.lua",
-		--primary = true -- REAL
+		primary = true -- REAL
     },
 	{
         type = "map",
-        file = "maps/greatjungle.lua",
+        file = "maps/robotnikship_scene.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave1.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave2.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave3.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave4.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave5.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave6.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave7.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave8.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave9.lua",
 		primary = true
     },
 	{
         type = "map",
+        file = "maps/greatforest_backstory.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/boulderbay_cliffs.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/boulderbay1.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/boulderbay2.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/boulderbay3.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/boulderbay_meanwhile2.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/greatjungle.lua",
+		--primary = true
+    },
+	{
+        type = "map",
         file = "maps/greatjungle2.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/greatjungle3.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/greatjungle4.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/quicksand_cave1.lua",
 		--primary = true
     },
 	{
@@ -66,6 +161,12 @@ return {
     },
 	
 	{
+        type = "map",
+        file = "maps/worldmap.lua",
+		--primary = true -- testing
+    },
+	
+	{
 		type = "gradient",
 		name = "mboxgradient",
 		args = string.dump(function()
@@ -89,15 +190,19 @@ return {
 	},
 	{
 		type = "image",
-		file = "art/sprites/rotorpad.png"
-	},
-	{
-		type = "image",
-		file = "art/splash/sonicpicture.png"
-	},
-	{
-		type = "image",
 		file = "art/splash/storybook1.png"
+	},
+	{
+		type = "image",
+		file = "art/splash/storybook2.png"
+	},
+	{
+		type = "image",
+		file = "art/splash/storybook3.png"
+	},
+	{
+		type = "image",
+		file = "art/splash/storybook4.png"
 	},
 	{
 		type = "image",
@@ -130,6 +235,14 @@ return {
 	{
 		type = "image",
 		file = "art/sprites/lasershield.png"
+	},
+	{
+		type = "image",
+		file = "art/sprites/golemarm.png"
+	},
+	{
+		type = "image",
+		file = "art/sprites/robotnikshield.png"
 	},
 	{
 		type = "image",
@@ -253,7 +366,11 @@ return {
 	},
 	{
 		type = "image",
-		file = "art/sprites/swatbotwhite.png"
+		file = "art/sprites/cambot2.png"
+	},
+	{
+		type = "image",
+		file = "art/sprites/camflashlight.png"
 	},
 	{
 		type = "image",
@@ -334,6 +451,10 @@ return {
 	{
 		type = "image",
 		file = "art/sprites/icon_item.png"
+	},
+	{
+		type = "image",
+		file = "art/sprites/icon_conk.png"
 	},
 	{
 		type = "image",
@@ -493,6 +614,21 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/sfx/babytroar.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/terrapodroar.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/juggerbotroarsilence.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
 		file = "audio/sfx/monkey.ogg",
 		category = "sfx"
 	},
@@ -543,7 +679,134 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/music/dreammountain.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/mysterious.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/tailssad.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/bleaves.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/bleaves2.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/robotnik.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/robotnikship.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/robotnikbattle.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/beach.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/puzzlesolve.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/bhero.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/patrol.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/boulderbay.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/rotorsentimental.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/introspection.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/concerning.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/bintrospective.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
 		file = "audio/music/lookout.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/worldmap.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/robotrouble.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/meow.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/roboterrapod.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/sonicsad.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/lightofmobius.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/babyt.ogg",
 		category = "music",
 		looping = true
 	},
@@ -552,6 +815,11 @@ return {
 		file = "audio/music/trouble.ogg",
 		category = "music",
 		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/sonicupset.ogg",
+		category = "music"
 	},
 	{
 		type = "sound",
@@ -634,17 +902,42 @@ return {
 	},
 	{
 		type = "sound",
-		file = "audio/music/ep3transition.ogg",
-		category = "music"
+		file = "audio/sfx/yourstoryendshere.ogg",
+		category = "sfx"
 	},
 	{
 		type = "sound",
-		file = "audio/music/ep3intro.ogg",
-		category = "music"
+		file = "audio/sfx/youdarechallengeme.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/comehere.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/yeeeesss.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/robotnikhurt.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/robotnikgrit.ogg",
+		category = "sfx"
 	},
 	{
 		type = "sound",
 		file = "audio/sfx/slice.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/elevator.ogg",
 		category = "sfx"
 	},
 	{
@@ -754,6 +1047,11 @@ return {
 	},
 	{
 		type = "sound",
+		file = "audio/sfx/juggerbotstep.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
 		file = "audio/sfx/juggerbotroar.ogg",
 		category = "sfx"
 	},
@@ -840,6 +1138,11 @@ return {
 	{
 		type = "sound",
 		file = "audio/sfx/error.wav",
+		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/tick.ogg",
 		category = "sfx"
 	},
 	{

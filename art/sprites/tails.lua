@@ -24,6 +24,13 @@ return {
 		idle = {
 			frames = {{14,2}}
 		},
+		backward = {
+			frames = {{0,0}}
+		},
+		tease = {
+			frames = {{11,5}, {12,5}},
+			speed = 0.5
+		},
 		block = {
 			frames = {{16,2}}
 		},
@@ -78,6 +85,37 @@ return {
 			speed = 0.09
 		},
 		
+		youngdown = {
+			frames = {{0,5}}
+		},
+		youngwalkdown = {
+			frames = {{0,5},{1,5},{0,5},{2,5}},
+			speed = 0.5
+		},
+		youngwalkleft = {
+			frames = {{0,5},{1,5},{0,5},{2,5}},
+			speed = 0.5
+		},
+		youngwalkright = {
+			frames = {{0,5},{1,5},{0,5},{2,5}},
+			speed = 0.5
+		},
+		youngdownsad = {
+			frames = {{3,5}}
+		},
+		youngdownscared = {
+			frames = {{4,5}}
+		},
+		youngdownsmile = {
+			frames = {{5,5}}
+		},
+		youngleapright = {
+			frames = {{6,5}}
+		},
+		younglookleft = {
+			frames = {{7,5}}
+		},
+		
 		hideright = {
 			frames = {{1,4}}
 		},
@@ -130,6 +168,11 @@ return {
 			frames = {{9,3}}
 		},
 		
+		flyleftheavy = {
+			frames = {{9,5},{10,5}},
+			speed = 0.1
+		},
+		
 		flyright = {
 			frames = {{11,0},{12,0}},
 			speed = 0.1
@@ -145,6 +188,22 @@ return {
 		flyup = {
 			frames = {{11,4},{12,4}},
 			speed = 0.1
+		},
+		
+		idleright_lookup = {
+            frames = {{11,3}}
+        },
+		
+		hug = {
+		    frames = {{0,4}}
+		},
+		
+		reading = {
+		    frames = {{16,3}}
+		},
+		
+		danger_pose_right = {
+			frames = {{16,1}}
 		},
 
 		hockeypose = {

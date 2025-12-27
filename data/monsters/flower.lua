@@ -35,7 +35,7 @@ return {
 	sprite = "sprites/flower",
 
 	stats = {
-		xp    = 10,
+		xp    = 5,
 		maxhp = 180,
 		attack = 15,
 		defense = 15,
@@ -47,12 +47,14 @@ return {
 	run_chance = 1.0,
 	coin = 0,
 	drops = {
-		{item = require "data/items/GreenLeaf", count = 1, chance = 1.0},
+		{item = require "data/items/GreenLeaf", count = 1, chance = 0.5},
 	},
 	
-	scan = "You can dodge this flower's attacks if you're nimble!",
+	scan = "Try dropping a weed on the flower!",
 
 	skipAnimation = true,
+	
+	heavy = true,
 	
 	onInit = function(self)
 		self.bullet = SpriteNode(
@@ -67,13 +69,6 @@ return {
 		self.bullet.transform.ox = self.bullet.w/2
 		self.bullet.transform.oy = self.bullet.h/2
 		self.bullet.transform.angle = math.pi / 6
-	end,
-	
-	onDead = function(self)
-		return Do(function()
-			self.scene.state = BattleScene.STATE_PLAYERWIN
-			self.scene:cleanMonsters()
-		end)
 	end,
 	
 	behavior = function (self, target)
@@ -96,10 +91,10 @@ return {
 				end),
 				damageTaker and
 					damageTaker:takeDamage(stats) or
-					Action(),
+					Do(function() target.sprite:setAnimation(target.prevAnim or "idle") end),
 				Do(function()
 					self.sprite:setAnimation("idle")
-					if target.hp > 0 then
+					if target.state ~= target.STATE_IMMOBILIZED and target.hp > 0 then
 						target.sprite:setAnimation("idle")
 					end
 				end)
@@ -123,7 +118,7 @@ return {
 					end)
 				},
 
-				PressX(
+				target.noCounter and finalAction(self, target) or PressX(
 					self,
 					target,
 					Serial {
@@ -153,9 +148,12 @@ return {
 											Ease(self.bullet.transform, "x", self.sprite.transform.x, 4, "quad"),
 											Ease(self.bullet.transform, "y", self.sprite.transform.y, 4, "quad")
 										},
+										Do(function()
+											self.bullet.color[4] = 0
+										end),
 										Parallel {
 											Stars(target, self),
-											finalAction(target, self, 3)
+											finalAction(target, self, 1.5)
 										}
 									},
 									finalAction()

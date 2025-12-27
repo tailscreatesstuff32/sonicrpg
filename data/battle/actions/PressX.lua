@@ -11,9 +11,7 @@ local SpriteNode = require "object/SpriteNode"
 
 return function(self, target, success, fail, timeout)
 	-- If opponent v opponent, no press X event
-	if (self.side == TargetType.Opponent and target.side == TargetType.Opponent) or
-		target.state == self.STATE_IMMOBILIZED
-	then
+	if self.side == TargetType.Opponent and target.side == TargetType.Opponent then
 		return fail
 	end
 	
@@ -29,7 +27,7 @@ return function(self, target, success, fail, timeout)
 			Parallel {
 				-- Press X!
 				Animate(function()
-					return SpriteNode(self.scene, target.sprite.transform, nil, "pressx", nil, nil, "ui"), true
+					return SpriteNode(self.scene, target.pressXXForm or target:getSprite().transform, nil, "pressx", nil, nil, "ui"), true
 				end, "idle"),
 				
 				-- If they press x fast enough, success! Otherwise fail

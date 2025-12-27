@@ -38,8 +38,8 @@ function LightPuzzle:touch(prevState)
 		local dx = lightLayer.offsetx - nextLightLayer.offsetx
 		local dy = lightLayer.offsety - nextLightLayer.offsety
 		
-		lightLayer.noshimmer = true
-		nextLightLayer.noshimmer = true
+		lightLayer.properties.active = false
+		nextLightLayer.properties.active = false
 
 		self:run(BlockPlayer {
 			PlayAudio("sfx", "gotit", 1, true),
@@ -55,7 +55,7 @@ function LightPuzzle:touch(prevState)
 				Ease(self.scene.camPos, "y", 0, 1.5, "linear")
 			},
 			Do(function()
-				nextLightLayer.noshimmer = nil
+				nextLightLayer.properties.active = true
 				nextObj.active = true
 				self:permanentRemove()
 			end)
@@ -72,7 +72,7 @@ function LightPuzzle:touch(prevState)
 		local dx = self.scene.player.x - quicksandObj.x - quicksandImageObj.sprite.w
 		local dy = self.scene.player.y - quicksandObj.y + quicksandImageObj.sprite.h
 
-		lightLayer.noshimmer = true
+		lightLayer.properties.active = false
 
 		self:run(BlockPlayer {
 			PlayAudio("sfx", "gotit", 1, true),
@@ -84,6 +84,7 @@ function LightPuzzle:touch(prevState)
 			Ease(quicksandImageObj.sprite.color, 4, 255, 1, "quad"),
 			Do(function()
 				quicksandObj.active = true
+				GameState:setFlag(quicksandObj:getFlag())
 			end),
 			Wait(0.5),
 			Parallel {

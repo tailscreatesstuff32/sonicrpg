@@ -164,6 +164,14 @@ return {
 			speed = 0.5
 		},
 		
+		shoutupright = {
+			frames = {{7,5},{8,5}},
+			speed = 0.3
+		},
+		shoutdownleft = {
+			frames = {{6,5}}
+		},
+		
 		leapleft = {
 			frames = {{6,1}}
 		},
@@ -237,10 +245,13 @@ return {
 		frustrateddown = {
 			frames = {{0,5}}
 		},
-		sadleft = {
+		frustratedright = {
+			frames = {{0,6}}
+		},
+		worriedleft = {
 			frames = {{1,5}}
 		},
-		meeting_sadleft = {
+		meeting_worriedleft = {
 			frames = {{1,5}},
 			clip = {0,0,47,44}
 		},

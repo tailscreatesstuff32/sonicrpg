@@ -56,6 +56,13 @@ function BattleActor:construct(scene, data)
 	end
 end
 
+function BattleActor:hop()
+	return Serial {
+		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y - 50 end, 8),
+		Ease(self.sprite.transform, "y", function() return self.sprite.transform.y + 50 end, 8)
+	}
+end
+
 function BattleActor:beginTurn()
 	
 end
@@ -188,6 +195,7 @@ function BattleActor:takeDamage(stats, isPassive, knockbackActionFun, attacker)
 					sprite:setAnimation("hurt")
 				end
 			end),
+			self.onHit and self:onHit(attacker, damage) or Action(),
 			Serial {
 				Parallel {
 					Ease(sprite.color, 1, 500, 10, "quad"),
@@ -268,8 +276,8 @@ function BattleActor:pushStats(stats)
 	table.insert(self.statStack, 1, stats)
 end
 
-function BattleActor:popStats(stats)
-	if not self.statStack then
+function BattleActor:popStats()
+	if not self.statStack or next(self.statStack) == nil then
 		return
 	end
 	table.remove(self.statStack, 1)

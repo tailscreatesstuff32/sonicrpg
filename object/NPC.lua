@@ -32,12 +32,12 @@ NPC.ALIGN_BOTCENTER = "bottom_center"
 
 function NPC:construct(scene, layer, object)
 	self.state = NPC.STATE_IDLE
-	
+
 	self.appearAfter = object.properties.appearAfter
 	self.showOn = object.properties.showOn
 	self.ghost = object.properties.ghost or false
 	self.alignment = object.properties.align or NPC.ALIGN_DEFAULT
-	
+
 	self.x = object.x
 	self.y = object.y
 	self.name = object.name
@@ -50,7 +50,7 @@ function NPC:construct(scene, layer, object)
 	self.noHideDown = object.properties.nohidedown
 	self.movespeed = object.properties.movespeed or 3
 	self.disappearOn = object.properties.disappearOn
-	self.disappearOnFlag = object.properties.disappearOnFlag
+	self.disappearOnFlag = object.properties.disappearOnFlag or object.properties.disappearAfterBattle
 	self.angle = (object.properties.angle or 0) * (math.pi/180)
 	self.isBot = object.properties.isBot
 	self.destructable = object.properties.destructable
@@ -123,11 +123,13 @@ function NPC:construct(scene, layer, object)
 	-- TODO: Change this to be a metadata file in some cases, that contains info about image and animations
 	local sprite = object.properties.sprite
 	if sprite then
+		local colorOverride = object.properties.colorOverride or "255,255,255"
+		local r,g,b = colorOverride:split(",")
 		local alpha = object.properties.alphaOverride or (255 * (self.layer.opacity or 1))
 		self.sprite = SpriteNode(
 		    scene,
 			Transform(object.x, object.y, object.properties.scalex or 2, object.properties.scaley or 2),
-			{255,255,255, alpha},
+			{r,g,b,alpha},
 			sprite:match("art/sprites/(.*)%."),
 			nil,
 			nil,
@@ -192,10 +194,10 @@ function NPC:distanceFromPlayerSq(ignoreCache)
 	return self.distanceFromPlayer
 end
 
-function NPC:updateCollision()
+function NPC:updateCollision(layerName)
 	self.collision = {}
 
-	local collisionLayer = self.scene.objectCollisionLayer[self.layer.name]
+	local collisionLayer = self.scene.objectCollisionLayer[layerName or self.layer.name]
 	if not self.object.properties.nocollision and collisionLayer then
 		local sx,sy = self.scene:worldCoordToCollisionCoord(self.object.x, self.object.y)
 		local dx,dy = self.scene:worldCoordToCollisionCoord(self.object.x + self.object.width, self.object.y + self.object.height)
@@ -220,8 +222,8 @@ function NPC:onPuzzleSolve()
 	return Action()
 end
 
-function NPC:removeCollision()
-    local collisionLayer = self.scene.objectCollisionLayer[self.layer.name]
+function NPC:removeCollision(layerName)
+    local collisionLayer = self.scene.objectCollisionLayer[layerName or self.layer.name]
 	if collisionLayer then
 		for _, pair in pairs(self.collision or {}) do
 			if collisionLayer[pair[2]] then
@@ -405,6 +407,7 @@ function NPC:messageBox()
 		self.collided = true
 
 		local battleArgs = {}
+		battleArgs.music = battleArgs.battleMusic
 		if objProps.boss then
 			battleArgs.music = "boss"
 			battleArgs.bossBattle = true
@@ -657,7 +660,7 @@ function NPC:maybeSwapLayer()
 		self.sprite:swapLayer(self.swapLayerMapping[self.scene.player.layer.name])
 	elseif wasAbovePlayer and not self.abovePlayer then
 		-- HACK
-		self.sprite:swapLayer("objects5")
+		self.sprite:swapLayer("objects7")
 	end
 end
 

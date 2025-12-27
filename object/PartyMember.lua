@@ -36,6 +36,7 @@ function PartyMember:construct(scene, data)
 	self.sp = data.sp or 0
 	self.charge = 100
 	self.extraLives = 0
+	self.isParty = true
 	
 	self.sprite.color = table.clone(scene.color or {255,255,255,255})
 	
@@ -80,13 +81,6 @@ function PartyMember:construct(scene, data)
 		self.sprite:setAnimation("dead")
 	end
 	
-	self:addHandler("hit", function(damage)
-		if damage > 0 and self.state == BattleActor.STATE_IMMOBILIZED then
-			self.state = BattleActor.STATE_IDLE
-			self.prevAnim = "idle"
-		end
-	end)
-	
 	self.side = TargetType.Party
 end
 
@@ -120,8 +114,12 @@ end
 
 function PartyMember:beginTurn()
 	if self.state == BattleActor.STATE_IMMOBILIZED then
+		if self.noEscape then
+			self:endTurn()
+			return
+		end
+
 		self.turnover = false
-		
 		if not self.turnsImmobilized then
 			self.turnsImmobilized = 1
 		else
@@ -166,9 +164,9 @@ function PartyMember:beginTurn()
 			
 			Wait(0.5)
 		}, 2)
-		
+
 		-- Escape
-		if math.random(1, self.turnsImmobilized + 1) then
+		if self.turnsImmobilized == 0 then
 			BattleActor.beginTurn(self)
 			
 			self.turnsImmobilized = nil
@@ -179,7 +177,7 @@ function PartyMember:beginTurn()
 			}
 			self.mainMenu:addHandler("cancel", PartyMember.skipTurn, self, self.mainMenu)
 			self.state = BattleActor.STATE_IDLE
-			
+
 			self.scene:run {
 				shake,
 				self.escapeAction or Action(),
@@ -200,6 +198,48 @@ function PartyMember:beginTurn()
 				end)
 			}
 		end
+	elseif self.confused then
+		self.turnsConfused = self.turnsConfused - 1
+		
+		BattleActor.beginTurn(self)
+		self.turnover = false
+
+		if self.turnsConfused == 0 then
+			self.turnsConfused = nil
+			self.confused = false
+
+			self.mainMenu = Menu {
+				transform = Transform(250, love.graphics.getHeight() - 97),
+				layout = Layout(self.options),	
+			}
+			self.mainMenu:addHandler("cancel", PartyMember.skipTurn, self, self.mainMenu)
+			self.state = BattleActor.STATE_IDLE
+
+			self.scene:run {
+				self.escapeAction or Action(),
+				Do(function()
+					self.sprite:setAnimation("idle")
+					self:invoke("escape")
+					self.escapeAction = nil
+				end),
+				self.mainMenu
+			}
+		else
+			local target = nil
+			for _, targetParty in pairs(self.scene.party) do
+				if targetParty.id ~= self.id and targetParty.state ~= BattleActor.STATE_DEAD then
+					if not target or math.random(1,2) == 1 then
+						target = targetParty
+					end
+				end
+			end
+			self.scene:run {
+				self.confusedAction and self.confusedAction(self, target) or Action(),
+				Do(function()
+					self:endTurn()
+				end)
+			}
+		end
 	else
 		-- If poisoned, take some damage
 		local preAction = Action()
@@ -211,7 +251,6 @@ function PartyMember:beginTurn()
 		end
 		
 		if self.onNextTurn then
-			print("next turn here")
 			preAction = Serial {
 				self.onNextTurn,
 				preAction
@@ -233,6 +272,39 @@ function PartyMember:beginTurn()
 			self.mainMenu
 		}
 	end
+end
+
+function PartyMember:onHit(attacker, damage)
+	return Serial {
+		Do(function()
+			if damage > 0 and self.state == BattleActor.STATE_IMMOBILIZED and not self.noEscape then
+				self.state = BattleActor.STATE_IDLE
+				self.prevAnim = "idle"
+			end
+		end)
+	}
+end
+
+function PartyMember:onLift(carrier)
+	return Animate(self.sprite, "shock")
+end
+
+function PartyMember:onDrop(carrier, target)
+	return Serial {
+		--Animate(self.sprite, "dead"),
+		target:takeDamage(self.stats),
+
+		-- Go back to original spot
+		Animate(self.sprite, "idle"),
+		Parallel {
+			Ease(self.sprite.transform, "x", self.lastXForm.x, 6),
+			Ease(self.sprite.transform, "y", self.lastXForm.y, 6)
+		},
+		
+		Do(function()
+			self.lastXForm = nil
+		end)
+	}
 end
 
 function PartyMember:skipTurn(actionMenu)
@@ -343,6 +415,7 @@ function PartyMember:chooseTarget(menu, targetType, unusable, callback, ...)
 			self.scene.selectedTarget = 1
 			target = self.scene[self.targetType][self.scene.selectedTarget]
 		end
+		target.selected = true
 		self.arrow = SpriteNode(
 			self.scene,
 			Transform(
@@ -428,26 +501,46 @@ function PartyMember:chooseTargetKey(key, _, unusable)
 		end
 	else
 		local target = self.scene[self.targetType][self.scene.selectedTarget]
+		local prevTarget = target
 		local invalidateArrowPos = false
+		local targetsSeen = {}
 
 		if key == "up" then
 			self.scene.audio:playSfx("cursor", nil, true)
-			self.scene.selectedTarget = (self.scene.selectedTarget == 1) and #self.scene[self.targetType] or (self.scene.selectedTarget - 1)
-			target = self.scene[self.targetType][self.scene.selectedTarget]
-			invalidateArrowPos = true
+			while invalidateArrowPos == false do
+				self.scene.selectedTarget = (self.scene.selectedTarget == 1) and #self.scene[self.targetType] or (self.scene.selectedTarget - 1)
+				target = self.scene[self.targetType][self.scene.selectedTarget]
+				if not target.untargetable or targetsSeen[tostring(target)] then
+					invalidateArrowPos = true
+				end
+				targetsSeen[tostring(target)] = true
+			end
 
 		elseif key == "down" then
 			self.scene.audio:playSfx("cursor", nil, true)
-			self.scene.selectedTarget = (self.scene.selectedTarget == #self.scene[self.targetType]) and 1 or (self.scene.selectedTarget + 1)
-			target = self.scene[self.targetType][self.scene.selectedTarget]
-			invalidateArrowPos = true
+			while invalidateArrowPos == false do
+				self.scene.selectedTarget = (self.scene.selectedTarget == #self.scene[self.targetType]) and 1 or (self.scene.selectedTarget + 1)
+				target = self.scene[self.targetType][self.scene.selectedTarget]
+				if not target.untargetable or targetsSeen[tostring(target)] then
+					invalidateArrowPos = true
+				end
+				targetsSeen[tostring(target)] = true
+			end
 			
 		elseif key == "left" or key == "right" then
 			-- Change target type
 			self.targetType = self.targetType == TargetType.Opponent and TargetType.Party or TargetType.Opponent
 			self.scene.selectedTarget = 1
-			target = self.scene[self.targetType][self.scene.selectedTarget]
-			invalidateArrowPos = true
+
+			while invalidateArrowPos == false do
+				target = self.scene[self.targetType][self.scene.selectedTarget]
+				if not target.untargetable or targetsSeen[tostring(target)] then
+					invalidateArrowPos = true
+				else
+					self.scene.selectedTarget = (self.scene.selectedTarget == #self.scene[self.targetType]) and 1 or (self.scene.selectedTarget + 1)
+				end
+				targetsSeen[tostring(target)] = true
+			end
 		
 		elseif key == "x" then
 			-- Can't attack flying if we can't target flying
@@ -461,9 +554,10 @@ function PartyMember:chooseTargetKey(key, _, unusable)
 				self.arrow = nil
 				self.scene:removeHandler("keytriggered", PartyMember.chooseTargetKey, self)
 				self.scene:unfocus("keytriggered")
+				target.selected = false
 				
-				-- Set sort order based on target
-				self.sprite.sortOrderY = target.sprite.transform.y + target.sprite.h*2 - self.sprite.h*2
+				-- Set sort order
+				self.sprite.sortOrderY = self.sprite.transform.y + self.sprite.h
 				
 				local startingX = self.dropShadow.transform.x
 				local startingY = self.dropShadow.transform.y
@@ -502,7 +596,9 @@ function PartyMember:chooseTargetKey(key, _, unusable)
 		if invalidateArrowPos and self.arrow then
 			self.arrow.transform.x = target.sprite.transform.x + target.sprite.w / 2
 			self.arrow.transform.y = target.sprite.transform.y - target.sprite.h * 1.5
-			
+			prevTarget.selected = false
+			target.selected = true
+
 			-- Can't target
 			if (unusable and unusable(target)) or target.untargetable then
 				self.arrow.color = {150,150,150, 255}
@@ -511,6 +607,10 @@ function PartyMember:chooseTargetKey(key, _, unusable)
 			end
 		end
 	end
+end
+
+function PartyMember:getDamageTarget()
+	return self.targetOverride or self
 end
 
 function PartyMember:endTurn()
@@ -526,14 +626,19 @@ end
 
 function PartyMember:cleanupChooseTarget(menu)
 	if  self.targetType == TargetType.AllOpponents or
-		self.targetType == TargetType.AllParty
+		self.targetType == TargetType.AllPartyisTurnOver
 	then
 		for _, arrow in pairs(self.arrow) do
 			arrow:remove()
 		end
 		self.arrow = nil
 	else
-		self.arrow:remove()	
+		self.arrow:remove()
+
+		local target = self.scene[self.targetType][self.scene.selectedTarget]
+		if target then
+			target.selected = false
+		end
 	end
 	
 	self.arrow = nil

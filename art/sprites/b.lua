@@ -1,21 +1,91 @@
 return {
     image = "b.png",
-    starting = "idledown",
+    starting = "idle",
     w = 47,
     h = 55,
 
     animations = {
+		idle = {
+			frames = {{0,1}}
+		},
+		backward = {
+			frames = {{0,0}}
+		},
+		dead = {
+			frames = {{15,0}}
+		},
+		victory = {
+			frames = {{0,4}}
+		},
 		pose = {
 			frames = {{0,4}}
 		},
 		shock = {
 			frames = {{11,4}}
 		},
+		hurt = {
+		    frames = {{10,0}}
+		},
+		block = {
+			frames = {{10,0}}
+		},
+		focus = {
+			frames = {{2,4}}
+		},
 		
 		lookdown = {
 			frames = {{13,1}}
 		},
 		
+		blink_back = {
+			frames = {{1,4},{3,4}},
+			speed = 0.1
+		},
+		
+		camoflauge = {
+			frames = {{2,4},{3,4},{4,4}},
+			speed = 2
+		},
+		turncoat = {
+			frames = {{0,1},{9,4}},
+			speed = 2
+		},
+		redleft = {
+			frames = {{9,4}}
+		},
+		reddown = {
+			frames = {{4,4}}
+		},
+		
+		redidle = {
+			frames = {{14,4}}
+		},
+		redhurt = {
+			frames = {{14,3}}
+		},
+		redhurt = {
+			frames = {{14,3}}
+		},
+		redcrouchleft = {
+		    frames = {{16,3}}
+		},
+		redjumpleft = {
+		    frames = {{15,3}}
+		},
+		redleapleft = {
+		    frames = {{15,2}}
+		},
+		redcrouchright = {
+		    frames = {{16,4}}
+		},
+		redjumpright = {
+		    frames = {{15,4}}
+		},
+		redleapright = {
+		    frames = {{16,2}}
+		},
+		
+
 		packupidle = {
 			frames = {{9,3}}
 		},
@@ -39,22 +109,22 @@ return {
 		    frames = {{0,2},{1,2},{0,2},{5,2}},
 			speed = 0.5
 		},
-		
-		crouchleft = {
-		    frames = {{13,6}}
+		weakcrouchleft = {
+		    frames = {{12,4},{13,4}},
+			speed = 0.5
 		},
-		crouchright = {
-		    frames = {{14,6}}
+		
+		crouch = {
+		    frames = {{11,0}}
+		},
+		leap = {
+		    frames = {{7,1}}
+		},
+		crouchleft = {
+		    frames = {{11,0}}
 		},
 		jumpleft = {
-		    frames = {{15,6}}
-		},
-		jumpright = {
-		    frames = {{16,6}}
-		},
-		
-		leapdown = {
-			frames = {{5,2}}
+		    frames = {{9,0}}
 		},
 		
 		idleright = {

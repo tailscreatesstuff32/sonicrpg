@@ -40,6 +40,7 @@ return {
 		luck = 0,
 	},
 	
+	transient = true,
 	run_chance = 1.0,
 	coin = 0,
 	drops = {},
@@ -48,6 +49,45 @@ return {
 
 	skipAnimation = true,
 	
+	onDead = function(self)
+		return Do(function()
+			if self.immobilizedByObj then
+				local target = self.immobilizedByObj
+				target.state = target.STATE_IDLE
+				target.noEscape = false
+			end
+		end)
+	end,
+	
+	onLift = function (self, carrier)
+		local selfSprite = self:getSprite()
+		return Animate(selfSprite, "hurt")
+	end,
+
+	onDrop = function (self, carrier, target)
+		local targetSprite = target:getSprite()
+		
+		if target.name == "Weed" then
+			return Serial {
+				Parallel {
+					self:die(),
+					target:die()
+				}
+			}
+		else
+			return Serial {
+				Do(function()
+					target.state = target.STATE_IMMOBILIZED
+					target.escapeAction = self:die()
+					target.immobilizedByObj = self
+				end),
+
+				Ease(targetSprite.transform, "x", function() return targetSprite.transform.x - 5 end, 6),
+				Ease(targetSprite.transform, "x", function() return targetSprite.transform.x + 5 end, 6)
+			}
+		end
+	end,
+
 	behavior = function (self, target)
 		return Action()
 	end

@@ -72,7 +72,8 @@ function Player:construct(scene, layer, object)
 	self.flyLayer = self.scene.currentLayerId
 	self.flyLandingLayer = self.flyLayer
 	self.defaultFlyOffsetY = 20
-	self.flyOffsetY = self.defaultFlyOffsetY
+	self.flyOffsetY = 0
+	self.tempFlyOffsetY = 0
 	self.stickyLShift = false
 
 	self.isSwatbot = {}
@@ -116,6 +117,9 @@ function Player:construct(scene, layer, object)
 
 	-- A hashset of keyhints to suppress
 	self.hidekeyhints = {}
+	
+	-- A hashset of threedee objects we are touching
+	self.threeDeeObjects = {}
 	
 	-- Current keyhint sprite and obj
 	self.curKeyHintSprite = nil
@@ -274,7 +278,7 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 		elseif GameState.leader == "babyt" then
 			pressDirXForm = Transform.relative(
 				self.transform,
-				Transform(self.sprite.w - 60, -10)
+				Transform(self.sprite.w, -10)
 			)
 		end
 		local pressDir = SpriteNode(
@@ -305,7 +309,7 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 		elseif GameState.leader == "babyt" then
 			pressXXForm = Transform.relative(
 				self.transform,
-				Transform(self.sprite.w - 60, -10)
+				Transform(self.sprite.w, -10)
 			)
 		end
 		local pressX = SpriteNode(
@@ -337,7 +341,7 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 		elseif GameState.leader == "babyt" then
 			pressLshXForm = Transform.relative(
 				self.transform,
-				Transform(self.sprite.w - 62, -10)
+				Transform(self.sprite.w, -10)
 			)
 		end
 		local pressLsh = SpriteNode(
@@ -369,7 +373,7 @@ function Player:showKeyHint(showPressX, specialHint, showPressDir)
 		elseif GameState.leader == "babyt" then
 			pressXXForm = Transform.relative(
 				self.transform,
-				Transform(self.sprite.w - 60, -10)
+				Transform(self.sprite.w - 15, -10)
 			)
 		end
 		local pressX = SpriteNode(
@@ -416,7 +420,7 @@ function Player:removeKeyHint()
 	end
 end
 
-function Player:split(orderedParty)
+function Player:split(orderedParty, horizontal)
 	-- Create sprites for all party members
 	local paths = {
 		{"walkright", "idleleft",  "walkleft",  Transform(self.movespeed, 0)},
@@ -424,6 +428,15 @@ function Player:split(orderedParty)
 		{"walkup",    "idledown",  "walkdown",  Transform(0, -self.movespeed)},
 		{"walkdown",  "idleup",    "walkup",    Transform(0, self.movespeed)}
 	}
+	if horizontal then
+		paths = {
+			{"walkright", "idleleft",  "walkleft",  Transform(self.movespeed, 0)},
+			{"walkleft",  "idleright", "walkright", Transform(-self.movespeed, 0)},
+			{"walkright", "idleleft",  "walkleft",  Transform(self.movespeed, 0)},
+			{"walkleft",  "idleright", "walkright", Transform(-self.movespeed, 0)}
+		}
+	end
+
 	local walkOutActions = {}
 	local walkInActions = {}
 	
@@ -455,7 +468,8 @@ function Player:split(orderedParty)
 				end),
 				Animate(self.partySprites[id].sprite, walkOutAnim, true),
 				Parallel {
-					Wait(0.2),
+					-- Baby T is way wider and taller than other Freedom Fighters, so we need spread out more
+					self.partySprites["babyt"] and Wait(0.4) or Wait(0.2),
 					Do(function()
 						self.partySprites[id].x = self.partySprites[id].x + dir.x * (love.timer.getDelta()/0.016)
 						self.partySprites[id].y = self.partySprites[id].y + dir.y * (love.timer.getDelta()/0.016)
@@ -519,14 +533,19 @@ function Player:spin(rotations, speed, sprite)
 	local lazySprite = sprite or function() return self.sprite end
 	return Repeat(
 		Serial {
+			Do(function() self.state = "idledown" end),
 			Animate(lazySprite, "idledown", true),
 			Wait(speed),
+			Do(function() self.state = "idleleft" end),
 			Animate(lazySprite, "idleleft", true),
 			Wait(speed),
+			Do(function() self.state = "idleup" end),
 			Animate(lazySprite, "idleup", true),
 			Wait(speed),
+			Do(function() self.state = "idleright" end),
 			Animate(lazySprite, "idleright", true),
 			Wait(speed),
+			Do(function() self.state = "idledown" end),
 			Animate(lazySprite, "idledown", true),
 		},
 		rotations
@@ -603,6 +622,8 @@ function Player:onSpecialMove()
 		self.hidekeyhints = {}
 		self:removeKeyHint()
 		GameState.party[GameState.leader].specialmove(self)
+	else
+		self.scene.audio:playSfx("error")
 	end
 end
 
@@ -677,12 +698,10 @@ function Player:updateSprite()
 	end
 
 	local spriteWidth, spriteHeight = self.sprite.w,self.sprite.h
-	self.transform = Transform(
-		love.graphics.getWidth()/2 - spriteWidth,
-		love.graphics.getHeight()/2 - spriteHeight,
-		2,
-		2
-	)
+	self.transform.x = love.graphics.getWidth()/2 - spriteWidth
+	self.transform.y = love.graphics.getHeight()/2 - spriteHeight
+	self.transform.sx = 2
+	self.transform.sy = 2
 
 	self.width,self.height = spriteWidth, spriteHeight
 	self.halfWidth,self.halfHeight = math.floor(spriteWidth/2), math.floor(spriteHeight/2)
@@ -806,19 +825,21 @@ function Player:basicUpdate(dt)
 	self:updateShadows()
 	self:updateVisuals()
 	self:updateKeyHint()
-	
-	-- Update drop shadow position
-	self.dropShadow.x = self.x - 22
-	self.dropShadow.y = self.dropShadowOverrideY or self.y + self.sprite.h - 15
-	self.dropShadow.sprite.sortOrderY = self.dropShadowOverrideSortOrderY or self.sprite.transform.y - 1
-	self.dropShadow.sprite.transform.sx = 1.3
 
-	-- HACK: Rotor is big
-	if GameState.leader == "rotor" then
-		self.dropShadow.x = self.x - 5
-	elseif GameState.leader == "babyt" then
-		self.dropShadow.x = self.x - 60
-		self.dropShadow.sprite.transform.sx = 3
+	if self.dropShadow and self.dropShadow.sprite then
+		-- Update drop shadow position
+		self.dropShadow.x = self.x - 22
+		self.dropShadow.y = self.dropShadowOverrideY or self.y + self.sprite.h - 15
+		self.dropShadow.sprite.sortOrderY = self.dropShadowOverrideSortOrderY or self.sprite.transform.y - 1
+		self.dropShadow.sprite.transform.sx = 1.3
+
+		-- HACK: Rotor is big
+		if GameState.leader == "rotor" then
+			self.dropShadow.x = self.x - 5
+		elseif GameState.leader == "babyt" then
+			self.dropShadow.x = self.x - 60
+			self.dropShadow.sprite.transform.sx = 3
+		end
 	end
 
 	local prevState = self.state
@@ -826,7 +847,8 @@ function Player:basicUpdate(dt)
 	if not self.noIdle then
 		self.state = Player.ToIdle[self.state] or self.state
 	end
-	
+
+	self.isTouching = Player.isTouching
 	local hotspots = self:updateCollisionObj()
 
 	hotspots.right_top.x = hotspots.right_top.x + self.collisionHSOffsets.right_top.x

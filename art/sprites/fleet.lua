@@ -48,6 +48,24 @@ return {
 		lookright = {
 			frames = {{1,5}}
 		},
+		lookleft = {
+			frames = {{4,5}}
+		},
+		sleeping = {
+		    frames = {{5,5}}
+		},
+		sleeping_wake = {
+		    frames = {{6,5}}
+		},
+		sleeping_attitude = {
+		    frames = {{7,5}}
+		},
+		sadleft = {
+		    frames = {{7,6}}
+		},
+		thinking = {
+		    frames = {{8,6}}
+		},
 		frustrated = {
 			frames = {{1,7}}
 		},

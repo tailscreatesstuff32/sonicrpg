@@ -435,7 +435,7 @@ function GameState:load(scene, slot)
 	self.flags = data.flags
 
 	-- ep5 save file
-	if self:isFlagSet("ep5_knothole") then
+	if true then --self:isFlagSet("ep5_knothole") then
 		-- Add party members, grant items, set flags
 		for k, v in pairs(data.party) do
 			self:addToParty(k, v.level, false)
@@ -519,9 +519,8 @@ function GameState:load(scene, slot)
 		end
 	-- ep1 or ep2 or ep3 save, treat as new game+
 	else
-		self:addToParty("logan", 8, true)
-		self.leader = "logan"
-		self:setFlag("ep3_intro")
+		self:addToParty("tails", 3, true)
+		self.leader = "tails"
 		scene.sceneMgr:switchScene {class = "ChapterSplashScene", manifest = "maps/sonicdemo_manifest.lua"}
 	end
 end

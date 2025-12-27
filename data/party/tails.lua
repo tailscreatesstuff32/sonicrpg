@@ -11,9 +11,9 @@ return {
 
 	startingstats = {
 		startxp = 0,
-		maxhp   = 450,
+		maxhp   = 350,
 		maxsp   = 10,
-		attack  = 8,
+		attack  = 7,
 		defense = 7,
 		speed   = 10,
 		focus   = 5,
@@ -53,13 +53,19 @@ return {
 	},
 
 	levelup = {
-		[3] = {
-			messages = {},
+		[4] = {
+			messages = {"Tails learned \"{h Called Shot}\"!"},
 			skills = {
-				require "data/battle/skills/SlapShot",
-				--require "data/battle/skills/Fly",
+				require "data/battle/skills/CalledShot",
 			}
-		}
+		},
+		[5] = {
+			messages = {"Tails learned \"{h Tease}\"!"},
+			skills = {
+				require "data/battle/skills/CalledShot",
+				require "data/battle/skills/Tease",
+			}
+		},
 	},
 	
 	specialmove = require "data/specialmoves/tails",

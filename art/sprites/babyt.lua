@@ -1,6 +1,6 @@
 return {
     image = "babyt.png",
-    starting = "idledown",
+    starting = "idle",
     w = 102,
     h = 55,
 
@@ -11,21 +11,67 @@ return {
 		shock = {
 			frames = {{12,2}}
 		},
+		hug = {
+		    frames = {{0,4}}
+		},
 		
 		lookdown = {
 			frames = {{13,1}}
 		},
 		
-		packupidle = {
-			frames = {{9,3}}
+		idle = {
+			frames = {{9,1}}
 		},
-		packup = {
-			frames = {{9,3},{10,3}},
-			speed = 0.5
+		backward = {
+			frames = {{0,0}}
 		},
-		packupstand = {
-			frames = {{11,3},{0,3}},
-			speed = 0.5
+		cyclone = {
+			frames = {{12,1},{12,3},{10,3},{12,0}},
+			speed = 0.22
+		},
+		slap = {
+			frames = {{12,1},{12,3},{10,3},{12,0}},
+			speed = 0.15
+		},
+		block = {
+			frames = {{11,1}}
+		},
+		hurt = {
+			frames = {{11,0}}
+		},
+		dead = {
+			frames = {{10,1}}
+		},
+		victory = {
+			frames = {{11,3}}
+		},
+		roar = {
+			frames = {{9,0},{10,0}},
+			speed = 0.22
+		},
+		ball = {
+			frames = {{9,1},{10,1},{9,3},{9,4}},
+			speed = 0.22
+		},
+		ball_idle = {
+			frames = {{9,4}}
+		},
+		unball = {
+			frames = {{9,4},{9,3},{10,1},{9,1}},
+			speed = 0.22
+		},
+
+		saddown = {
+			frames = {{11,2}}
+		},
+		sadleft = {
+			frames = {{10,2}}
+		},
+		sadright = {
+			frames = {{9,2}}
+		},
+		verysadleft = {
+			frames = {{10,4}}
 		},
 		backpack = {
 			frames = {{12,3}}

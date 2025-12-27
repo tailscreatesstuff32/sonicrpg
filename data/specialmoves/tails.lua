@@ -19,16 +19,25 @@ return function(player)
 	-- Tails power is to fly around. What this allows him to do is fly from higher points of a map
 	-- down to lower points of the map. This is useful for puzzle solving, navigation, etc.
 	
+	
+	-- If not a layered map, Tails cannot fly
+	if not player.scene.layered then
+		player.scene.audio:playSfx("error")
+		return
+	end
+	
 	-- While flying, you can press X to change perspective (Tails' body to his drop spot)
 	player.flyOffsetY = player.flyOffsetY or player.defaultFlyOffsetY
 	player.tempFlyOffsetY = player.tempFlyOffsetY or 0
 	player.dropShadowOverrideSortOrderY = nil
-	player.threeDeeObjects = {}
 
-	print("flyOffsetY = "..tostring(player.flyOffsetY)..", tempFlyOffsetY = "..tostring(player.tempFlyOffsetY)..
-	      ", flyLandingLayer: "..tostring(player.flyLandingLayer)..", fly layer: "..tostring(player.scene.currentLayerId))
-
-	player.flyingHotspots = player.hotspots
+	local hotspots = player.hotspots
+	player.flyingHotspots = {
+		right_top = {x = hotspots.right_top.x, y = hotspots.right_top.y + player.flyOffsetY},
+		right_bot = {x = hotspots.right_bot.x, y = hotspots.right_bot.y + player.flyOffsetY},
+		left_top  = {x = hotspots.left_top.x,  y = hotspots.left_top.y + player.flyOffsetY},
+		left_bot  = {x = hotspots.left_bot.x,  y = hotspots.left_bot.y + player.flyOffsetY},
+	}
 	player.origIsTouching = player.isTouching
 	player.isTouching = function(self, x, y, w, h)
 		local tw = self.scene:getTileWidth()
@@ -42,6 +51,8 @@ return function(player)
 			(self.flyingHotspots.left_bot.y + fuzz) >= y and
 			(self.flyingHotspots.right_top.y - fuzz) <= (y + math.max(th*2, h))
 	end
+	
+	print("flyOffsetY = "..tostring(player.flyOffsetY).." tempFlyOffsetY = "..tostring(player.tempFlyOffsetY))
 
 	-- Flying is a toggle, so once you press lshift, you begin flying and stay flying until
 	-- you press lshift again
@@ -147,12 +158,17 @@ return function(player)
 		if not love.keyboard.isDown("lshift") then
 			self.stopElevating = true
 		end
+		
+		local elevationSpeed = 4 * (dt/0.016)
+		local dropSpeed = 1.01 * (dt/0.016)
 
 		if self.flyTime > 0.0 and love.keyboard.isDown("lshift") and not self.stopElevating then
 			-- Left shift is down the whole time? Increase elevation until you run out of fly time
-			self.flyOffsetY = self.flyOffsetY + 4
-			self.y = self.y - 4
-			self.scene.camPos.y = self.scene.camPos.y - 4
+			self.flyOffsetY = self.flyOffsetY + elevationSpeed
+			self.y = self.y - elevationSpeed
+			if not self.scene.noPlayerPanning then
+				self.scene.camPos.y = self.scene.camPos.y - elevationSpeed
+			end
 		elseif self.stopElevating and (love.keyboard.isDown("lshift") or self.forceDrop) and not self.stickyLShift then
 			-- Do not land unless all three dee objects agree
 			self.noLand = true
@@ -163,7 +179,7 @@ return function(player)
 				Parallel {
 					Ease(self, "flyOffsetY", self.flyOffsetY - (self.flyOffsetY + self.tempFlyOffsetY), 6, "linear"),
 					Ease(self, "y", self.y + (self.flyOffsetY + self.tempFlyOffsetY), 6, "linear"),
-					Ease(self.scene.camPos, "y", 0, 6, "linear")
+					not self.scene.noPlayerPanning and Ease(self.scene.camPos, "y", 0, 6, "linear") or Action()
 				},
 				Do(function()
 					-- Landing logic...
@@ -179,18 +195,24 @@ return function(player)
 			self.flyTime = 0.0
 		elseif self.flyTime <= 0.0 or not love.keyboard.isDown("lshift") and not self.stickyLShift then
 			-- Start falling out of the sky
-			self.flyOffsetY = self.flyOffsetY - 1
-			self.y = self.y + 1
+			self.flyOffsetY = self.flyOffsetY - dropSpeed
+			self.y = self.y + dropSpeed
 
-			if self.scene.camPos.y < 0 then
-				self.scene.camPos.y = self.scene.camPos.y + 1
-			else
-				self.scene.camPos.y = 0
+			if not self.scene.noPlayerPanning then
+				if self.scene.camPos.y < 0 then
+					self.scene.camPos.y = self.scene.camPos.y + dropSpeed
+				else
+					self.scene.camPos.y = 0
+				end
 			end
 		end
 
 		-- Adjust camera
-		if math.abs(self.flyOffsetY + self.tempFlyOffsetY + self.scene.camPos.y) > 250 and not self.camMove then
+		if math.abs(self.flyOffsetY + self.tempFlyOffsetY + self.scene.camPos.y) > 250 and
+			not self.camMove and
+			not self.noFlyPan and
+			not self.scene.noPlayerPanning
+		then
 			self.camMove = true
 			self:run {
 				Ease(self.scene.camPos, "y", -(self.flyOffsetY + self.tempFlyOffsetY), 2),
@@ -232,7 +254,6 @@ return function(player)
 			self.stopElevating = false
 			self.basicUpdate = self.updateFun
 			self.movespeed = self.baseMoveSpeed
-			self.isTouching = self.origIsTouching
 
 			local state_from_fly = {
 				flyleft = "idleleft",
@@ -259,13 +280,16 @@ return function(player)
 					self.flyOffsetY = 0
 					self.tempFlyOffsetY = 0
 					self.flyLandingLayer = self.nextFlyLandingLayer
+					self.isTouching = self.origIsTouching
 				end
 			elseif self.flyOffsetY < 0.0 then
 				self.flyOffsetY = 0
 			end
 
-			if self.scene.camPos.y < 0 then
-				self:run(Ease(self.scene.camPos, "y", 0, 2, "linear"))
+			if not self.scene.noPlayerPanning then
+				if self.scene.camPos.y < 0 then
+					self:run(Ease(self.scene.camPos, "y", 0, 2, "linear"))
+				end
 			end
 
 			-- Update hotspots
@@ -275,7 +299,7 @@ return function(player)
 			hotspots.left_bot.y = hotspots.left_bot.y - self.flyOffsetY
 
 			-- If we can't move after landing, reset our position to where we took off from and flicker
-			if not (
+			if self.y > self.scene:getMapHeight() or not (
 			   (self.scene:canMove(hotspots.left_top.x, hotspots.left_top.y, 0, -movespeed) and
 				self.scene:canMove(hotspots.right_top.x, hotspots.right_top.y, 0, -movespeed)) or
 			   (self.scene:canMove(hotspots.left_bot.x, hotspots.left_bot.y, 0, movespeed) and
@@ -287,6 +311,9 @@ return function(player)
 			) then
 				self.x = self.takeOffX
 				self.y = self.takeOffY
+				self.flyOffsetY = self.takeOffFlyOffsetY
+				self.tempFlyOffsetY = self.takeOffTempFlyOffsetY
+				self.scene:swapLayer(self.takeOffLayer, true)
 				self:run(
 					Repeat(
 						Serial {
@@ -321,4 +348,7 @@ return function(player)
 	player.state = state_to_fly[player.state] or "flyright"
 	player.takeOffX = player.x
 	player.takeOffY = player.y
+	player.takeOffFlyOffsetY = player.flyOffsetY
+	player.takeOffTempFlyOffsetY = player.tempFlyOffsetY
+	player.takeOffLayer = player.scene.currentLayerId
 end

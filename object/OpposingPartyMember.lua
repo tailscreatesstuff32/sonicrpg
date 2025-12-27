@@ -36,8 +36,8 @@ function OpposingPartyMember:construct(scene, data)
 	self.state = BattleActor.STATE_IDLE
 
 	self.name = data.altName or ""
-	self.stats = data.stats
-	self.flying = data.flying
+	self.stats = table.clone(data.stats)
+	self.aerial = data.aerial
 	self.run_chance = data.run_chance or 1.0
 	self.drops = data.drops
 	self.hp = data.stats.maxhp
@@ -45,9 +45,14 @@ function OpposingPartyMember:construct(scene, data)
 	self.maxsp = 999 -- just to prevent issues
 	self.scan = data.scan
 	self.insult = data.insult
+	self.isBot = data.is_bot == nil or data.is_bot
 	self.hpBarOffset = data.hpBarOffset or Transform(0,0)
 	self.hurtSfx = data.hurtSfx or "smack"
+	self.heavy = data.heavy or false
+	self.transient = data.transient or false
 	self.behavior = data.behavior or function() end
+	self.onLift = data.onLift or function(self, carrier) return Action() end
+	self.onDrop = data.onDrop or function(carriedTarget, carrier, target) return Action() end
 	self.onDead = data.onDead or function() return Action() end
 	self.onEnter = data.onEnter or function() return Action() end
 	self.onPreInit = data.onPreInit or function() end
@@ -91,7 +96,7 @@ function OpposingPartyMember:beginTurn()
 	
 	-- If current target is dead, choose another
 	local iterations = 1
-	while self.scene.party[self.selectedTarget].state == BattleActor.STATE_DEAD do
+	while self.scene.party[self.selectedTarget].state == BattleActor.STATE_DEAD or self.scene.party[self.selectedTarget].confused do
 		self.selectedTarget = (self.selectedTarget % #self.scene.party) + 1
 		iterations = iterations + 1
 		if iterations > #self.scene.party then
@@ -106,7 +111,7 @@ function OpposingPartyMember:beginTurn()
 	local additionalActions = {}
 	
 	-- Choose action based on current state
-	if self.state == BattleActor.STATE_IMMOBILIZED then
+	if self.state == BattleActor.STATE_IMMOBILIZED and not self.transient then
 		-- Shake left and right
 		local shake = Repeat(Serial {
 			Do(function()
@@ -153,7 +158,8 @@ function OpposingPartyMember:beginTurn()
 			self.chanceToEscape = self.chanceToEscape * 2
 		end
 		
-		if math.random() > self.chanceToEscape then
+		local escaped = math.random() > self.chanceToEscape and not self.noEscape
+		if not escaped then
 			self.action = Serial {
 				shake,
 				Telegraph(self, self.name.." is immobilized!", {self.color[1],self.color[2],self.color[3],50}),
@@ -184,7 +190,8 @@ function OpposingPartyMember:beginTurn()
 			else
 				self.action = Serial {
 					shake,
-					
+
+					self.escapeAction or Action(),
 					Do(function()
 						if self.prevAnim == "backward" or not self.prevAnim then
 							self.prevAnim = "idle"
@@ -192,10 +199,11 @@ function OpposingPartyMember:beginTurn()
 						sprite:setAnimation(self.prevAnim)
 						self.state = BattleActor.STATE_IDLE
 						self.chanceToEscape = nil
-						
+						self.escapeAction = nil
+
 						self:invoke("escape")
 					end),
-					
+
 					Telegraph(self, self.name.." broke free!", {self.color[1],self.color[2],self.color[3],50}),
 				}
 			end
@@ -228,6 +236,21 @@ function OpposingPartyMember:beginTurn()
 
 		-- Choose action based on behavior
 		target = self.scene.party[self.selectedTarget]
+
+		local protected = false
+		local targetXForm
+		local origTargetSortOrder = target.sprite.sortOrderY
+		if target.targetOverride and target.targetOverride.state == target.STATE_IDLE then
+			local origTarget = target
+			target = target.targetOverride
+			targetXForm = Transform.from(target.sprite.transform)
+			target.origXForm = targetXForm
+			target.sprite.transform.x = origTarget.sprite.transform.x - 50
+			target.sprite.transform.y = origTarget.sprite.transform.y
+			target.sprite.sortOrderY = origTarget.sprite.transform.y + 50
+			protected = true
+		end
+
 		if target.laserShield and target.sprite ~= target.laserShield then
 			target.lastSprite = target.sprite
 			target.sprite = target.laserShield
@@ -250,6 +273,28 @@ function OpposingPartyMember:beginTurn()
 				Telegraph(self, self.name.." feels compelled to attack "..target.name.."!", {255,255,255,50}),
 				self.action
 			}
+		end
+		
+		if targetXForm then
+			if not target.confused then
+				self.action = Serial {
+					self.action,
+					Parallel {
+						Ease(target.sprite.transform, "x", targetXForm.x, 8),
+						Ease(target.sprite.transform, "y", targetXForm.y, 8)
+					},
+					Do(function()
+						target.sprite.sortOrderY = origTargetSortOrder
+					end)
+				}
+			else
+				self.action = Serial {
+					self.action,
+					Do(function()
+						target.sprite.sortOrderY = origTargetSortOrder
+					end)
+				}
+			end
 		end
 	end
 	
@@ -320,7 +365,7 @@ function OpposingPartyMember:die()
 	self.onAttack = nil
 	
 	local extraAnim = Action()
-	if self.state == BattleActor.STATE_IMMOBILIZED then
+	if self.state == BattleActor.STATE_IMMOBILIZED and self.immobilizedBy == "bunny" then
 		extraAnim = self.scene.partyByName["bunny"].reverseAnimation
 	end
 	
