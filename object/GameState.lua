@@ -435,7 +435,7 @@ function GameState:load(scene, slot)
 	self.flags = data.flags
 
 	-- ep5 save file
-	if true then --self:isFlagSet("ep5_knothole") then
+	if self:isFlagSet("ep5_knothole") then
 		-- Add party members, grant items, set flags
 		for k, v in pairs(data.party) do
 			self:addToParty(k, v.level, false)
@@ -468,7 +468,16 @@ function GameState:load(scene, slot)
 		self.leader = data.leader
 		
 		-- What manifest to use?...
-		if self:isFlagSet("ep4_to_the_mnt") or self:isFlagSet("ep4_abominable1") then
+		if self:isFlagSet("ep5_knothole") then
+			scene.sceneMgr:pushScene {
+				class = "Region",
+				manifest = "maps/sonicdemo_manifest.lua",
+				map = data.map,
+				spawn_point = data.spawnPoint,
+				nextMusic = data.music,
+				hint = "fromload"
+			}
+		elseif self:isFlagSet("ep4_to_the_mnt") or self:isFlagSet("ep4_abominable1") then
 			scene.sceneMgr:pushScene {
 				class = "Region",
 				manifest = "maps/northmountainsmanifest.lua",

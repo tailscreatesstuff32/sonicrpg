@@ -38,15 +38,21 @@ return function(scene, hint)
 			PlayAudio("music", "robotnik", 1, true, true),
 			Animate(scene.objectLookup.Robotnik.sprite, "angryright"),
 			MessageBox{message="Robotnik: My beautiful creation!! {p60}You'll pay for this!", textSpeed=3},
-			scene.partySprites.tails:hop(),
-			MessageBox{message="Tails: We won't let you reach the Light, Robotnik!! {p60}Give it up!"},
+			Parallel {
+				scene.partySprites.tails:hop(),
+				MessageBox{message="Tails: We won't let you reach the Light, Robotnik!! {p60}Give it up!"}
+			},
 			Animate(scene.objectLookup.Robotnik.sprite, "idleright"),
 			MessageBox{message="Robotnik: He he he... {p60}you dare to challenge me?...", textSpeed=3},
-			Animate(scene.partySprites.babyt.sprite, "roar"),
-			scene.partySprites.babyt:hop(),
-			MessageBox{message="Baby T: That's right! {p60}We're not scared of you!"},
-			scene.partySprites.b:hop(),
-			MessageBox{message="B: It's over, Robotnik."},
+			Parallel {
+				Animate(scene.partySprites.babyt.sprite, "roar"),
+				scene.partySprites.babyt:hop(),
+				MessageBox{message="Baby T: That's right! {p60}We're not scared of you!"}
+			},
+			Parallel {
+				scene.partySprites.b:hop(),
+				MessageBox{message="B: It's over, Robotnik."}
+			},
 			Wait(0.5),
 			MessageBox{message="Robotnik: Perhaps I've underestimated your motley crew of misfits.", textSpeed=3},
 			Animate(scene.objectLookup.Robotnik.sprite, "idleright"),
@@ -85,7 +91,7 @@ return function(scene, hint)
 			MessageBox{message="Robotnik: You can not wish to destroy me, or my empire... {p60}the Light forbids such wishes...", textSpeed=3},
 			Parallel {
 				scene.partySprites.babyt:hop(),
-				MessageBox{message="Baby T: Uh, maybe so! {p60}But he can still wish to change history so that you never took over!"}
+				MessageBox{message="Baby T: Maybe so! {p60}But he can still wish to change history so that you never took over!"}
 			},
 			Wait(1),
 			Animate(scene.partySprites.tails.sprite, "saddown"),
@@ -101,8 +107,9 @@ return function(scene, hint)
 			Do(function() scene.objectLookup.Robotnik.sprite:setAnimation("flyforward") end),
 			Ease(scene.objectLookup.Robotnik, "y", function() return scene.objectLookup.Robotnik.y + 30 end, 1),
 			Ease(scene.objectLookup.Robotnik, "y", function() return scene.objectLookup.Robotnik.y - 500 end, 3),
-			Animate(scene.partySprites.babyt.sprite, "saddown"),
+			Animate(scene.partySprites.babyt.sprite, "idleup"),
 			Animate(scene.partySprites.b.sprite, "idleup"),
+			Animate(scene.partySprites.tails.sprite, "idleup"),
 			Parallel {
 				scene.partySprites.b:hop(),
 				MessageBox{message="B: He's heading for the Light! {p60}Go Tails!!"}
@@ -114,6 +121,9 @@ return function(scene, hint)
 			Ease(scene.partySprites.tails, "y", function() return scene.partySprites.tails.y - 30 end, 2),
 			Wait(0.5),
 			Ease(scene.partySprites.tails, "y", function() return scene.partySprites.tails.y - 500 end, 3),
+			Do(function()
+				scene:changeScene{map="dream_mountain_cave10", fadeInSpeed=0.2, fadeOutSpeed=0.2}
+			end)
 		}
 	end
 	

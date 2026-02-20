@@ -22,16 +22,15 @@ return {
 			speed = 0.09
 		},
 		walkleft = {
-			frames = {{1,1}, {2,1}, {3,1}, {4,1}, {5,1}, {6,1}, {7,1}, {8,1}},
-			speed = 0.09
+			frames = {{0,2}, {1,2}, {0,2}, {2,2}},
+			speed = 0.18
 		},
 		walkdown = {
 			frames = {{0,2}, {1,2}, {0,2}, {2,2}},
 			speed = 0.18
 		},
 		walkup = {
-			frames = {{1,3}, {2,3}, {3,3}, {4,3},{5,3}, {6,3}, {7,3}, {8,3}},
-			speed = 0.09
+			frames = {{0,3}}
 		},
 		throwright = {
 			frames = {{4,5},{4,5},{4,5},{4,5},{5,5},{0,0}},
@@ -48,6 +47,9 @@ return {
 		},
 		snow_attitude = {
 			frames = {{2,5}}
+		},
+		carry_tails = {
+			frames = {{2,6}}
 		},
 	
 		meeting_idledown = {

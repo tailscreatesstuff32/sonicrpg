@@ -21,7 +21,7 @@ return function(player)
 	
 	
 	-- If not a layered map, Tails cannot fly
-	if not player.scene.layered then
+	if not player.scene.layered or player.noFly then
 		player.scene.audio:playSfx("error")
 		return
 	end
@@ -304,8 +304,8 @@ return function(player)
 				self.scene:canMove(hotspots.right_top.x, hotspots.right_top.y, 0, -movespeed)) or
 			   (self.scene:canMove(hotspots.left_bot.x, hotspots.left_bot.y, 0, movespeed) and
 				self.scene:canMove(hotspots.right_bot.x, hotspots.right_bot.y, 0, movespeed)) or
-			   (self.scene:canMove(hotspots.left_top.x, hotspots.left_top.y, -movespeed, 0, nil, true) and
-				self.scene:canMove(hotspots.left_bot.x, hotspots.left_bot.y, -movespeed, 0, nil, true)) or
+			   (self.scene:canMove(hotspots.left_top.x, hotspots.left_top.y, -movespeed, 0) and
+				self.scene:canMove(hotspots.left_bot.x, hotspots.left_bot.y, -movespeed, 0)) or
 			   (self.scene:canMove(hotspots.right_top.x, hotspots.right_top.y, movespeed, 0) and
 				self.scene:canMove(hotspots.right_bot.x, hotspots.right_bot.y, movespeed, 0))
 			) then

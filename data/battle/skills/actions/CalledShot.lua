@@ -76,7 +76,7 @@ return function(self, target)
 		"ui"
 	)
 	self.slamArrow:setAnimation("point")
-	self.slamArrowSpeed = math.pi/50
+	self.slamArrowSpeed = math.pi/200
 	self.slamArrowEnd = false
 
 	local puckXform = Transform(self.sprite.transform.x - self.sprite.w, self.sprite.transform.y - self.sprite.h*2, 1, 1)
@@ -98,8 +98,8 @@ return function(self, target)
 	lockOnSprite.color[4] = 0
 	
 	local targetSprite = target:getSprite()
-	lockOnSprite.transform.x = targetSprite.transform.x + targetSprite.w*2 - math.random(targetSprite.w)
-	lockOnSprite.transform.y = targetSprite.transform.y + targetSprite.h - math.random(targetSprite.h/2)
+	lockOnSprite.transform.x = target.calledShotOverrideXForm and target.calledShotOverrideXForm.x or targetSprite.transform.x + math.random(targetSprite.w) - math.random(targetSprite.w)
+	lockOnSprite.transform.y = target.calledShotOverrideXForm and target.calledShotOverrideXForm.y or targetSprite.transform.y + math.random(targetSprite.h) - math.random(targetSprite.h)
 	
 	self.calledShotLanded = false
 	self.calledShotDone = false

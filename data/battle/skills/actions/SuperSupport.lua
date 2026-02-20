@@ -29,11 +29,13 @@ return function(self, targets)
 	end
 
 	local prevMusic = self.scene.audio:getCurrentMusic()
+	local prevVolume = self.scene.audio:getMusicVolume()
 	return Serial {
 		Animate(self.sprite, "victory"),
 		Parallel {
+			self:hop(),
 			MessageBox {
-				message="Baby T: You guys are the best!",
+				message="Baby T: We can do this!",
 				rect=MessageBox.HEADLINER_RECT,
 				textSpeed=8,
 				closeAction=Wait(1)
@@ -41,7 +43,7 @@ return function(self, targets)
 			Serial {
 				AudioFade("music", 1.0, 0.0, 2),
 				Parallel {
-					PlayAudio("music", "babyt", 1.0),
+					PlayAudio("music", "babyt", 1.0, true),
 					Parallel(actions)
 				}
 			}
@@ -49,6 +51,6 @@ return function(self, targets)
 
 		Animate(self.sprite, "idle"),
 		Parallel(resetActions),
-		PlayAudio("music", prevMusic, 1.0, true, true),
+		PlayAudio("music", prevMusic, prevVolume, true, true),
 	}
 end

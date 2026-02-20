@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="144" height="74" tilewidth="32" tileheight="32" infinite="0" nextobjectid="489">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="144" height="74" tilewidth="32" tileheight="32" infinite="0" nextobjectid="490">
  <properties>
   <property name="battlebg" type="file" value="../art/backgrounds/greatjunglebg.png"/>
   <property name="currentLayer" type="int" value="7"/>
@@ -851,6 +851,12 @@
   </object>
   <object id="488" name="Chest2" type="Chest" gid="7597" x="3136" y="640" width="64" height="64">
    <properties>
+    <property name="RainbowNectar" type="int" value="1"/>
+    <property name="sprite" type="file" value="../art/sprites/chest2.png"/>
+   </properties>
+  </object>
+  <object id="489" name="Chest3" type="Chest" gid="7597" x="1728" y="511" width="64" height="64">
+   <properties>
     <property name="CrystalWater" type="int" value="1"/>
     <property name="sprite" type="file" value="../art/sprites/chest2.png"/>
    </properties>
@@ -923,6 +929,7 @@
     <property name="depth" type="int" value="192"/>
     <property name="flyLandingLayer" type="int" value="6"/>
     <property name="ghost" type="bool" value="true"/>
+    <property name="landingOffsetY" type="int" value="15"/>
     <property name="nextFlyLandingLayer" type="int" value="7"/>
     <property name="nextFlyOffsetY" type="int" value="272"/>
    </properties>
@@ -937,6 +944,7 @@
     <property name="depth" type="int" value="192"/>
     <property name="flyLandingLayer" type="int" value="6"/>
     <property name="ghost" type="bool" value="true"/>
+    <property name="landingOffsetY" type="int" value="15"/>
     <property name="nextFlyLandingLayer" type="int" value="7"/>
     <property name="nextFlyOffsetY" type="int" value="272"/>
    </properties>
@@ -951,6 +959,7 @@
     <property name="depth" type="int" value="192"/>
     <property name="flyLandingLayer" type="int" value="6"/>
     <property name="ghost" type="bool" value="true"/>
+    <property name="landingOffsetY" type="int" value="15"/>
     <property name="nextFlyLandingLayer" type="int" value="7"/>
     <property name="nextFlyOffsetY" type="int" value="272"/>
    </properties>
@@ -971,6 +980,7 @@
     <property name="depth" type="int" value="192"/>
     <property name="flyLandingLayer" type="int" value="6"/>
     <property name="ghost" type="bool" value="true"/>
+    <property name="landingOffsetY" type="int" value="15"/>
     <property name="nextFlyLandingLayer" type="int" value="7"/>
     <property name="nextFlyOffsetY" type="int" value="272"/>
    </properties>

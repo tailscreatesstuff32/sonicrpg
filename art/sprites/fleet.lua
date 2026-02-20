@@ -11,6 +11,9 @@ return {
 		flyright = {
 			frames = {{9,5}}
 		},
+		flyrightsmile = {
+			frames = {{9,6}}
+		},
 		idle = {
 			frames = {{5,7}}
 		},
@@ -39,8 +42,8 @@ return {
 			speed = 0.09
 		},
 		walkup = {
-			frames = {{1,3}, {2,3}, {3,3}, {4,3},{5,3}, {6,3}, {7,3}, {8,3}},
-			speed = 0.09
+			frames = {{0,3}, {1,3}},
+			speed = 0.22
 		},
 		idleup_lookleft = {
 			frames = {{0,5}}
@@ -62,6 +65,9 @@ return {
 		},
 		sadleft = {
 		    frames = {{7,6}}
+		},
+		kneeldown = {
+			frames = {{10,6}}
 		},
 		thinking = {
 		    frames = {{8,6}}

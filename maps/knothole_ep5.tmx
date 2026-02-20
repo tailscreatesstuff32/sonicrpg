@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="704">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="275" height="135" tilewidth="32" tileheight="32" infinite="0" nextobjectid="728">
  <properties>
   <property name="battlebg" type="file" value="../art/backgrounds/rotorwsbg.png"/>
   <property name="currentLayer" type="int" value="7"/>
@@ -2590,7 +2590,7 @@ end</property>
     <property name="direction" value="up_right"/>
    </properties>
   </object>
-  <object id="510" name="WarRoom2OuterOverlay" type="BasicNPC" gid="5323" x="4488" y="2816" width="32" height="32">
+  <object id="510" name="WarRoom2OuterOverlay" type="BasicNPC" gid="5323" x="4488" y="2816" width="32" height="32" visible="0">
    <properties>
     <property name="align" value="bottom_left"/>
     <property name="defaultAnim" value="idle_overlay"/>
@@ -2841,7 +2841,6 @@ return function(self, dt)
         GameState:setFlag(self:getFlag())
 
         local storybook = SpriteNode(scene, Transform(0, -20, 1, 1), {255,255,255,0}, &quot;storybook1&quot;, nil, nil, &quot;ui&quot;)
-        self.scene.objectLookup.WarRoom2OuterOverlay.sprite.sortOrderY = -1
 
         -- Cinematic begins
         self:run(BlockPlayer {
@@ -2873,7 +2872,7 @@ return function(self, dt)
             },
             Do(function() self.scene.objectLookup.BMtg:remove() end),
             -- Sally looks sad
-            Animate(self.scene.objectLookup.SallyMtg.sprite, &quot;meeting_sadleft&quot;), 
+            Animate(self.scene.objectLookup.SallyMtg.sprite, &quot;meeting_worriedleft&quot;), 
             AudioFade(&quot;music&quot;, 1,0,1),
             Wait(1),
             MessageBox {message=&quot;Sonic: He'll be ok, Sal. I'll talk to him.&quot;},
@@ -2884,7 +2883,12 @@ return function(self, dt)
                 self.scene.player:hop(),
                 MessageBox {message=&quot;Tails: Wait!&quot;}
             },
-            Do(function() self.scene.objectLookup.SonicMtg.y = self.scene.objectLookup.SonicMtg.y + 5 end),
+            Do(function()
+                self.scene.objectLookup.SonicMtg.y = self.scene.objectLookup.SonicMtg.y + 5
+                self.scene.objectLookup.WarRoom2OuterOverlay.sprite.sortOrderY = -1001
+                self.scene.objectLookup.WarRoom2Outer.sprite.sortOrderY = -1000
+                self.scene.objectLookup.IvanMtg.sprite.sortOrderY = -1002
+            end),
             Animate(self.scene.objectLookup.FleetMtg.sprite, &quot;meeting_idledown&quot;),
             Animate(self.scene.objectLookup.IvanMtg.sprite, &quot;meeting_idledown&quot;),
             Animate(self.scene.objectLookup.LeonMtg.sprite, &quot;meeting_idledown&quot;),
@@ -3038,6 +3042,8 @@ end</property>
     <property name="orientation" value="right"/>
    </properties>
   </object>
+  <object id="710" name="EpilogueSpawn" type="SpawnPoint" gid="5323" x="1600" y="2080" width="32" height="32"/>
+  <object id="718" name="EpilogueSpawn2" type="SpawnPoint" gid="5323" x="7456" y="1984" width="32" height="32"/>
  </objectgroup>
  <layer name="bridgeoverlay" width="275" height="135">
   <data encoding="csv">
@@ -3460,15 +3466,10 @@ end</property>
   <object id="537" name="Ladder1" type="Ladder" gid="5323" x="5440" y="2720" width="32" height="576">
    <properties>
     <property name="botLayer" type="int" value="7"/>
-    <property name="nextFlyOffsetY" type="int" value="736"/>
     <property name="topLayer" type="int" value="6"/>
    </properties>
   </object>
-  <object id="544" name="Ladder2" type="Ladder" gid="5323" x="5664" y="1984" width="32" height="608">
-   <properties>
-    <property name="nextFlyOffsetY" type="int" value="1504"/>
-   </properties>
-  </object>
+  <object id="544" name="Ladder2" type="Ladder" gid="5323" x="5664" y="1984" width="32" height="608"/>
   <object id="545" name="Ladder3" type="Ladder" gid="5323" x="5376" y="1184" width="32" height="352">
    <properties>
     <property name="onClimbDown">return function(self, player)
@@ -3483,6 +3484,13 @@ end</property>
     <property name="orientation" value="down"/>
     <property name="scene" type="file" value="knotholelookout.lua"/>
     <property name="spawn_point" value="Entrance"/>
+   </properties>
+  </object>
+  <object id="727" name="Chest1" type="Chest" gid="7597" x="7328" y="1600" width="64" height="64">
+   <properties>
+    <property name="BlueLeaf" type="int" value="1"/>
+    <property name="sprite" type="file" value="../art/sprites/chest2.png"/>
+    <property name="swapLayers" value="objects:objects, objects2:objects, objects3:objects2, objects4:objects3, objects5:objects4, objects6:objects6, objects7:objects6"/>
    </properties>
   </object>
  </objectgroup>
@@ -3740,15 +3748,6 @@ end</property>
     <property name="nextFlyOffsetY" type="int" value="448"/>
    </properties>
   </object>
-  <object id="659" name="3DTreeCanopy" type="ThreeDee" gid="5323" x="6144" y="2816" width="224" height="1536">
-   <properties>
-    <property name="depth" type="int" value="1248"/>
-    <property name="flyLandingLayer" type="int" value="6"/>
-    <property name="ghost" type="bool" value="true"/>
-    <property name="nextFlyLandingLayer" type="int" value="7"/>
-    <property name="nextFlyOffsetY" type="int" value="1504"/>
-   </properties>
-  </object>
   <object id="660" name="3DRotorWorkshop" type="ThreeDee" gid="5323" x="7328" y="1792" width="256" height="192">
    <properties>
     <property name="depth" type="int" value="160"/>
@@ -3813,7 +3812,7 @@ end</property>
     <property name="nextFlyOffsetY" type="int" value="64"/>
    </properties>
   </object>
-  <object id="674" name="IntroTrigger" type="TouchTrigger" gid="5323" x="1472" y="2048" width="192" height="192" visible="0">
+  <object id="674" name="IntroTrigger" type="TouchTrigger" gid="5323" x="1472" y="2048" width="192" height="192">
    <properties>
     <property name="atMostOnce" type="bool" value="true"/>
     <property name="flagOverride" value="ep5_knothole_firefly_trigger"/>
@@ -4023,26 +4022,6 @@ end</property>
     <property name="ghost" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="694" name="3DTree2" type="ThreeDee" gid="5323" x="4896" y="2752" width="992" height="1472">
-   <properties>
-    <property name="depth" type="int" value="1248"/>
-    <property name="flyLandingLayer" type="int" value="6"/>
-    <property name="ghost" type="bool" value="true"/>
-    <property name="nextFlyLandingLayer" type="int" value="7"/>
-    <property name="nextFlyOffsetY" type="int" value="1504"/>
-    <property name="nocollision" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="695" name="3DTree1" type="ThreeDee" gid="5323" x="4896" y="2752" width="992" height="704">
-   <properties>
-    <property name="depth" type="int" value="480"/>
-    <property name="flyLandingLayer" type="int" value="6"/>
-    <property name="ghost" type="bool" value="true"/>
-    <property name="nextFlyLandingLayer" type="int" value="7"/>
-    <property name="nextFlyOffsetY" type="int" value="736"/>
-    <property name="nocollision" type="bool" value="true"/>
-   </properties>
-  </object>
   <object id="696" name="Sally_Meanwhile1" type="BasicNPC" gid="7597" x="7168" y="2944" width="32" height="32">
    <properties>
     <property name="align" value="bottom_left"/>
@@ -4096,6 +4075,163 @@ end</property>
     <property name="nocollision" type="bool" value="true"/>
     <property name="nonight" type="bool" value="false"/>
     <property name="sprite" type="file" value="../art/sprites/sonic.png"/>
+   </properties>
+  </object>
+  <object id="704" name="Sonic_Epilogue" type="BasicNPC" gid="7597" x="1440" y="1920" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="idledown"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="false"/>
+    <property name="sprite" type="file" value="../art/sprites/sonic.png"/>
+   </properties>
+  </object>
+  <object id="705" name="Sally_Epilogue" type="BasicNPC" gid="7597" x="1536" y="1920" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="idledown"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="false"/>
+    <property name="sprite" type="file" value="../art/sprites/sally.png"/>
+   </properties>
+  </object>
+  <object id="706" name="Fleet_Epilogue" type="BasicNPC" gid="7597" x="1664" y="1920" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="idledown"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="false"/>
+    <property name="sprite" type="file" value="../art/sprites/fleet.png"/>
+   </properties>
+  </object>
+  <object id="707" name="Ivan_Epilogue" type="BasicNPC" gid="7597" x="1760" y="1920" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="idledown"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="false"/>
+    <property name="sprite" type="file" value="../art/sprites/ivan.png"/>
+   </properties>
+  </object>
+  <object id="708" name="B_Epilogue" type="BasicNPC" gid="7597" x="1504" y="2016" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="idledown"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="false"/>
+    <property name="sprite" type="file" value="../art/sprites/b.png"/>
+   </properties>
+  </object>
+  <object id="709" name="Tails_Epilogue" type="BasicNPC" gid="7597" x="1696" y="2016" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="tireddown"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="false"/>
+    <property name="sprite" type="file" value="../art/sprites/tails.png"/>
+   </properties>
+  </object>
+  <object id="711" name="EpilogueWP1" type="BasicNPC" gid="7597" x="1696" y="2048" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="712" name="EpilogueWP2" type="BasicNPC" gid="7597" x="1760" y="2048" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="713" name="EpilogueWP3" type="BasicNPC" gid="7597" x="1824" y="2048" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="714" name="EpilogueWP5" type="BasicNPC" gid="7597" x="1920" y="2048" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="715" name="EpilogueWP4" type="BasicNPC" gid="7597" x="1536" y="2048" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="716" name="EpilogueWP6" type="BasicNPC" gid="7597" x="1664" y="2080" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="717" name="EpilogueWP7" type="BasicNPC" gid="7597" x="1472" y="2048" width="64" height="64">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="719" name="Leon_Epilogue2" type="BasicNPC" gid="7597" x="6976" y="2006" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="idleright"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="ignoreMapCollision" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="true"/>
+    <property name="sprite" type="file" value="../art/sprites/leon.png"/>
+   </properties>
+  </object>
+  <object id="720" name="Fleet_Epilogue2" type="BasicNPC" gid="7597" x="7424" y="2208" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="idleup"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="true"/>
+    <property name="sprite" type="file" value="../art/sprites/fleet.png"/>
+   </properties>
+  </object>
+  <object id="721" name="Ivan_Epilogue2" type="BasicNPC" gid="7597" x="7520" y="2208" width="32" height="32">
+   <properties>
+    <property name="align" value="bottom_left"/>
+    <property name="defaultAnim" value="idleup"/>
+    <property name="hidden" type="bool" value="true"/>
+    <property name="nocollision" type="bool" value="true"/>
+    <property name="nonight" type="bool" value="true"/>
+    <property name="sprite" type="file" value="../art/sprites/ivan.png"/>
+   </properties>
+  </object>
+  <object id="722" name="IvanWP1" type="BasicNPC" gid="7597" x="7520" y="1888" width="32" height="32">
+   <properties>
+    <property name="ghost" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="723" name="FleetWP1" type="BasicNPC" gid="7597" x="7424" y="1888" width="32" height="32">
+   <properties>
+    <property name="ghost" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="724" name="LeonWP1" type="BasicNPC" gid="7597" x="7296" y="2006" width="32" height="32">
+   <properties>
+    <property name="ghost" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="725" name="LeonWP2" type="BasicNPC" gid="7597" x="7424" y="2006" width="32" height="32">
+   <properties>
+    <property name="ghost" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="726" name="NoFlyZone" type="BasicNPC" gid="5323" x="4832" y="2144" width="1120" height="864">
+   <properties>
+    <property name="ghost" type="bool" value="true"/>
+    <property name="notColliding">return function(self, player)
+    player.noFly = false
+end</property>
+    <property name="whileColliding">return function(self, player)
+    player.noFly = true
+end</property>
    </properties>
   </object>
  </objectgroup>

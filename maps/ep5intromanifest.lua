@@ -52,7 +52,22 @@ return {
 	{
         type = "map",
         file = "maps/dream_mountain_cave9.lua",
-		primary = true
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave10.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/dream_mountain_cave11.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/lightofmobius.lua",
+		--primary = true
     },
 	{
         type = "map",
@@ -62,6 +77,11 @@ return {
 	{
         type = "map",
         file = "maps/boulderbay_cliffs.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/boulderbay_epilogue.lua",
 		--primary = true
     },
 	{
@@ -102,6 +122,11 @@ return {
 	{
         type = "map",
         file = "maps/greatjungle4.lua",
+		--primary = true
+    },
+	{
+        type = "map",
+        file = "maps/greatjungle_epilogue.lua",
 		--primary = true
     },
 	{
@@ -187,6 +212,10 @@ return {
 	{
 		type = "image",
 		file = "art/sprites/puck.png"
+	},
+	{
+		type = "image",
+		file = "art/sprites/emp.png"
 	},
 	{
 		type = "image",
@@ -382,15 +411,7 @@ return {
 	},
 	{
 		type = "image",
-		file = "art/sprites/snowdust.png"
-	},
-	{
-		type = "image",
-		file = "art/sprites/hammer.png"
-	},
-	{
-		type = "image",
-		file = "art/sprites/wrench.png"
+		file = "art/sprites/dust.png"
 	},
 	{
 		type = "image",
@@ -398,11 +419,7 @@ return {
 	},
 	{
 		type = "image",
-		file = "art/sprites/snowball.png"
-	},
-	{
-		type = "image",
-		file = "art/sprites/snowboulder.png"
+		file = "art/sprites/robotnikmine.png"
 	},
 	{
 		type = "image",
@@ -570,6 +587,10 @@ return {
 	},
 	{
 		type = "image",
+		file = "art/sprites/snowball.png"
+	},
+	{
+		type = "image",
 		file = "art/sprites/smack.png"
 	},
 	{
@@ -611,6 +632,16 @@ return {
 	{
 		type = "image",
 		file = "art/sprites/boulder.png"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/drill.ogg",
+		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/sfx/thelight.ogg",
+		category = "sfx"
 	},
 	{
 		type = "sound",
@@ -676,6 +707,28 @@ return {
 		type = "sound",
 		file = "audio/sfx/bounce.wav",
 		category = "sfx"
+	},
+	{
+		type = "sound",
+		file = "audio/music/sonicfanfare2.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/ep5ending.ogg",
+		category = "music"
+	},
+	{
+		type = "sound",
+		file = "audio/music/leonintro.ogg",
+		category = "music",
+		looping = true
+	},
+	{
+		type = "sound",
+		file = "audio/music/talkingtolight.ogg",
+		category = "music",
+		looping = true
 	},
 	{
 		type = "sound",
@@ -1245,9 +1298,8 @@ return {
 	},
 	{
 		type = "sound",
-		file = "audio/music/tailstraining.ogg",
+		file = "audio/music/tailsrace.ogg",
 		category = "music",
-		looping = true,
 	},
 	{
 		type = "sound",

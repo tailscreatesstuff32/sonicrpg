@@ -37,7 +37,7 @@ return {
 	stats = {
 		xp    = 5,
 		maxhp = 180,
-		attack = 15,
+		attack = 10,
 		defense = 15,
 		speed = 10,
 		focus = 10,
@@ -70,6 +70,8 @@ return {
 		self.bullet.transform.oy = self.bullet.h/2
 		self.bullet.transform.angle = math.pi / 6
 	end,
+	
+	is_bot = false,
 	
 	behavior = function (self, target)
 		if self.hp <= 0 then

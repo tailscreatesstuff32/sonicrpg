@@ -1,4 +1,4 @@
-local SceneNode = require "object/SceneNode"
+local NPC = require "object/NPC"
 local Player = require "object/Player"
 local BasicNPC = require "object/BasicNPC"
 local SpriteNode = require "object/SpriteNode"
@@ -18,7 +18,7 @@ local Ease = require "actions/Ease"
 
 local Transform = require "util/Transform"
 
-local Reflection = class(SceneNode)
+local Reflection = class(NPC)
 
 function Reflection:construct(scene, layer, object)
     self.collisionX = 0
@@ -40,11 +40,28 @@ function Reflection:construct(scene, layer, object)
 		left_bot  = {x = 0, y = 0}
 	}
 
-	self:addSceneHandler("update", Reflection.update)
+	NPC.init(self)
 end
 
 function Reflection:update(dt)
 	self:updateSprite()
+
+	if 	self.scene.player.cinematic or
+		self.scene.player.cinematicStack > 0 or
+		self.scene.player.blocked or
+		not self.scene:playerMovable() or
+		self.scene.player.dontfuckingmove or
+		self.scene.player.doingChangeChar
+	then
+		if not self.scene.player.noIdle then
+			self.sprite:setAnimation(self.state)
+		end
+		return
+	end
+
+	if love.keyboard.isDown("lshift") and not self.scene.player.stickyLShift then
+		return
+	end
 
 	self.x = self.scene.player.x - self.sprite.w
 

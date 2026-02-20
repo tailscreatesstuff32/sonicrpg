@@ -27,6 +27,8 @@ function TitleSplashScene:onEnter()
 	
 	self.images = {}
 	self.animations = {}
+	self.images["alert"] = love.graphics.newImage("art/sprites/alert.png")
+	self.animations["alert"] = {w=32, h=32, animations={idle={frames={{0,0}}}}, starting="idle"}
 	self.images["pressx"] = love.graphics.newImage("art/sprites/pressx.png")
 	self.images["pressz"] = love.graphics.newImage("art/sprites/pressz.png")
 	self.images["pressx"]:setFilter("nearest", "nearest")
@@ -169,11 +171,9 @@ function TitleSplashScene:onExit(args)
 end
 
 function TitleSplashScene:newGame()
-	GameState:addToParty("tails", 5, true)
-	GameState:addToParty("babyt", 5, true)
-	GameState:addToParty("b", 5, true)
+	GameState:addToParty("tails", 3, true)
 	GameState.leader = "tails"
-	
+
 	self.exiting = true
 	self.sceneMgr:switchScene {class = "ChapterSplashScene", manifest = "maps/ep5intromanifest.lua"}
 end

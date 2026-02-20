@@ -189,6 +189,11 @@ return {
 			speed = 0.04
 		},
 		
+		juicerightsmirkup = {
+			frames = {{0,11}, {1,11}, {2,11}, {3,11}},
+			speed = 0.08
+		},
+		
 		juiceright = {
 			frames = {{9,0}, {10,0}, {11,0}, {12,0}},
 			speed = 0.08
@@ -361,6 +366,15 @@ return {
 		},
 		worrieddown = {
 			frames = {{10,10}}
+		},
+		
+		paceleft = {
+			frames = {{6,11},{7,11}},
+			speed = 0.15
+		},
+		paceright = {
+			frames = {{4,11},{5,11}},
+			speed = 0.15
 		},
 		
 		prepare_race = {

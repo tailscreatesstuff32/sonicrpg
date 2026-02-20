@@ -42,15 +42,16 @@ return {
 
 	stats = {
 		xp = 200,
-		maxhp = 8000,
-		attack = 30,
-		defense = 30,
-		speed = 10,
+		maxhp = 10000,
+		attack = 40,
+		defense = 40,
+		speed = 11,
 		focus = 10,
 		luck = 5,
 	},
 
 	boss = true,
+	is_bot = false,
 
 	run_chance = 0.2,
 
@@ -111,6 +112,7 @@ return {
 							Animate(selfSprite, "shieldbreak"),
 							Do(function() self.shieldSprite:setAnimation("broken") end),
 							PlayAudio("sfx", "factoryspit", 1, true),
+							Wait(1),
 							MessageBox {
 								message="Robotnik's shield is broken!",
 								rect=MessageBox.HEADLINER_RECT,
@@ -130,7 +132,7 @@ return {
 		selfSprite.transform.x = selfSprite.transform.x - 50
 		selfSprite.transform.y = selfSprite.transform.y - 100
 		selfSprite.continuousAnimation = true
-		
+
 		self.calledShotKnockbackFn = function(self, impact, direction)
 			local selfSprite = self:getSprite()
 			return Serial {
@@ -176,21 +178,35 @@ return {
 	end,
 
 	behavior = function (self, target)
+		if target == nil then
+			return Telegraph(self, "No targets available", {500,500,500,50})
+		end
+	
 		if self.hp <= 0 then
 			return Action()
 		end
 		
-		if self.hp <= 7000 and self.numStates == 1 then
+		if self.hp <= 9500 and self.numStates == 1 then
 			table.insert(self.states, "special")
-			self.numStates = 2
-		elseif self.hp <= 5000 and self.numStates == 2 then
-			table.insert(self.states, "grab")
+			table.insert(self.states, "laser")
 			self.numStates = 3
-		elseif self.hp <= 2500 and self.numStates == 3 then
+		elseif self.hp <= 7000 and self.numStates == 3 then
 			table.insert(self.states, "grab")
-			table.insert(self.states, "acidrain")
+			table.insert(self.states, "grab")
 			self.numStates = 5
+		elseif self.hp <= 4000 and self.numStates == 5 then
+			self.states = {"grab", "acidrain", "special"}
+			self.numStates = 3
+		elseif self.hp <= 2000 and self.numStates == 3 then
+			self.states = {"grab", "acidrain"}
+			self.numStates = 1
 		end
+		
+		local selfSprite = self:getSprite()
+		self.calledShotOverrideXForm = Transform(
+			selfSprite.transform.x + selfSprite.w*1.5 - math.random(1, selfSprite.w/2),
+			selfSprite.transform.y + selfSprite.h*1.5 - math.random(1, selfSprite.h/2)
+		)
 		
 		if not self.introDone then
 			self.introDone = true
@@ -246,8 +262,7 @@ return {
 			if not self.aerial then
 				state = "fly"
 			end
-
-			local selfSprite = self:getSprite()
+			
 			if state == "laser" then
 				local dodgeAction = target.defenseEvent and
 					target.defenseEvent(self, target) or
@@ -416,7 +431,7 @@ return {
 										Serial {
 											Wait(0.2),
 											Parallel {
-												self:takeDamage(target.stats),
+												self:takeDamage({attack=target.stats.attack, speed=100, luck=target.stats.luck}),
 												Ease(selfSprite.transform, "x", origTransform.x, 4),
 												Ease(selfSprite.transform, "y", origTransform.y, 4),
 												Ease(self.dropShadow2.transform, "x", origDropShadowTransform.x, 4),
@@ -489,14 +504,7 @@ return {
 									Ease(target.sprite.transform, "y", function() return target.sprite.transform.y + 10 end, 6, "quad"),
 									Wait(1),
 									Animate(selfSprite, "idle"),
-									Wait(1),
-									Do(function()
-										if target.hp <= 0 then
-											target.sprite:setAnimation("dead")
-										else
-											target.sprite:setAnimation("idle")
-										end
-									end)
+									Wait(1)
 								}
 							}
 						},
@@ -506,7 +514,7 @@ return {
 			elseif state == "acidrain" then
 				local damageAllActions = {}
 				for _,party in pairs(self.scene.party) do
-					table.insert(damageAllActions, party:takeDamage(self.stats))
+					table.insert(damageAllActions, party:takeDamage({attack=self.stats.attack, speed=100, luck=0}))
 				end
 
 				return Serial {
@@ -554,6 +562,12 @@ return {
 			elseif state == "special" then
 				-- Don't keep picking B if already compelled
 				if target.id == "b" and target.confused then
+					if self.scene.partyByName.babyt.hp <= 0 and self.scene.partyByName.tails.hp <= 0 then
+						-- Pick a new action
+						table.insert(self.scene.opponentTurns, self)
+						return Action()
+					end
+
 					if math.random(1,2) == 1 then
 						target = self.scene.partyByName.babyt
 					else
@@ -561,7 +575,7 @@ return {
 					end
 				end
 
-				if target.id == "tails" then
+				if target.id == "babyt" then
 					return Serial {
 						Telegraph(self, "Intimidate", {500,500,500,50}),
 						Animate(selfSprite, "angry"),
@@ -578,18 +592,18 @@ return {
 						},
 						Do(function()
 							local newStats = table.clone(target.stats)
-							newStats.attack = newStats.attack * 0.5
+							newStats.defense = newStats.defense * 0.25
 							target:pushStats(newStats)
 						end),
 						MessageBox {
-							message="Tails attack damage reduced!",
+							message="Baby T defense reduced!",
 							rect=MessageBox.HEADLINER_RECT,
 							closeAction=Wait(1)
 						},
 						Animate(selfSprite, "idle"),
 						Animate(target.sprite, "idle")
 					}
-				elseif target.id == "babyt" then
+				elseif target.id == "tails" then
 					return Serial {
 						Telegraph(self, "Terrify", {500,500,500,50}),
 						Animate(selfSprite, "scary"),
@@ -617,7 +631,7 @@ return {
 							target:hop()
 						},
 						MessageBox {
-							message="Baby T immobilized is from fear!",
+							message="Tails is immobilized from fear!",
 							rect=MessageBox.HEADLINER_RECT,
 							closeAction=Wait(1)
 						},

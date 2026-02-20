@@ -208,11 +208,23 @@ return {
 				Do(function() self:getSprite():setAnimation("angryidle") end)
 			}
 		end
+
+		local selfSprite = self:getSprite()
+		self.calledShotOverrideXForm = Transform(
+			selfSprite.transform.x + selfSprite.w*1.5 - math.random(1, selfSprite.w/2),
+			selfSprite.transform.y + selfSprite.h*1.5 - math.random(1, selfSprite.h/2)
+		)
 	end,
 
 	behavior = function (self, target)
 		self.turnCount = self.turnCount + 1
-		
+
+		local selfSprite = self:getSprite()
+		self.calledShotOverrideXForm = Transform(
+			selfSprite.transform.x + selfSprite.w*1.5 - math.random(1, selfSprite.w/2),
+			selfSprite.transform.y + selfSprite.h*1.5 - math.random(1, selfSprite.h/2)
+		)
+
 		if self.scene.partyByName.babyt.hp == 0 then
 			-- Can't win without Baby T
 			self.scene.specialLoseAction = Serial {
@@ -287,6 +299,7 @@ return {
 						Action()),
 				MessageBox{message="Uncle T: I-I'm s-*zzzz*-so s-*zzzz*-sorry."},
 				Animate(self.scene.partyByName.babyt.sprite, "sadleft"),
+				Animate(self.scene.partyByName.tails.sprite, "sadleft"),
 				MessageBox{message="Baby T: It's ok!{p60} It's not your fault, uncle!"},
 				MessageBox{message="Uncle T: I ca-ca-can't-t-t harm R-R-Robotnik *zzzzzz*{p60}-- b-but I ca-can ru-ru-run..."},
 				MessageBox{message="Uncle T: Y-y-you must p-p-protect family now{p40},\nn-n-n-nephew..."},
